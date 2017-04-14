@@ -1,0 +1,92 @@
+
+<h2>Score Result</h2>
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Skater</th>
+    <td><%= link_to(score.skater_name, url_for(:skaters, :name, name: score.skater_name)) %></td>
+  </tr>
+  <tr>
+    <th>Competition</th>
+    <td><%= link_to(score.competition_name, url_for(:competitions, :id, id: score.competition_id)) %>
+</td>
+  </tr>
+  
+  <tr>
+    <th>Category</th>
+    <td><%= score.category %></td>
+  </tr>
+  <tr>
+    <th>Segment</th>
+    <td><%= score.segment %></td>
+  </tr>
+  <tr>
+    <th>Date</th>
+    <td><%= score.date %></td>
+  </tr>
+  <tr>
+    <th>TSS</th>
+    <td><%= score.tss %></td>
+  </tr>
+  <tr>
+    <th>TES</th>
+    <td><%= score.tes %></td>
+  </tr>
+  <tr>
+    <th>PCS</th>
+    <td><%= score.pcs %></td>
+  </tr>
+  <tr>
+    <th>Deductions</th>
+    <td><%= score.deductions %></td>
+  </tr>
+  <tr>
+    <th>TSS</th>
+    <td><%= score.tss %></td>
+  </tr>
+  <tr>
+    <th>ISU Result</th>
+    <td>tbd</td>
+  </tr>
+</table>
+
+<h2>Technical Elements</h2>
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Element</th>
+    <th>Info</th>
+    <th>BaseValue</th>
+    <th>Credit</th>
+    <th>GOE</th>
+    <th>Judges</th>
+    <th>Value</th>
+  </tr>
+  <% score.technicals.each do |element| %>
+  <tr>
+    <td><%= element.element %></td>
+    <td><%= element.info %></td>
+    <td><%= element.base_value %></td>
+    <td><%= element.credit %></td>
+    <td><%= element.goe %></td>
+    <td><%= element.judges %></td>
+    <td><%= element.value %></td>
+  </tr>
+  <% end %>
+</table>
+
+<h2>Program Components</h2>
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Element</th>
+    <th>Factor</th>
+    <th>Judges</th>
+    <th>Value</th>
+  </tr>
+  <% score.components.each do |comp| %>
+  <tr>
+    <td><%= comp.component %></td>
+    <td><%= comp.factor %></td>
+    <td><%= comp.judges %></td>
+    <td><%= comp.value %></td>
+  </tr>
+  <% end %>
+</table>

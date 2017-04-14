@@ -1,0 +1,25 @@
+
+<h2>Skater Info</h2>
+
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Name</th>
+    <td><%= skater.name %></td>
+  </tr>
+  <tr>
+    <th>Nation</th>
+    <td><%= skater.nation %></td>
+  </tr>
+  <tr>
+    <th>Category</th>
+    <td><%= skater.category %></td>
+  </tr>
+  <tr>
+    <th>ISU Number</th>
+    <td><%= skater.isu_number %></td>
+  </tr>
+</table>
+
+<h2>Skater's Scores</h2>
+
+<%= partial '/scores/list', locals: {scores: skater.scores.to_a} %>

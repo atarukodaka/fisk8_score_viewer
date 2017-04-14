@@ -1,0 +1,44 @@
+<style type="text/css">
+  table { font-size: small; }
+  .navbar-default {
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;  
+  }
+  .container { width: 100%; }
+</style>
+<html>
+  <head>
+    <title>Fisk8 Score Viewer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">    
+  </head>
+  <body>
+    <div class="container" style="width: 100%;">
+
+      <nav class="navbar navbar-default">
+	<div class="navbar-header">
+	  <button type="button" data-toggle="collapse" data-target="#topHeader" class="navbar-toggle">
+	    <span class="sr-only">Toggle navigation</span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	    <span class="icon-bar"></span>
+	  </button>
+	</div>
+	<div class="collapse navbar-collapse" id="topHeader">
+	  <ul class="nav navbar-nav">
+	    <li><%= link_to("Home", url_for(:index)) %></li>
+	    <li><%= link_to("Score", url_for(:scores, :index)) %></li>
+	    <li><%= link_to("Skater", url_for(:skaters, :index)) %></li>
+	    <li><%= link_to("Competition", url_for(:competitions, :index)) %></li>
+	    <li><%= link_to("Element", url_for(:elements, :index)) %></li>
+	    <li><%= link_to("Component", url_for(:components, :index)) %></li>
+	  </ul>
+	</div>
+      </nav>
+
+
+      <div class="main">
+	<%= yield %>
+      </div>
+    </div>
+  </body>
+</html>
