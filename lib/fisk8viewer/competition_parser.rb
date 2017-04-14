@@ -13,6 +13,8 @@ require 'mechanize'
 module Fisk8Viewer
   class CompetitionParser
     def retrieve(url, dir: "./")
+      return "" if url.blank?
+      
       FileUtils.mkdir_p(dir) unless FileTest.exist?(dir)
 
       filename = File.join(dir, URI.parse(url).path.split('/').last)
@@ -140,7 +142,8 @@ module Fisk8Viewer
 
       return data
     end
-
+=begin
+    
     ################
     def parse_segment_result(result_url)
       data = []
@@ -252,6 +255,6 @@ module Fisk8Viewer
       end
       return data
     end
-      
-  end
+=end      
+  end  ## class
 end
