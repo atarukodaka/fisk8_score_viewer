@@ -1,5 +1,3 @@
-require 'fisk8viewer/competition_parser'
-
 module Fisk8Viewer
   class Updater
     def establish_connection
@@ -19,6 +17,8 @@ module Fisk8Viewer
       end
     end
     def update_competitions(urls)
+      require 'fisk8viewer/competition_parser'
+      
       competition_parser = Fisk8Viewer::CompetitionParser.new
       urls.each do |url|
         puts "* parsing #{url}..."
@@ -32,6 +32,8 @@ module Fisk8Viewer
       end
     end
     def update_competition(competition)
+      require 'fisk8viewer/competition_parser'
+      
       establish_connection()
       #binding.pry
       Competition.connection
