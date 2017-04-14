@@ -1,0 +1,81 @@
+<% error = @technical.errors.include?(:number) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :number, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :number, :class => 'form-control input-xlarge input-with-feedback', :autofocus => true %>
+    <span class='help-inline'><%= error ? f.error_message_on(:number) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:element) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :element, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :element, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:element) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:info) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :info, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :info, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:info) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:base_value) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :base_value, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :base_value, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:base_value) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:credit) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :credit, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :credit, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:credit) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:goe) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :goe, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :goe, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:goe) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:judges) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :judges, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :judges, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:judges) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:value) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :value, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :value, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:value) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @technical.errors.include?(:score_id) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :score_id, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :score_id, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:score_id) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+
+
+<div class="form-actions">
+  <%= f.submit pat(:save), :class => 'btn btn-primary' %>
+  &nbsp;
+  <%= f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue' %>
+  &nbsp;
+  <%= link_to pat(:cancel), url(:technicals, :index), :class => 'btn btn-default' %>
+</div>

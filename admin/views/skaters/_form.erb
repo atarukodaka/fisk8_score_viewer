@@ -1,0 +1,73 @@
+<% error = @skater.errors.include?(:name) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :name, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :name, :class => 'form-control input-xlarge input-with-feedback', :autofocus => true %>
+    <span class='help-inline'><%= error ? f.error_message_on(:name) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:nation) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :nation, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :nation, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:nation) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:category) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :category, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :category, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:category) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:birthday) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :birthday, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :birthday, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:birthday) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:isu_number) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :isu_number, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :isu_number, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:isu_number) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:isu_bio) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :isu_bio, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :isu_bio, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:isu_bio) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:coach) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :coach, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :coach, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:coach) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @skater.errors.include?(:choreographer) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :choreographer, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :choreographer, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:choreographer) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+
+
+<div class="form-actions">
+  <%= f.submit pat(:save), :class => 'btn btn-primary' %>
+  &nbsp;
+  <%= f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue' %>
+  &nbsp;
+  <%= link_to pat(:cancel), url(:skaters, :index), :class => 'btn btn-default' %>
+</div>

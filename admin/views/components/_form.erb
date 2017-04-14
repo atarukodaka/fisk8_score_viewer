@@ -1,0 +1,49 @@
+<% error = @component.errors.include?(:component) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :component, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :component, :class => 'form-control input-xlarge input-with-feedback', :autofocus => true %>
+    <span class='help-inline'><%= error ? f.error_message_on(:component) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @component.errors.include?(:factor) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :factor, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :factor, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:factor) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @component.errors.include?(:judges) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :judges, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :judges, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:judges) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @component.errors.include?(:value) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :value, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :value, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:value) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+<% error = @component.errors.include?(:score_id) %>
+<fieldset class='control-group <%= error ? 'has-error' : ''%>'>
+  <%= f.label :score_id, :class => 'control-label' %>
+  <div class='controls'>
+    <%= f.text_field :score_id, :class => 'form-control input-xlarge input-with-feedback' %>
+    <span class='help-inline'><%= error ? f.error_message_on(:score_id) : "Ex: a simple text" %></span>
+  </div>
+</fieldset>
+
+
+<div class="form-actions">
+  <%= f.submit pat(:save), :class => 'btn btn-primary' %>
+  &nbsp;
+  <%= f.submit pat(:save_and_continue), :class => 'btn btn-info', :name => 'save_and_continue' %>
+  &nbsp;
+  <%= link_to pat(:cancel), url(:components, :index), :class => 'btn btn-default' %>
+</div>

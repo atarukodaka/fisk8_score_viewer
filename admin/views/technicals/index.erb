@@ -1,0 +1,89 @@
+<ul class="nav nav-tabs">
+  <li class=active> <%= link_to tag_icon(:list, pat(:list)), url(:technicals, :index) %></li>
+  <li> <%= link_to tag_icon(:plus, pat(:new)), url(:technicals, :new) %></li>
+</ul>
+<div class=tabs-content>
+  <table id=list class="table table-striped table-hover table-condensed">
+    <thead>
+      <tr>
+        <th class="header list-menu">
+          <div class=dropdown>
+            <a href="#" class="list-menu-toggle dropdown-toggle" data-toggle='dropdown'>
+              <%= tag_icon :magic %> <span class=caret></span>
+            </a>
+            <ul class="list-menu dropdown-menu" role=menu>
+              <li class=list-menu-wrapper>
+                <%= link_to tag_icon('check-square-o', pat(:select_all)), '#', :id => 'select-all', :class => 'list-menu-link' %>
+              </li>
+              <li class=list-menu-wrapper.list-menu-wrapper-disabled>
+                <%= link_to tag_icon('square-o', pat(:deselect_all)), '#', :id => 'deselect-all', :class => 'list-menu-link list-menu-link-disabled' %>
+              </li>
+              <li class="list-menu-divider divider"></li>
+              <li class=list-menu-wrapper.list-menu-wrapper-disabled>
+                <%=link_to tag_icon('trash-o', pat(:delete_selected)), '#', :id => 'delete-selected', :class => 'list-menu-link list-menu-link-disabled' %>
+                <div class='list-menu-popover-delete-selected popover right'>
+                  <div class=arrow></div>
+                  <h3 class=popover-title><%= pat(:delete_selected_title) %></h3>
+                  <div class=popover-content>
+                    <% form_tag url(:technicals, :destroy_many), :method => :delete do %>
+                      <%=hidden_field_tag :technical_ids, :'data-delete-many-ids' => true %>
+                      <%=submit_tag pat(:delete), :class =>'list-menu-popover-delete-selected-btn btn btn-danger btn-small' %>
+                      <div class='btn btn-default btn-small cancel'><%= pat(:cancel) %></div>
+                    <% end %>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </th>
+                <th class=header> <%= mat(:technical, :id) %></th>
+                <th class=header> <%= mat(:technical, :number) %></th>
+                <th class=header> <%= mat(:technical, :element) %></th>
+                <th class=header> <%= mat(:technical, :info) %></th>
+                <th class=header> <%= mat(:technical, :base_value) %></th>
+                <th class=header> <%= mat(:technical, :credit) %></th>
+                <th class=header> <%= mat(:technical, :goe) %></th>
+                <th class=header> <%= mat(:technical, :judges) %></th>
+                <th class=header> <%= mat(:technical, :value) %></th>
+                <th class=header> <%= mat(:technical, :score_id) %></th>
+                <th class="header list-row-action-header"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @technicals.each do |technical| %>
+        <tr class=list-row>
+          <td class="list-column list-selectable">
+            <%= check_box_tag 'technical_ids[]', :value => technical.id, :class => 'list-selectable-checkbox' %>
+           </td>
+          <td class=list-column> <%= technical.id %> </td>
+          <td class=list-column> <%= technical.number %> </td>
+          <td class=list-column> <%= technical.element %> </td>
+          <td class=list-column> <%= technical.info %> </td>
+          <td class=list-column> <%= technical.base_value %> </td>
+          <td class=list-column> <%= technical.credit %> </td>
+          <td class=list-column> <%= technical.goe %> </td>
+          <td class=list-column> <%= technical.judges %> </td>
+          <td class=list-column> <%= technical.value %> </td>
+          <td class=list-column> <%= technical.score_id %> </td>
+          <td class="list-column list-row-action">
+            <div class='list-row-action-wrapper'>
+               <%= link_to tag_icon(:edit), :href => url(:technicals, :edit, :id => technical.id), :rel => :tooltip, :title => "#{pat(:edit)} technical", :class => 'list-row-action-wrapper-link' %>
+               <%= link_to tag_icon('trash-o'), :rel => :tooltip, :title => "#{pat(:delete)} technical", :class => 'list-row-action-delete-one list-row-action-wrapper-link' %>
+               <div class="popover list-row-action-popover-delete-one left">
+                 <div class=arrow> </div>
+                 <h3 class=popover-title><%= pat(:delete, :model => "technical") %></h3>
+                 <div class=popover-content>
+                   <% form_tag url(:technicals, :destroy, :id => technical.id), :method => :delete do %>
+                     <%= submit_tag pat(:delete), :class =>'list-row-action-popover-delete-one-btn btn btn-danger btn-small' %>
+                     <div class="btn btn-default btn-small cancel"><%= pat(:cancel) %></div>
+                   <% end %>
+                 </div>
+               </div>
+             </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
