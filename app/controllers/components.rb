@@ -5,8 +5,7 @@ ScoreViewer::App.controllers :components do
   end
 
   get :search do
-    redirect(:components, :index)
-   
+    redirect url_for(:components, :index)
   end
 
   post :search do

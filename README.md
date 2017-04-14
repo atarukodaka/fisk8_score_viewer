@@ -3,7 +3,7 @@
 ```sh
 % bundle install
 % bundle exec rake db:migrate
-% ruby score_parser.rb
+% ruby updater.rb
 % bundle exec padrino start
 ```
 
