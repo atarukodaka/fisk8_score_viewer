@@ -1,6 +1,5 @@
 require 'active_record'
-require 'fisk8viewer/competition_parser'
-require 'fisk8viewer/competition_parser'
+#require 'fisk8viewer/competition_parser'
 
 module Fisk8Viewer
   class Updater
@@ -21,7 +20,7 @@ module Fisk8Viewer
       end
     end
     def update_competitions(urls)
-      
+
       
       competition_parser = Fisk8Viewer::CompetitionParser.new
       urls.each do |url|

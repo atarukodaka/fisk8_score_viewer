@@ -1,5 +1,5 @@
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+#lib = File.expand_path('../lib', __FILE__)
+#$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'bundler/setup'
 require 'padrino-core/cli/rake'
@@ -16,11 +16,15 @@ require './models/score'
 require './models/competition'
 require './models/skater'
 
-require 'fisk8viewer/score_parser'
-require 'fisk8viewer/updater'
+require './fisk8viewer/competition_parser'
+require './fisk8viewer/score_parser'
+require './fisk8viewer/updater'
 
 task :default => :test
 
+task :server do
+  system 'bundle exec padrino start --port 1234 -h 0.0.0.0'
+end
 
 task :update do
   urls = [
@@ -47,5 +51,6 @@ task :update do
           "http://www.isuresults.com/results/season1617/wc2017/",
          ]
   updater = Fisk8Viewer::Updater.new
-  updater.update_competitions([urls.last(20)].flatten)
+  num = 1
+  updater.update_competitions([urls.last(num)].flatten)
 end

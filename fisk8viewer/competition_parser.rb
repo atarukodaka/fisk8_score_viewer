@@ -3,20 +3,24 @@ require 'pdftotext'
 require 'active_support/core_ext/time/zones'
 require 'mechanize'
 require 'uri'
-require 'logger'
 require 'open-uri'
-require 'pry-byebug'
-require 'mechanize'
 
 #require 'fisk8viewer/score_parser'
 
 module Fisk8Viewer
   class CompetitionParser
+    def initialize
+      @agent = Mechanize.new
+      @nbsp = Nokogiri::HTML.parse("&nbsp;").text
+    end
+
     def retrieve(url, dir: "./")
       return "" if url.blank?
-      
+
+      ## create dir if not exists
       FileUtils.mkdir_p(dir) unless FileTest.exist?(dir)
 
+      ## convert pdf to text
       filename = File.join(dir, URI.parse(url).path.split('/').last)
       open(url) do |f|
         File.open(filename, "w") do |out|
@@ -27,8 +31,6 @@ module Fisk8Viewer
     end
 
     def parse(url)
-      require 'fisk8viewer/score_parser'
-      
       res = parse_summary(url)
       score_parser = Fisk8Viewer::ScoreParser.new
       scores = []
@@ -36,9 +38,14 @@ module Fisk8Viewer
         ["Short Program", "Free Skating"].each do |s|
           score_url = res[:categories][c][:segment][s][:score_url]
           score_text = retrieve(score_url, dir: "pdf")
-          scores << score_parser.parse(score_text, date: res[:categories][c][:segment][s][:starting_time], result_pdf: score_url)
+          opts = {
+            date: res[:categories][c][:segment][s][:starting_time],
+            result_pdf: score_url,
+          }
+          scores << score_parser.parse(score_text, opts)
         end
       end
+      ## return hash
       {competition: res, scores: scores.flatten}
     end
 
@@ -70,12 +77,6 @@ module Fisk8Viewer
     end
 
     ################################################################
-    def initialize
-      @agent = Mechanize.new
-      @nbsp = Nokogiri::HTML.parse("&nbsp;").text
-      @log = Logger.new(STDERR)
-    end
-
     def parse_summary(site_url, offset_timezone="UTC")
       data = {}
       category_data = {}
@@ -229,7 +230,6 @@ module Fisk8Viewer
       rescue Mechanize::ResponseCodeError => e
         case e.response_code
         when "404"
-          @log.warn("not found: #{url}")
           return data
         end
       end
