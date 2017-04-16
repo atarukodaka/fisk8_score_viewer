@@ -9,13 +9,12 @@ ScoreViewer::App.controllers :components do
   end
 
   post :search do
-    ## firs, filter by score
-
+    ## first, filter by score
     scores = Score.order("date DESC")
-    if params[:skater_name] && params[:skater_name] != '-'
+    if params[:skater_name].presence
       scores = scores.where(skater_name: params[:skater_name])
     end
-    if params[:category] && params[:category] != '-'
+    if params[:category].presence
       scores = scores.where(category: params[:category])
     end
     if params[:segment] && params[:segment] != '-'

@@ -7,8 +7,8 @@ module ScoreViewer
       # ...
       # end
 
-      def max_pages(rel, limit)
-        ((rel.count - 1) / limit).to_i + 1
+      def max_pages(size, limit)
+        ((size - 1) / limit).to_i + 1
       end
 
       def select_tag_kept(tag, options: [], selected: nil)

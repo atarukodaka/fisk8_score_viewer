@@ -5,6 +5,8 @@ module ScoreViewer
     register Padrino::Helpers
     enable :sessions
 
+    layout :layout
+    
     get :index, map: '/' do
       erb %Q[
 <li><a href="/skaters">skater</a>
