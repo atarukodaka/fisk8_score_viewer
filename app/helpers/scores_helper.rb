@@ -14,8 +14,39 @@ module ScoreViewer
       def select_tag_kept(tag, options: [], selected: nil)
         select_tag(tag, options: options, selected: options.include?(selected) ? selected : '-')
       end
-    end
 
+      def output_csv(keys, records)
+        require 'csv'
+        content_type 'text/plain'
+
+        [keys.to_csv,
+         records.map {|record|
+           keys.map {|key| record[key]}.to_csv
+         }
+        ].flatten.join('')
+      end
+
+      def splat_to_params(params)
+        parts = params[:splat].first.split('/')
+        parts.each do |part|
+          key, value = part.split(/:/)
+          params[key.to_sym] = value if value
+        end
+      end
+
+      def params_to_string(params, keys)
+        ar = []
+        keys.map do |key|
+          next if params[key].blank?
+          ar << [key, params[key]].join(':')
+        end
+        ar.join('/')
+      end
+    end ## module
+
+
+    
+    
     helpers ScoresHelper
-  end
+  end  # class
 end

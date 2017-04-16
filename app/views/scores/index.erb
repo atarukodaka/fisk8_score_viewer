@@ -1,7 +1,7 @@
 
 <h2>Score List</h2>
 
-<% form_tag(url_for(:scores, :search), method: 'post') do %>
+<% form_tag(url_for(:scores, :index), method: 'post') do %>
 <div class="form-group row">
   <div class="col-sm-2">
     <%= label_tag(:skater) %>
@@ -42,11 +42,11 @@
 
 <div class="form-group row">
   <div class="col-sm-2">
-    <%= label_tag(:competition) %>
+    <%= label_tag(:competition_name) %>
   </div>
   <div class="col-sm-10">
     <% competitions = ['', Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
-    <%= select_tag(:competition, options: competitions, selected: params[:competition] || '-') %>
+    <%= select_tag(:competition_name, options: competitions, selected: params[:competition] || '-') %>
   </div>
 </div>
 

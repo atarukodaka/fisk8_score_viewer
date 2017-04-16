@@ -1,8 +1,10 @@
-  <ul class="pagination">
+<% keys = scores.columns.map {|v| v.name.to_sym} << :page%>
+
+<ul class="pagination">
     <% 1.upto(max_pages).each do |i| %>
     <% active = (i == page) ? "active" : "" %>
     <li class="page-item <%= active %>">
-      <%= link_to(i, url_for(:scores, :page, page: i)) %>
+      <%= link_to(i, url_for(:scores, :index, params_to_string(params.merge(page: i), keys))) %>
     </li>
     <% end %>
   </ul>
