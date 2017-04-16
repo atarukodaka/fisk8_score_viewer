@@ -1,37 +1,15 @@
 <h2>Skater List</h2>
 
 
-<% form_tag(url_for(:skaters, :search), method: 'post') do %>
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag(:name) %>
-  </div>
-  <div class="col-sm-10">
-    <%= text_field_tag(:name, :class=>"form-control") %>
-  </div>
-</div>
+<% form_tag(url_for(:skaters, :list), method: 'post') do %>
 
+<!-- Category -->
+<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("Category") %>
-  </div>
-  <div class="col-sm-10">
-    <% categories = ['-', 'MEN', 'LADIES'] %>
-    <%= select_tag_kept(:category, options: categories, selected: params[:category]) %>
-  </div>
-</div>
+<!-- Nation -->
+<% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
+<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("Nation") %>
-  </div>
-  <div class="col-sm-10">
-    <% nations = ['-', Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
-    <%= select_tag_kept(:nation, options: nations, selected: params[:nation]) %>
-
-  </div>
-</div>
 
 <div class="form-group row">
   <div class="col-sm-2">

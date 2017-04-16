@@ -7,6 +7,10 @@ module ScoreViewer
       # ...
       # end
 
+      def max_pages(size, limit)
+        ((size - 1) / limit).to_i + 1
+      end
+
       def select_tag_kept(tag, options: [], selected: nil)
         select_tag(tag, options: options, selected: options.include?(selected) ? selected : '-')
       end
@@ -23,6 +27,7 @@ module ScoreViewer
       end
 
       def splat_to_params(params)
+        return if params[:splat].blank?
         parts = params[:splat].first.split('/')
         parts.each do |part|
           key, value = part.split(/:/)
