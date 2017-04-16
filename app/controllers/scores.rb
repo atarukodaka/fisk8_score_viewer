@@ -1,13 +1,11 @@
 ScoreViewer::App.controllers :scores do
 
-  limit = 5
   filter_keys = [:skater_name, :category, :segment, :nation, :competition_name]
 
   ## show
   get :id, with: :id do
     score = Score.find_by(id: params[:id])
     if score.blank?
-      #erb "record not found: #{params[:id].to_i}"
       render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Score"}
     else
       render "scores/show".to_sym, locals: {score: score}
@@ -25,6 +23,7 @@ ScoreViewer::App.controllers :scores do
     filter_keys.each do |filter|
       scores = scores.where(filter => params[filter]) if params[filter]
     end
+    
     ## output format
     case content_type
     when :json
@@ -36,11 +35,8 @@ ScoreViewer::App.controllers :scores do
 
       output_csv(keys, scores)
     else
-      mp = max_pages(scores.count, limit)
-      page = (params[:page].presence || 1).to_i
-      scores = scores.limit(limit).offset((page-1)*limit)    
-      
-      render :"scores/index", locals: {scores: scores, page: page, max_pages: mp}
+            
+      render :"scores/index", locals: {scores: scores} #, page: page, max_pages: mp}
     end
   end
 

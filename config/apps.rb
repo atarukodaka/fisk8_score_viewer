@@ -30,6 +30,13 @@ Padrino.configure_apps do
   set :session_secret, '42fc5b77114e7c3dbb2d3103777b843827896a5f0abd113d41d06c0fe8815a01'
   set :protection, :except => :path_traversal
   set :protect_from_csrf, true
+
+  begin
+    set :config, YAML.load(open(Padrino.root("/config/config.yaml")).read)
+  rescue 
+    logger.fatal("cannot open config file: /config/config.yaml")
+    exit
+  end
 end
 
 # Mounts the core application for this project

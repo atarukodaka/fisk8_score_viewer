@@ -69,6 +69,11 @@
 
 <!-- ################################################################ -->
 
+<% limit = settings.config[:list][:limit] || 20 %>
+<% mp = max_pages(scores.count, limit) %>
+<% page = (params[:page].presence || 1).to_i %>
+<%  scores = scores.limit(limit).offset((page-1)*limit) %>
+
 <%= partial 'scores/list', locals: {scores: scores} %>
 
-<%= partial 'scores/pagination', locals: {scores: scores, page: page, max_pages: max_pages} %>
+<%= partial 'scores/pagination', locals: {scores: scores, page: page, max_pages: mp} %>
