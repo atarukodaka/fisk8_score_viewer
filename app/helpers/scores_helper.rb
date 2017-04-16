@@ -34,7 +34,7 @@ module ScoreViewer
         end
       end
 
-      def params_to_string(params, keys)
+      def params_to_query(params, keys)
         ar = []
         keys.map do |key|
           next if params[key].blank?

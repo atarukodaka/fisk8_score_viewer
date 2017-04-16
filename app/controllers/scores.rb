@@ -1,27 +1,28 @@
 ScoreViewer::App.controllers :scores do
 
   limit = 5
+  filter_keys = [:skater_name, :category, :segment, :nation, :competition_name]
 
   ## show
   get :id, with: :id do
-    render "scores/show".to_sym, layout: "layout", locals: {score: Score.find_by(id: params[:id])}
+    score = Score.find_by(id: params[:id])
+    if score.blank?
+      #erb "record not found: #{params[:id].to_i}"
+      render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Score"}
+    else
+      render "scores/show".to_sym, locals: {score: score}
+    end
   end
 
   ## list
-=begin
-  get :index do
-    mp = max_pages(Score.count, limit)
-    scores = Score.limit(limit)
-    render "scores/index".to_sym, locals: {scores: scores, page: 1, max_pages: mp }
-  end
-=end
   get :index do
     redirect url_for(:scores, :list)
   end
+
   get :list, map: "/scores/list/*", provides: [:json, :csv, :html] do
     splat_to_params(params)
     scores = Score.order("date DESC")
-    [:skater_name, :category, :segment, :nation, :competition_name].each do |filter|
+    filter_keys.each do |filter|
       scores = scores.where(filter => params[filter]) if params[filter]
     end
     ## output format
@@ -45,9 +46,8 @@ ScoreViewer::App.controllers :scores do
 
   
   post :list do
-    keys = [:skater_name, :category, :segment, :nation, :competition_name]
     format = (params["format"].presence || "html").to_sym
-    redirect url_for(:scores, :list, params_to_string(params, keys))
+    redirect url_for(:scores, :list, params_to_query(params, filter_keys))
   end
 
   
