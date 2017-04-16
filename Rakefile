@@ -27,7 +27,57 @@ task :server do
 end
 
 task :update do
+  comp = {
+    season: '2011-12',
+    type: :grand_prix,  # :olympic,
+    subtype: :usa, # :can, :chn, :fra, :jpn, :final / :sochi
+  }
   urls = [
+          ## 2011-12
+          "http://www.isuresults.com/results/gpusa2011/",
+          "http://www.isuresults.com/results/gpcan2011/",
+          "http://www.isuresults.com/results/gpchn2011/",
+          "http://www.isuresults.com/results/gpfra2011/",
+          "http://www.isuresults.com/results/gprus2011/",
+          "http://www.isuresults.com/results/gpjpn2011/",
+          "http://www.isuresults.com/results/gpf1112/",
+          "http://www.isuresults.com/results/fc2012/",          
+          "http://www.isuresults.com/results/wc2012/",
+          
+          ## 2012-3
+          "http://www.isuresults.com/results/gpusa2012/",
+          "http://www.isuresults.com/results/gpcan2012/",
+          "http://www.isuresults.com/results/gpchn2012/",
+          "http://www.isuresults.com/results/gpfra2012/",
+          "http://www.isuresults.com/results/gprus2012/",
+          "http://www.isuresults.com/results/gpjpn2012/",
+          "http://www.isuresults.com/results/gpf1213/",
+          "http://www.isuresults.com/results/fc2013/",          
+          "http://www.isuresults.com/results/wc2013/",
+          
+          ## 2013-4
+          "http://www.isuresults.com/results/gpusa2013/",
+          "http://www.isuresults.com/results/gpcan2013/",
+          "http://www.isuresults.com/results/gpchn2013/",
+          "http://www.isuresults.com/results/gpfra2013/",
+          "http://www.isuresults.com/results/gprus2013/",
+          "http://www.isuresults.com/results/gpjpn2013/",
+          "http://www.isuresults.com/results/gpf1314/",
+          "http://www.isuresults.com/results/fc2014/",          
+          "http://www.isuresults.com/results/wc2014/",
+          "http://www.isuresults.com/results/owg2014/",
+          
+          ## 2014-15
+          "http://www.isuresults.com/results/gpusa2014/",
+          "http://www.isuresults.com/results/gpcan2014/",
+          "http://www.isuresults.com/results/gpchn2014/",
+          "http://www.isuresults.com/results/gpfra2014/",
+          "http://www.isuresults.com/results/gprus2014/",
+          "http://www.isuresults.com/results/gpjpn2014/",
+          "http://www.isuresults.com/results/gpf1415/",
+          "http://www.isuresults.com/results/fc2015/",          
+          "http://www.isuresults.com/results/wc2015/",
+          
           ## 2015-16
           "http://www.isuresults.com/results/season1516/gpusa2015/",
           "http://www.isuresults.com/results/season1516/gpcan2015/",
@@ -51,6 +101,6 @@ task :update do
           "http://www.isuresults.com/results/season1617/wc2017/",
          ]
   updater = Fisk8Viewer::Updater.new
-  num = 1
+  num = 100
   updater.update_competitions([urls.last(num)].flatten)
 end
