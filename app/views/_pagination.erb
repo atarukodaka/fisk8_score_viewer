@@ -1,7 +1,10 @@
 <!-- locals: records, controller, page, max_pages -->
 
-<% keys = records.columns.map {|v| v.name.to_sym} << :page %>
-
+<% keys = records.columns.map {|v| v.name.to_sym } %>
+<% keys.push(:page) %>
+<% limit = settings.config[:list][:limit] || 20 %>
+<% max_pages = ((records.count - 1) / limit).to_i + 1 %>
+						     
 <ul class="pagination">
     <% 1.upto(max_pages).each do |i| %>
     <% active = (i == page) ? "active" : "" %>
