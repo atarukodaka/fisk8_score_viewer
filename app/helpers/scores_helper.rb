@@ -43,10 +43,6 @@ module ScoreViewer
         ar.join('/')
       end
     end ## module
-
-
-    
-    
     helpers ScoresHelper
   end  # class
 end
