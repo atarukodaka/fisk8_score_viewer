@@ -4,15 +4,15 @@ ScoreViewer::App.controllers :competitions do
     render "competitions/index".to_sym, layout: :layout, locals: {competitions: competitions}
   end
   get :id, with: :id do
-    if competition = Competition.find_by(id: params[:id]).presence
+    if competition = Competition.find_by(id: params[:id])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
     else
-      erb "record not found"
+      render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Competition"}
     end
   end
 
   get :id, with: [:id, :category] do
-    if competition = Competition.find_by(id: params[:id]).presence
+    if competition = Competition.find_by(id: params[:id])
       scores = competition.scores.where(category: params[:category])
       render :"competitions/show", locals: {competition: competition, scores: scores}
     else
@@ -21,7 +21,7 @@ ScoreViewer::App.controllers :competitions do
   end
 
   get :id, with: [:id, :category, :segment] do
-    if competition = Competition.find(params[:id]).presence
+    if competition = Competition.find(params[:id])
       scores = competition.scores.where(category: params[:category], segment: params[:segment])
       render :"competitions/show", locals: {competition: competition, scores: scores}
     else
