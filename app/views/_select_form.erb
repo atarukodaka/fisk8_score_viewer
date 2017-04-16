@@ -1,0 +1,10 @@
+<!-- locals: label, tag, options -->
+
+<div class="form-group row">
+  <div class="col-sm-2">
+    <%= label_tag(label) %>
+  </div>
+  <div class="col-sm-10">
+    <%= select_tag_kept(tag, options: options.unshift(''), selected: params[tag]) %>
+  </div>
+</div>

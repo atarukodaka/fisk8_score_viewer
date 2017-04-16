@@ -2,53 +2,24 @@
 <h2>Score List</h2>
 
 <% form_tag(url_for(:scores, :list), method: 'post') do %>
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag(:skater) %>
-  </div>
-  <div class="col-sm-10">
-    <% skaters = ['', Skater.select(:name).to_a.map(&:name)].flatten %>
-    <%= select_tag_kept(:skater_name, options: skaters, selected: params[:skater_name]) %>
-  </div>
-</div>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("Category") %>
-  </div>
-  <div class="col-sm-10">
-    <%= select_tag_kept(:category, options: ['', 'MEN', 'LADIES'], selected: params[:category]) %>
-  </div>
-</div>
+<!-- Skater -->
+<% skaters = Skater.select(:name).to_a.map(&:name) %>
+<%= partial :select_form, locals: {label: "Skater", tag: :skater_name, options: skaters} %>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("Segment") %>
-  </div>
-  <div class="col-sm-10">
-    <%= select_tag_kept(:segment, options: ['', 'SHORT PROGRAM', 'FREE SKATING'], selected: params[:segment]) %>
-  </div>
-</div>
+<!-- Category -->
+<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("Nation") %>
-  </div>
-  <div class="col-sm-10">
-    <% nations = ['', Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
-    <%= select_tag_kept(:nation, options: nations, selected: params[:nation]) %>
-  </div>
-</div>
+<!-- Segment -->
+<%= partial :select_form, locals: {label: "Segment", tag: :segment, options: ['SHORT PROGRAM', 'FREE SKATING']} %>
 
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag(:competition_name) %>
-  </div>
-  <div class="col-sm-10">
-    <% competitions = ['', Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
-    <%= select_tag(:competition_name, options: competitions, selected: params[:competition] || '-') %>
-  </div>
-</div>
+<!-- Nation -->
+<% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
+<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
+
+<!-- Competition -->
+<% competitions = [Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
+<%= partial :select_form, locals: {label: "Competition", tag: :competition_name, options: competitions} %>
 
 <div class="form-group row">
   <div class="col-sm-2">
@@ -58,22 +29,13 @@
     <%= select_tag(:format, options: ['html', 'json', 'csv'], selected: params[:format] || 'html') %>
   </div>
 </div>
-<div class="form-group row">
-  <div class="col-sm-2">
-  </div>
-  <div class="col-sm-10">
-    <%= submit_tag("search", :class=>"btn btn-primary", :type=>"submit") %>
-  </div>
-</div>
+
+<%= partial :submit_form %>
+
 <% end %>
 
 <!-- ################################################################ -->
 
-<% limit = settings.config[:list][:limit] || 20 %>
-<% mp = max_pages(scores.count, limit) %>
-<% page = (params[:page].presence || 1).to_i %>
-<%  scores = scores.limit(limit).offset((page-1)*limit) %>
-
 <%= partial 'scores/list', locals: {scores: scores} %>
 
-<%= partial 'scores/pagination', locals: {scores: scores, page: page, max_pages: mp} %>
+
