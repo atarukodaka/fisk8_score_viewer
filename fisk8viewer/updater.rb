@@ -45,7 +45,10 @@ module Fisk8Viewer
       end
 
       rec = Competition.create
-      [:name, :city, :country, :isu_site, :start_date, :end_date].each {|k|
+      keys = [:name, :city, :country, :isu_site, :start_date, :end_date,
+              :competition_type, :abbr, :season,
+             ] 
+      keys.each {|k|
         rec[k] = competition[k]
       }
       rec.save

@@ -26,23 +26,21 @@ ScoreViewer::App.controllers :scores do
     ## output format
     case content_type
     when :json
-      content_type 'application/json'
       scores.to_a.map(&:as_json).join('')
     when :csv
       keys = [:id, :skater_name, :nation, :competition_name, :category, :segment,
-         :date, :rank, :starting_number, :tss, :tes, :pcs, :deductions]
-
-      output_csv(keys, scores)
+              :date, :rank, :starting_number, :tss, :tes, :pcs, :deductions]
+      output_csv(keys, scores.map {|r| keys.map {|k| r[k]}}, filename: "scores.csv")
+      #output_csv(keys, scores)
     else
-            
-      render :"scores/index", locals: {scores: scores} #, page: page, max_pages: mp}
+      render :"scores/index", locals: {scores: scores}
     end
   end
 
   
   post :list do
     format = (params["format"].presence || "html").to_sym
-    redirect url_for(:scores, :list, params_to_query(params, filter_keys))
+    redirect url_for(:scores, :list, params_to_query(params, filter_keys), format: format)
   end
 
   

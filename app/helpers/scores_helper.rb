@@ -15,15 +15,13 @@ module ScoreViewer
         select_tag(tag, options: options, selected: options.include?(selected) ? selected : '-')
       end
 
-      def output_csv(keys, records)
+      def output_csv(header, records, filename: "attachement.csv")
         require 'csv'
-        content_type 'text/plain'
+        #content_type 'text/plain'
+        content_type 'application/octet-stream'
+        attachment filename
 
-        [keys.to_csv,
-         records.map {|record|
-           keys.map {|key| record[key]}.to_csv
-         }
-        ].flatten.join('')
+        [header.to_csv, records.map {|r| r.to_csv}].flatten.join('')
       end
 
       def splat_to_params(params)
