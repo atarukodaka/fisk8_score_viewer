@@ -1,17 +1,35 @@
 
 
-<% form_tag(url_for(:elements, :search), method: 'post') do %>
+<% form_tag(url_for(:elements, :list), method: 'post') do %>
 <div class="form-group row">
   <div class="col-sm-2">
     <%= label_tag(:element) %>
   </div>
   <div class="col-sm-6">
-    <%= text_field_tag(:element, :class=>"form-control") %>
+    <%= text_field_tag(:element, :class=>"form-control", value: params[:element]) %>
   </div>
   <div class="col-sm-4">
-    partial match: <%= check_box_tag(:partial, :class=>"form-check-input") %>
+    partial match: <%= check_box_tag(:partial_match, :class=>"form-check-input") %>
   </div>
 </div>
+
+<!-- Skater -->
+<% skaters = Skater.select(:name).order(:name).map(&:name) %>
+<%= partial :select_form, locals: {label: "Skater", tag: :skater_name, options: skaters} %>
+
+<!-- Category -->
+<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
+
+<!-- Segment -->
+<%= partial :select_form, locals: {label: "Segment", tag: :segment, options: ['SHORT PROGRAM', 'FREE SKATING']} %>
+
+<!-- Nation -->
+<% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
+<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
+
+<!-- Competition -->
+<% competitions = [Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
+<%= partial :select_form, locals: {label: "Competition", tag: :competition_name, options: competitions} %>
 
 
 <div class="form-group row">
@@ -36,6 +54,12 @@
 
 <% end %>
 
+
+<% limit = settings.config[:list][:limit] || 20 %>
+<% page = (params[:page].presence || 1).to_i %>
+<% elements_limitted = elements.limit(limit).offset((page-1)*limit) %>
+
+<%= partial 'pagination', locals: {records: elements, controller: :elements, page: page, filter_keys: filter_keys} %>
 
 <table class="table table-striped table-hover table-condensed">
   <tr>

@@ -1,8 +1,8 @@
-<!-- locals: records, controller, page, max_pages -->
+<!-- locals: records, controller, page, limit, filter_keys  -->
 
-<% keys = records.columns.map {|v| v.name.to_sym } %>
-<% keys.push(:page) %>
+<% keys = [filter_keys, :page].flatten %>
 <% limit = settings.config[:list][:limit].to_i || 20 %>
+<% page = (params[:page].presence || 1).to_i %>
 <% max_pages = ((records.count - 1) / limit).to_i + 1 %>
 
 <ul class="pagination">

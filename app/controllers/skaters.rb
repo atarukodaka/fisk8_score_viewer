@@ -1,4 +1,5 @@
 ScoreViewer::App.controllers :skaters do
+
   get :index do
     redirect url_for(:skaters, :list)
   end
@@ -20,7 +21,7 @@ ScoreViewer::App.controllers :skaters do
   end
   get :name, with: :name do
     skater = Skater.find_by(name: params[:name])
-    render :"skaters/show", locals: {skater: skater }
+    render :"skaters/show", locals: {skater: skater}
   end
 
   ####

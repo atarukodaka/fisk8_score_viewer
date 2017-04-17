@@ -36,6 +36,11 @@
 
 <!-- ################################################################ -->
 
-<%= partial 'scores/list', locals: {scores: scores} %>
+<%= partial 'scores/list', locals: {scores: scores, filter_keys: filter_keys} %>
+
+<!-- pagination -->
+<% page = (params[:page].presence || 1).to_i %>
+<%= partial 'pagination', locals: {records: scores, controller: :scores, page: page, filter_keys: filter_keys} %>
+
 
 

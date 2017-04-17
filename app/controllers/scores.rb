@@ -33,7 +33,7 @@ ScoreViewer::App.controllers :scores do
       output_csv(keys, scores.map {|r| keys.map {|k| r[k]}}, filename: "scores.csv")
       #output_csv(keys, scores)
     else
-      render :"scores/index", locals: {scores: scores}
+      render :"scores/index", locals: {scores: scores, filter_keys: filter_keys}
     end
   end
 

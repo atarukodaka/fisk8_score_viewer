@@ -1,49 +1,48 @@
 ScoreViewer::App.controllers :elements do
+
+  filter_keys = [:skater_name, :category, :segment, :nation, :competition_name, :component_number, :element, :partial_match]
   
   get :index do
-    elements = Technical.first(10)
-    render "elements/index".to_sym, layout: :layout, locals: {elements: elements}
-
-
+    redirect url_for(:elements, :list)
   end
 
-  get :search do
-    redirect '/elements/search'
-  end
-  
-  post :search do
-    elements =
-      if params[:partial]
-        Technical.where("element like(?)", "%#{params[:element]}%").to_a
-      else
-        Technical.where(element: params[:element]).to_a
-      end
-    #erb elements.join(","), layout: :layout
-    case params[:format]
-    when "json"
-      content_type 'application/json'
-      
-      ret = elements.map do |e|
-        e.score.as_json.merge(e.as_json)
-      end
-      ret.to_s
-    when "csv"
-      require 'csv'
-      content_type 'text/csv'
-      content_type "application/x-csv"
-      content_type "text/plain"
-      #content_disposition 'attachment; filename=hoge.csv'
-      header = [:skater, :competition_name, :category, :segment,
-                :number, :info, :element, :credit, :base_value, :goe, :judges, :value].to_csv
-      ret = elements.map do |e|
-        score = e.score
-        [score.skater, score.competition_name, score.category, score.segment,
-         e.number, e.info, e.element, e.credit, e.base_value, e.goe,
-         e.judges, e.value].to_csv
-      end
-      [header, ret].flatten.join("")
-    else
-      render "elements/index".to_sym, layout: :layout, locals: {elements: elements}
+  get :list, map: "/elements/list/*", provides: [:json, :csv, :html] do
+    splat_to_params(params)
+    # first, filter by score
+    scores = Score.order("updated_at DESC")
+    [:skater_name, :category, :segment, :nation, :competition_name].each do |filter|
+      scores = scores.where(filter => params[filter]) if params[filter]
     end
+
+    # next, filter by component number
+    element = params[:element]
+    partial_match = params[:partial_match]
+    elements = Technical.where(score_id: scores.select(:id))
+    elements = 
+      if params[:partial_match]
+        elements.where("element like(?)", "%#{params[:element]}%")
+      else
+        elements.where(element: params[:element])
+      end
+    
+    case params[:format]
+    when :json
+      components.to_a.map(&:as_json).join('')      
+    when 'csv'
+      header = [:skater, :competition_name, :category, :segment,
+                 :number, :component, :factor, :judges, :value]
+      ret = components.map do |c|
+        score = c.score
+        [score.skater_name, score.competition_name, score.category, score.segment,
+         c.number, c.component, c.factor, c.judges, c.value]
+      end
+      output_csv(header, ret, filename: "elements.csv")
+    else
+      render :"elements/index", locals: {elements: elements, filter_keys: filter_keys}
+    end
+  end
+
+  post :list do
+    redirect url_for(:elements, :list, params_to_query(params, filter_keys), format: params[:format])
   end
 end
