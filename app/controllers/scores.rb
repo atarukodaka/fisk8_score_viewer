@@ -2,7 +2,7 @@ ScoreViewer::App.controllers :scores do
   ## show
   get :id, with: :id do
     if score = Score.find_by(id: params[:id])
-      render "scores/show".to_sym, locals: {score: score}
+      render :"scores/show", locals: {score: score}
     else
       render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Score"}
     end

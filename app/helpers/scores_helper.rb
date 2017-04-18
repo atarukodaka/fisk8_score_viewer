@@ -37,6 +37,12 @@ module ScoreViewer
       end
 
       def params_to_query(params) # , keys)
+        query = params.select {|k,v| filter_keys.include?(k.to_sym) && v.present? }.map {|k, v|
+          [k, ERB::Util.url_encode(v.to_s)].join(':')
+        }.join('/')
+        query += ".#{params[:format]}" if params[:format].present?
+        return query
+=begin
         ar = []
         [filter_keys, :page].flatten.each do |key|
           next  unless v = params[key].presence
@@ -44,9 +50,11 @@ module ScoreViewer
           #ar << [key, v.to_s.gsub(/\+/, '%2B')].join(':')
           ar << [key, ERB::Util.url_encode(v.to_s)].join(':')
         end
+        binding.pry
         query = ar.join('/')
         query += ".#{params[:format]}" if params[:format].present?
         return query
+=end
       end
       def score_filter_forms
         [
