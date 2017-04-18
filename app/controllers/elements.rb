@@ -33,7 +33,7 @@ ScoreViewer::App.controllers :elements do
   end
 
   post :list do
-    params[:element].gsub!(/\+/, "%2B")
+    #params[:element].gsub!(/\+/, "%2B")
     redirect url_for(:elements, :list, params_to_query(params))
     #redirect url_for(:elements, :list, "element:1T%2B1")
   end

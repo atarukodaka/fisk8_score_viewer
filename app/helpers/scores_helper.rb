@@ -40,7 +40,9 @@ module ScoreViewer
         ar = []
         [filter_keys, :page].flatten.each do |key|
           next  unless v = params[key].presence
-          ar << [key, v].join(':')
+          #ar << [key, v.to_s].join(':')
+          #ar << [key, v.to_s.gsub(/\+/, '%2B')].join(':')
+          ar << [key, ERB::Util.url_encode(v.to_s)].join(':')
         end
         query = ar.join('/')
         query += ".#{params[:format]}" if params[:format].present?

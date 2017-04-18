@@ -3,6 +3,7 @@
 <% limit = settings.config[:list][:limit].to_i || 20 %>
 <% page = (params[:page].presence || 1).to_i %>
 <% max_pages = ((records.count - 1) / limit).to_i + 1 %>
+<!-- % params[:element].gsub!(/\+/, "%2B") % -->
 
 <ul class="pagination">
     <% 1.upto(max_pages).each do |i| %>
