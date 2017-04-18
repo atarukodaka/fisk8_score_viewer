@@ -9,17 +9,6 @@ PadrinoTasks.use(:database)
 PadrinoTasks.use(:activerecord)
 PadrinoTasks.init
 
-require 'pry-byebug'
-
-require 'active_record'
-require './models/score'
-require './models/competition'
-require './models/skater'
-
-require './fisk8viewer/competition_parser'
-require './fisk8viewer/score_parser'
-require './fisk8viewer/updater'
-
 task :default => :test
 
 task :server do
@@ -27,6 +16,18 @@ task :server do
 end
 
 task :update do
+  require 'pry-byebug'
+
+  require 'active_record'
+  require './models/score'
+  require './models/competition'
+  require './models/skater'
+
+  require './fisk8viewer/competition_parser'
+  require './fisk8viewer/score_parser'
+  require './fisk8viewer/updater'
+
+
   urls = [
           ## 2013-14
           "http://www.isuresults.com/results/owg2014/",

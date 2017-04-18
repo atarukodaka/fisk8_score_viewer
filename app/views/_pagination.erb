@@ -1,6 +1,5 @@
 <!-- locals: records, controller, page, limit, filter_keys  -->
 
-<% keys = [filter_keys, :page].flatten %>
 <% limit = settings.config[:list][:limit].to_i || 20 %>
 <% page = (params[:page].presence || 1).to_i %>
 <% max_pages = ((records.count - 1) / limit).to_i + 1 %>
@@ -9,7 +8,7 @@
     <% 1.upto(max_pages).each do |i| %>
     <% active = (i == page) ? "active" : "" %>
     <li class="page-item <%= active %>">
-      <%= link_to(i, url_for(controller, :list, params_to_query(params.merge(page: i), keys))) %>
+      <%= link_to(i, url_for(controller, :list, params_to_query(params.merge(page: i)))) %>
     </li>
     <% end %>
   </ul>

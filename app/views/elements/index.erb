@@ -9,7 +9,7 @@
     <%= text_field_tag(:element, :class=>"form-control", value: params[:element]) %>
   </div>
   <div class="col-sm-4">
-    partial match: <%= check_box_tag(:partial_match, :class=>"form-check-input") %>
+    partial match: <%= check_box_tag(:partial_match, :class=>"form-check-input", checked: params[:partial_match]) %>
   </div>
 </div>
 
@@ -78,7 +78,7 @@
     <th>Score</th>
   </tr>
 </td>
-  <% elements.each do |element| %>
+  <% elements_limitted.each do |element| %>
   <% score = element.score %>
   <tr>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>

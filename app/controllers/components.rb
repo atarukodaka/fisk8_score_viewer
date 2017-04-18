@@ -1,6 +1,4 @@
 ScoreViewer::App.controllers :components do
-  filter_keys = [:skater_name, :category, :segment, :nation, :competition_name, :component_number]
-  
   get :index do
     redirect url_for(:components, :list)
   end
@@ -20,8 +18,6 @@ ScoreViewer::App.controllers :components do
     components = components.where(number: number) if number >= 1
     
     case params[:format]
-    when :json
-      components.to_a.map(&:as_json).join('')      
     when 'csv'
       header = [:skater, :competition_name, :category, :segment,
                  :number, :component, :factor, :judges, :value]
@@ -32,11 +28,11 @@ ScoreViewer::App.controllers :components do
       end
       output_csv(header, ret, filename: "components.csv")
     else
-      render :"components/index", locals: {components: components, filter_keys: filter_keys}
+      render :"components/index", locals: {components: components, score_filter_forms: score_filter_forms}
     end
   end
 
   post :list do
-    redirect url_for(:components, :list, params_to_query(params, filter_keys), format: params[:format])
+    redirect url_for(:components, :list, params_to_query(params))
   end
 end
