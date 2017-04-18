@@ -89,6 +89,7 @@ task :update do
           "http://www.isuresults.com/results/season1516/gpjpn2015/",
           "http://www.isuresults.com/results/season1516/gpf1516/",
           "http://www.isuresults.com/results/season1516/fc2016/",          
+          "http://www.isuresults.com/results/season1516/ec2016/",
           "http://www.isuresults.com/results/season1516/wc2016/",
           
           ## 2016-17
@@ -98,9 +99,10 @@ task :update do
           "http://www.isuresults.com/results/season1617/gpfra2016/",
           "http://www.isuresults.com/results/season1617/gprus2016/",
           "http://www.isuresults.com/results/season1617/gpjpn2016/",
-          "http://www.isuresults.com/results/season1617/gpf1617/",
-          "http://www.isuresults.com/results/season1617/fc2017/",          
+          "http://www.isuresults.com/results/season1617/fc2017/",
+          "http://www.isuresults.com/results/season1617/ec2017/",
           "http://www.isuresults.com/results/season1617/wc2017/",
+          "http://www.isuresults.com/results/season1617/gpf1617/",
          ]
   updater = Fisk8Viewer::Updater.new
   num = 1

@@ -54,7 +54,7 @@ module Fisk8Viewer
     def update_score(scores, competition_record)
       establish_connection()
       scores.each do |score|
-        puts "  ..#{score[:skater_name]}/#{score[:segment]}/#{score[:competition_name]}"
+        puts "  ..#{score[:skater_name]}/#{score[:category]}/#{score[:segment]}/#{score[:competition_name]}"
         score_rec = competition_record.scores.create
         [:skater_name, :rank, :starting_number, :nation,
          :competition_name, :category, :segment, :date, :result_pdf,

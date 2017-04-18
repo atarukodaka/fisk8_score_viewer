@@ -52,11 +52,11 @@ module Fisk8Viewer
           :gp
         elsif res[:name] =~ /Olympic/
           :olympic
-        elsif res[:name] =~ /ISU World/
+        elsif res[:name] =~ /^ISU World/
           :world
-        elsif res[:name] =~ /ISU Four Continents/
+        elsif res[:name] =~ /^ISU Four Continents/
           :fc
-        elsif res[:name] =~ /ISU European/
+        elsif res[:name] =~ /^ISU European/
           :europe
         else
           :unknown
