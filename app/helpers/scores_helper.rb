@@ -3,27 +3,28 @@
 module ScoreViewer
   class App
     module ScoresHelper
-      # def simple_helper_method
-      # ...
-      # end
-
-      def max_pages(size, limit)
-        ((size - 1) / limit).to_i + 1
+      def filter_keys
+        [:skater_name, :category, :segment, :nation, :competition_name,
+         :element, :component_number, :partial_match,
+         :competition_type, :season,
+        ]
       end
-
-      def select_tag_kept(tag, options: [], selected: nil)
-        select_tag(tag, options: options, selected: options.include?(selected) ? selected : '-')
+      
+      def filter(rel, keys=nil)
+        keys ||= filter_keys
+        keys.each do |filter|
+          rel = rel.where(filter =>params[filter]) if params[filter].present?
+        end
+        return rel
       end
-
-      def output_csv(keys, records)
+      
+      def output_csv(header, records, filename: "attachement.csv")
         require 'csv'
-        content_type 'text/plain'
+        #content_type 'text/plain'
+        content_type 'application/octet-stream'
+        attachment filename
 
-        [keys.to_csv,
-         records.map {|record|
-           keys.map {|key| record[key]}.to_csv
-         }
-        ].flatten.join('')
+        [header.to_csv, records.map {|r| r.to_csv}].flatten.join('')
       end
 
       def splat_to_params(params)
@@ -35,13 +36,22 @@ module ScoreViewer
         end
       end
 
-      def params_to_query(params, keys)
-        ar = []
-        keys.map do |key|
-          next if params[key].blank?
-          ar << [key, params[key]].join(':')
-        end
-        ar.join('/')
+      def params_to_query(params) # , keys)
+        query = params.select {|k,v| filter_keys.include?(k.to_sym) && v.present? }.map {|k, v|
+          [k, ERB::Util.url_encode(v.to_s)].join(':')
+        }.join('/')
+        query += ".#{params[:format]}" if params[:format].present?
+        return query
+      end
+      def score_filter_forms
+        [
+         [:skater_name, Score.select(:skater_name).distinct.order(:skater_name).map(&:skater_name)],
+         [:category, ['MEN', 'LADIES']],
+         [:segment, ['SHORT PROGRAM', 'FREE SKATING']],
+         [:nation, Score.select(:nation).distinct.to_a.map(&:nation)],
+         [:competition_name, Score.select(:competition_name).distinct.to_a.map(&:competition_name)],
+         [:format, ['html', 'csv']],
+        ]
       end
     end ## module
     helpers ScoresHelper

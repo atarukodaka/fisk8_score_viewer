@@ -45,6 +45,32 @@ module Fisk8Viewer
           scores << score_parser.parse(score_text, opts)
         end
       end
+
+      ## type
+      res[:competition_type] = 
+        if res[:name] =~ /^ISU GP/ || res[:name] =~ /^ISU Grand Prix/
+          :gp
+        elsif res[:name] =~ /Olympic/
+          :olympic
+        elsif res[:name] =~ /ISU World/
+          :world
+        elsif res[:name] =~ /ISU Four Continents/
+          :fc
+        elsif res[:name] =~ /ISU European/
+          :europe
+        else
+          :unknown
+        end
+      
+      ## abbr
+      uri = URI.parse(url)
+      res[:abbr] = uri.path.split('/').last
+
+      ## season
+      year, month = res[:start_date].year, res[:start_date].month
+      year -= 1 if month <= 6
+      res[:season] = "%04d-%02d" % [year, (year+1) % 100]
+      
       ## return hash
       {competition: res, scores: scores.flatten}
     end

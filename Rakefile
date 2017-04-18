@@ -17,6 +17,7 @@ require './models/competition'
 require './models/skater'
 
 require './fisk8viewer/competition_parser'
+require './fisk8viewer/skater_parser'
 require './fisk8viewer/score_parser'
 require './fisk8viewer/updater'
 
@@ -26,12 +27,13 @@ task :server do
   system 'bundle exec padrino start --port 1234 -h 0.0.0.0'
 end
 
+task :update_skaters do
+  
+  updater = Fisk8Viewer::Updater.new
+  updater.update_skaters
+end
+
 task :update do
-  comp = {
-    season: '2011-12',
-    type: :grand_prix,  # :olympic,
-    subtype: :usa, # :can, :chn, :fra, :jpn, :final / :sochi
-  }
   urls = [
           ## 2011-12
           "http://www.isuresults.com/results/gpusa2011/",
@@ -101,6 +103,6 @@ task :update do
           "http://www.isuresults.com/results/season1617/wc2017/",
          ]
   updater = Fisk8Viewer::Updater.new
-  num = 100
+  num = 1
   updater.update_competitions([urls.last(num)].flatten)
 end

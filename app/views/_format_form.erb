@@ -1,0 +1,8 @@
+<div class="form-group row">
+  <div class="col-sm-2">
+    <%= label_tag("output format") %>
+  </div>
+  <div class="col-sm-10">
+    <%= select_tag(:format, options: ['html', 'csv'], selected: params[:format] || 'html') %>
+  </div>
+</div>

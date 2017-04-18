@@ -1,41 +1,23 @@
+<!-- locals: score_filter_forms, scores -->
 
 <h2>Score List</h2>
 
+<!-- form -->
 <% form_tag(url_for(:scores, :list), method: 'post') do %>
 
-<!-- Skater -->
-<% skaters = Skater.select(:name).to_a.map(&:name) %>
-<%= partial :select_form, locals: {label: "Skater", tag: :skater_name, options: skaters} %>
-
-<!-- Category -->
-<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
-
-<!-- Segment -->
-<%= partial :select_form, locals: {label: "Segment", tag: :segment, options: ['SHORT PROGRAM', 'FREE SKATING']} %>
-
-<!-- Nation -->
-<% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
-<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
-
-<!-- Competition -->
-<% competitions = [Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
-<%= partial :select_form, locals: {label: "Competition", tag: :competition_name, options: competitions} %>
-
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("output format") %>
-  </div>
-  <div class="col-sm-10">
-    <%= select_tag(:format, options: ['html', 'json', 'csv'], selected: params[:format] || 'html') %>
-  </div>
-</div>
-
+<% score_filter_forms.each do |form| %>
+<%= partial :select_form, locals: {tag: form[0], options: form[1]} %>  
+<% end %>
 <%= partial :submit_form %>
 
 <% end %>
 
-<!-- ################################################################ -->
-
+<!-- list -->
 <%= partial 'scores/list', locals: {scores: scores} %>
+
+<!-- pagination -->
+<% page = (params[:page].presence || 1).to_i %>
+<%= partial 'pagination', locals: {records: scores, controller: :scores, page: page} %>
+
 
 

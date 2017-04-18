@@ -1,8 +1,5 @@
 ScoreViewer::App.controllers :competitions do
-  get :index do
-    competitions = Competition.order("start_date DESC").to_a
-    render "competitions/index".to_sym, layout: :layout, locals: {competitions: competitions}
-  end
+  ## show
   get :id, with: :id do
     if competition = Competition.find_by(id: params[:id])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
@@ -27,5 +24,18 @@ ScoreViewer::App.controllers :competitions do
     else
       erb "record not found"
     end
+  end
+
+  ## list
+  get :index do
+    redirect url_for(:competitions, :list)
+  end
+  get :list, map: "/competitions/list/*", provides: [:html, :csv] do
+    splat_to_params(params)
+    render :"competitions/index", locals: {competitions: filter(Competition.order("start_date DESC"))}
+  end
+
+  post :list do
+    redirect url_for(:competitions, :list, params_to_query(params))
   end
 end

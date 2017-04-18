@@ -20,8 +20,6 @@ module Fisk8Viewer
       end
     end
     def update_competitions(urls)
-
-      
       competition_parser = Fisk8Viewer::CompetitionParser.new
       urls.each do |url|
         puts "* parsing #{url}..."
@@ -35,7 +33,6 @@ module Fisk8Viewer
       end
     end
     def update_competition(competition)
-      
       establish_connection()
       #binding.pry
       Competition.connection
@@ -45,7 +42,10 @@ module Fisk8Viewer
       end
 
       rec = Competition.create
-      [:name, :city, :country, :isu_site, :start_date, :end_date].each {|k|
+      keys = [:name, :city, :country, :isu_site, :start_date, :end_date,
+              :competition_type, :abbr, :season,
+             ] 
+      keys.each {|k|
         rec[k] = competition[k]
       }
       rec.save
@@ -83,6 +83,24 @@ module Fisk8Viewer
         end
         score_rec[:components_summary] = score[:components].map {|c| c[:value]}.join('/')
         score_rec.save
+      end
+    end
+
+    def update_skaters
+      establish_connection()
+      parser = SkaterParser.new
+      skaters_hash = parser.scrape_isu_bio
+      
+      Skater.order("id DESC").each do |skater|
+        ar = skaters_hash.select {|h| h[:name] == skater.name}
+        next if ar.blank?
+        hash = ar.first
+        skater_bio = parser.parse_skater(hash[:isu_number], hash[:category])
+        
+        [:nation, :category, :isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
+          skater[key] = skater_bio[key]
+        end
+        skater.save
       end
     end
   end  ## class

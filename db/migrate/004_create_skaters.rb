@@ -11,6 +11,10 @@ class CreateSkaters < ActiveRecord::Migration
 
       t.string :coach
       t.string :choreographer
+      t.string :hobbies
+
+      t.string :height
+      t.string :club
 
       t.timestamps
     end
