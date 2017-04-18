@@ -97,7 +97,7 @@ module Fisk8Viewer
         hash = ar.first
         skater_bio = parser.parse_skater(hash[:isu_number], hash[:category])
         
-        [:nation, :category, :isu_number, :isu_bio, :coach, :choreographer, :birthday].each do |key|
+        [:nation, :category, :isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
           skater[key] = skater_bio[key]
         end
         skater.save
