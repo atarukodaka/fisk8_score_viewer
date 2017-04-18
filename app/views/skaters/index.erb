@@ -17,17 +17,25 @@
 
 <table class="table table-striped table-hover table-condensed">
   <tr>
+    <th>ID</th>
     <th>Skater</th>
     <th>Nation</th>
     <th>Category</th>
     <th>ISU Number</th>
+    <th>Birthday</th>
+    <th>Coach</th>
+    <th>Choreographer</th>
   </tr>
   <% skaters.each do |skater| %>
   <tr>
+    <td><%= skater.id %></td>
     <td><%= link_to(skater.name, "/skaters/name/#{skater.name}") %><!-- %= link_to(skater.skater, url_for(:skaters, :show, name: skater.skater)) % --></td>
     <td><%= skater.nation %></td>
     <td><%= skater.category %></td>
-    <td><%= skater.isu_number %></td>
+    <td><%= link_to(skater.isu_number, skater.isu_bio) %></td>
+    <td><%= skater.birthday %></td>    
+    <td><%= skater.coach %></td>    
+    <td><%= skater.choreographer %></td>    
   </tr>
   <% end %>
 </table>

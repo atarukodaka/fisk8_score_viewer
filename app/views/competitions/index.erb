@@ -4,12 +4,13 @@
 
 <% form_tag(url_for(:competitions, :list), method: 'post') do %>
 <% opts = Competition.select(:competition_type).distinct.map(&:competition_type) %>
-<%= partial :select_form, locals: {label: "Type", tag: :competition_type, options: opts} %>
+<%= partial :select_form, locals: {tag: :competition_type, options: opts} %>
 <% opts = Competition.select(:season).distinct.map(&:season) %>
-<%= partial :select_form, locals: {label: "Season", tag: :season, options: opts} %>
+<%= partial :select_form, locals: {tag: :season, options: opts} %>
 <%= partial :submit_form %>
 <% end %>
 
+<% binding.pry %>
 
 <table class="table table-striped table-hover table-condensed">
   <tr>

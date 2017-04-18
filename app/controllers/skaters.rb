@@ -22,7 +22,9 @@ ScoreViewer::App.controllers :skaters do
   end
   get :list, map: "/skaters/list/*" do
     splat_to_params(params)
-    render :"skaters/index", locals: {skaters: filter(Skater.order("name"))}    
+    skaters = filter(Skater.order("name")).joins(:scores).distinct
+    #binding.pry
+    render :"skaters/index", locals: {skaters: skaters}
   end
 
   post :list do

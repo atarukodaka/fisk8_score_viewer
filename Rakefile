@@ -9,24 +9,31 @@ PadrinoTasks.use(:database)
 PadrinoTasks.use(:activerecord)
 PadrinoTasks.init
 
+require 'pry-byebug'
+
+require 'active_record'
+require './models/score'
+require './models/competition'
+require './models/skater'
+
+require './fisk8viewer/competition_parser'
+require './fisk8viewer/skater_parser'
+require './fisk8viewer/score_parser'
+require './fisk8viewer/updater'
+
 task :default => :test
 
 task :server do
   system 'bundle exec padrino start --port 1234 -h 0.0.0.0'
 end
 
+task :update_skaters do
+  
+  updater = Fisk8Viewer::Updater.new
+  updater.update_skaters
+end
+
 task :update do
-  require 'pry-byebug'
-
-  require 'active_record'
-  require './models/score'
-  require './models/competition'
-  require './models/skater'
-
-  require './fisk8viewer/competition_parser'
-  require './fisk8viewer/score_parser'
-  require './fisk8viewer/updater'
-
 
   urls = [
           ## 2013-14
