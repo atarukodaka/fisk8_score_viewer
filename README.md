@@ -1,4 +1,4 @@
-## Description
+## Overview
 Score viewer of figureskating competitions. you can register/see:
 
 - score and its details (ex. element/component details)
@@ -12,6 +12,7 @@ Score viewer of figureskating competitions. you can register/see:
 % bundle install
 % bundle exec rake db:migrate
 % bundle exec rake update
+% bundle exec rake update_skaters _(optional)_
 % bundle exec padrino start
 ```
 
@@ -21,10 +22,10 @@ Score viewer of figureskating competitions. you can register/see:
 % heroku create --app app_name
 % heroku addons:add heroku-postgresql
 % heroku run rake db:migrate
-% heroku config
-DATABASE_URL=.....
-% DATABSEL_URL=..... rake update
-% DATABSEL_URL=..... rake update_skaters
+% heroku config | sed -n "/DATABASE_URL/s/: /=/p"
+DATABASE_URL=postgres://.....
+% DATABASE_URL=postgres://..... rake update
+% DATABASE_URL=postgres://..... rake update_skaters _(optinoal)_
 ```
 ### Reset database
 

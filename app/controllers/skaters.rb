@@ -20,11 +20,19 @@ ScoreViewer::App.controllers :skaters do
   get :index do
     redirect url_for(:skaters, :list)
   end
-  get :list, map: "/skaters/list/*" do
+  get :list, map: "/skaters/list/*", provides: [:csv, :html] do
     splat_to_params(params)
     skaters = filter(Skater.order("name")).joins(:scores).distinct
     #binding.pry
-    render :"skaters/index", locals: {skaters: skaters}
+
+    case content_type
+    when :csv
+      csv_keys = [:id, :name, :nation, :category, :isu_number, :birthday, :hobbies, :height, :club, :coach, :choreographer]
+      csv_records = skaters.map {|r| csv_keys.map {|k| r[k]}}
+      output_csv(csv_keys, csv_records, filename: "skaters.csv")
+    else
+      render :"skaters/index", locals: {skaters: skaters}
+    end
   end
 
   post :list do

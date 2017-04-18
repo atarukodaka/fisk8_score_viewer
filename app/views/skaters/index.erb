@@ -4,12 +4,12 @@
 <% form_tag(url_for(:skaters, :list), method: 'post') do %>
 
 <!-- Category -->
-<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
+<%= partial :select_form, locals: {tag: :category, options: ['MEN', 'LADIES']} %>
 
 <!-- Nation -->
 <% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
-<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
-
+<%= partial :select_form, locals: {tag: :nation, options: nations} %>
+<%= partial :select_form, locals: {tag: :format, options: [:csv, :html]} %>
 <%= partial :submit_form %>
 
 <% end %>
