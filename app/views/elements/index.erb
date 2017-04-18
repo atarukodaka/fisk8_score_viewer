@@ -9,49 +9,14 @@
     <%= text_field_tag(:element, :class=>"form-control", value: params[:element]) %>
   </div>
   <div class="col-sm-4">
-    partial match: <%= check_box_tag(:partial_match, :class=>"form-check-input", checked: params[:partial_match]) %>
+    partial match: <%= check_box_tag(:partial_match, :class=>"form-check-input", checked: params[:partial_match].present?) %>
   </div>
 </div>
 
-<!-- Skater -->
-<% skaters = Skater.select(:name).order(:name).map(&:name) %>
-<%= partial :select_form, locals: {label: "Skater", tag: :skater_name, options: skaters} %>
-
-<!-- Category -->
-<%= partial :select_form, locals: {label: "Category", tag: :category, options: ['MEN', 'LADIES']} %>
-
-<!-- Segment -->
-<%= partial :select_form, locals: {label: "Segment", tag: :segment, options: ['SHORT PROGRAM', 'FREE SKATING']} %>
-
-<!-- Nation -->
-<% nations = [Score.select(:nation).distinct.to_a.map {|n| n.nation}].flatten %>
-<%= partial :select_form, locals: {label: "Nation", tag: :nation, options: nations} %>
-
-<!-- Competition -->
-<% competitions = [Score.select(:competition_name).distinct.to_a.map {|c| c.competition_name}].flatten %>
-<%= partial :select_form, locals: {label: "Competition", tag: :competition_name, options: competitions} %>
-
-
-<div class="form-group row">
-  <div class="col-sm-2">
-    <%= label_tag("output format") %>
-  </div>
-  <div class="col-sm-10">
-    <%= select_tag(:format, options: ['html', 'json', 'csv']) %>
-  </div>
-</div>
-
-
-
-<div class="form-group row">
-  <div class="col-sm-2">
-  </div>
-  <div class="col-sm-10">
-    <%= submit_tag("search", :class=>"btn btn-primary", :type=>"submit") %>
-  </div>
-</div>
-
-
+<% score_filter_forms.each do |form| %>
+  <%= partial :select_form, locals: {tag: form[0], options: form[1]} %>
+<% end %>
+<%= partial :submit_form %>
 <% end %>
 
 

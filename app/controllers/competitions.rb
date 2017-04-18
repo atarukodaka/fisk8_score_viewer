@@ -32,8 +32,7 @@ ScoreViewer::App.controllers :competitions do
   end
   get :list, map: "/competitions/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    rel = filter(Competition.order("start_date DESC"))
-    render :"competitions/index", locals: {competitions: rel}
+    render :"competitions/index", locals: {competitions: filter(Competition.order("start_date DESC"))}
   end
 
   post :list do

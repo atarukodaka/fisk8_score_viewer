@@ -41,7 +41,7 @@
     <td><%= score.tes %></td>
     <td><%= score.pcs %></td>
     <td><%= score.deductions %></td>
-    <td><!-- %= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) % --></td>
+    <td><%= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) %></td>
     <td><%= link_to(score.components_summary, url_for(:scores, :id, id: score.id)) %></td>
   </tr>
   <% end %>

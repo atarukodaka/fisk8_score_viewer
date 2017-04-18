@@ -20,8 +20,7 @@ ScoreViewer::App.controllers :scores do
       csv_records = rel.map {|r| csv_keys.map {|k| r[k]}}
       output_csv(csv_keys, csv_records, filename: "scores.csv")
     else
-      forms = score_filter_forms
-      render :"scores/index", locals: {scores: rel, score_filter_forms: forms}
+      render :"scores/index", locals: {scores: rel, score_filter_forms: score_filter_forms}
     end
   end
   

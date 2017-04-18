@@ -7,18 +7,15 @@ ScoreViewer::App.controllers :components do
     splat_to_params(params)
 
     # first, filter by score
-    scores = Score.order("updated_at DESC")
-    [:skater_name, :category, :segment, :nation, :competition_name].each do |filter|
-      scores = scores.where(filter => params[filter]) if params[filter]
-    end
+    scores = filter(Score.order("updated_at DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
     
     # next, filter by component number
     number = params[:component_number].to_i
     components = Component.where(score_id: scores.select(:id))
     components = components.where(number: number) if number >= 1
     
-    case params[:format]
-    when 'csv'
+    case content_type
+    when :csv
       header = [:skater, :competition_name, :category, :segment,
                  :number, :component, :factor, :judges, :value]
       ret = components.map do |c|

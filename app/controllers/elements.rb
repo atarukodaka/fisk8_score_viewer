@@ -28,7 +28,7 @@ ScoreViewer::App.controllers :elements do
       end
       output_csv(header, ret, filename: "elements.csv")
     else
-      render :"elements/index", locals: {elements: elements}
+      render :"elements/index", locals: {elements: elements, score_filter_forms: score_filter_forms}
     end
   end
 
