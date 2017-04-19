@@ -32,25 +32,37 @@ module Fisk8Viewer
         end
       end
     end
-    def update_competition(competition)
+    def update_competition(competition_hash)
       establish_connection()
       #binding.pry
-      Competition.connection
-      unless Competition.where(name: competition[:name]).empty?
+      #Competition.connection
+      unless Competition.where(name: competition_hash[:name]).empty?
         puts "already registered"
         return nil
       end
 
-      rec = Competition.create
+      competition = Competition.create
       keys = [:name, :city, :country, :isu_site, :start_date, :end_date,
               :competition_type, :abbr, :season,
              ] 
       keys.each {|k|
-        rec[k] = competition[k]
+        competition[k] = competition_hash[k]
       }
-      rec.save
-      rec
+      ## category rank
+      puts " - update category rank"
+      competition_parser = Fisk8Viewer::CompetitionParser.new
+      competition_hash[:categories].each do |category, value|
+        result_url = value[:result_url]
+        ar = competition_parser.parse_category_result(result_url)
+        #binding.pry
+        ar.each do |result_hash|
+          category_rank = competition.category_ranks.create(rank: result_hash[:ranking], skater_name: result_hash[:skater_name], points: result_hash[:points], category: category.upcase)
+        end
+      end
+      competition.save
+      competition
     end
+    ################################################################
     def update_score(scores, competition_record)
       establish_connection()
       scores.each do |score|

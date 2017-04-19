@@ -1,0 +1,36 @@
+<%= partial '/competitions/competition_info', locals: {competition: competition} %>
+<!-- %= partial '/scores/list', locals: {scores: scores, paginate: true} % -->
+
+<h2>Category: <%= params[:category] %></h2>
+
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Rank</th>
+    <th>Skater</th>
+    <th>Points</th>
+    <th>Short Rank</th>
+    <th>Short Points</th>
+    <th>Free Rank</th>
+    <th>Free Points</th>
+  </tr>
+  <% ranks.sort_by {|rec| rank = rec[:rank]; rank = 1000 if rank == 0; rank}.each do |rank_rec| %>
+  <tr>
+    <td><%= (rank_rec.rank == 0) ? 'FNR' : rank_rec.rank %></td>
+    <td><%= rank_rec.skater_name %></td>
+    <td><%= (rank_rec.points == 0.0) ? '' : rank_rec.points %></td>
+    
+    <% if short_score = competition.scores.where(skater_name: rank_rec.skater_name, segment: "SHORT PROGRAM").first %>
+      <td><%= link_to(short_score.rank, url_for(:scores, :id, id: short_score.id)) %></td>
+      <td><%= short_score.tss %></td>
+    <% else %>
+      <td></td><td></td>
+    <% end %>
+    <% if free_score = competition.scores.where(skater_name: rank_rec.skater_name, segment: "FREE SKATING").first %>
+      <td><%= link_to(free_score.rank, url_for(:scores, :id, id: free_score.id)) %></td>
+      <td><%= free_score.tss %></td>
+    <% else %>
+      <td></td><td></td>
+    <% end %>
+  </tr>
+  <% end %>
+</table>

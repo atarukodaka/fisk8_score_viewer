@@ -1,3 +1,4 @@
+<!-- locals: skater -->
 
 <h2>Skater Info</h2>
 
@@ -16,9 +17,22 @@
   </tr>
   <tr>
     <th>ISU Number</th>
-    <td><%= skater.isu_number %></td>
+    <td><%= link_to(skater.isu_number, skater.isu_bio) %></td>
+  </tr>
+  <tr>
+    <th>Club</th>
+    <td><%= skater.club %></td>
+  </tr>
+  <tr>
+    <th>Coach</th>
+    <td><%= skater.coach %></td>
+  </tr>
+  <tr>
+    <th>Choreographer</th>
+    <td><%= skater.choreographer %></td>
   </tr>
 </table>
+</div>
 
 <h2>Skater's Scores</h2>
 

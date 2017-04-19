@@ -22,12 +22,12 @@ ScoreViewer::App.controllers :skaters do
   end
   get :list, map: "/skaters/list/*", provides: [:csv, :html] do
     splat_to_params(params)
-    skaters = filter(Skater.order("name")).joins(:scores).distinct
+    skaters = filter(Skater.order(:category).order(:name)).distinct
     #binding.pry
 
     case content_type
     when :csv
-      csv_keys = [:id, :name, :nation, :category, :isu_number, :birthday, :hobbies, :height, :club, :coach, :choreographer]
+      csv_keys = [:id, :name, :nation, :category, :isu_number, :birthday, :height, :club, :coach, :choreographer]
       csv_records = skaters.map {|r| csv_keys.map {|k| r[k]}}
       output_csv(csv_keys, csv_records, filename: "skaters.csv")
     else

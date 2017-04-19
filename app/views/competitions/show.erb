@@ -1,26 +1,4 @@
+<!-- locals: competitions, scores -->
 
-<table class="table">
-  <tr>
-    <th>Name</th>
-    <td><%= competition.name %></td>
-  </tr>
-  <tr>
-    <th>City / Country</th>
-    <td><%= "#{competition.city} / #{competition.country}" %></td>
-  </tr>
-  <tr>
-    <th>ISU Site</th>
-    <td><%= link_to("ISU HP", competition.isu_site) %></td>
-  </tr>
-  <tr>
-    <th>Start Date</th>
-    <td><%= competition.start_date %></td>
-  </tr>
-  <tr>
-    <th>End Date</th>
-    <td><%= competition.end_date %></td>
-  </tr>
-  
-</table>
-
+<%= partial '/competitions/competition_info', locals: {competition: competition} %>
 <%= partial '/scores/list', locals: {scores: scores, paginate: true} %>

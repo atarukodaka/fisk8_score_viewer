@@ -13,13 +13,6 @@ module Fisk8Viewer
     def parse(text, opts={})
       scores = []
       score = {technicals: [], components: []}
-=begin
-      competition_name = nil
-      category = nil
-      segment = nil
-      component_number = 1
-      mode = :competition
-=end
       status = init_status()
       
       text.split("\n").each do |line|
@@ -89,7 +82,20 @@ module Fisk8Viewer
           end
         end
       end
+
+      ## TODO: refactoring
+      score[:competition_name] = status[:competition_name]
+      score[:category] = status[:category]
+      score[:segment] = status[:segment]
+      if opts[:date]
+        score[:date] = opts[:date]
+      end
+      if opts[:result_pdf]
+        score[:result_pdf] = opts[:result_pdf]
+      end
+
+      scores << score
       return scores
-    end
+    end  ## def
   end
 end

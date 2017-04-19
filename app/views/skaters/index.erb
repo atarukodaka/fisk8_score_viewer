@@ -23,7 +23,6 @@
     <th>Category</th>
     <th>ISU Number</th>
     <th>Birthday</th>
-    <th>Hobbies</th>
     <th>Height</th>
     <th>Club</th>
     <th>Coach</th>
@@ -32,12 +31,11 @@
   <% skaters.each do |skater| %>
   <tr>
     <td><%= skater.id %></td>
-    <td><%= link_to(skater.name, "/skaters/name/#{skater.name}") %><!-- %= link_to(skater.skater, url_for(:skaters, :show, name: skater.skater)) % --></td>
-    <td><%= skater.nation %></td>
-    <td><%= skater.category %></td>
+    <td><%= link_to(skater.name, url_for(:skaters, :name, name: skater.name)) %></td>
+    <td><%= link_to(skater.nation, url_for(:skaters, :list, "nation:#{skater.nation}")) %></td>
+    <td><%= link_to(skater.category, url_for(:skaters, :list, "category:#{skater.category}")) %></td>
     <td><%= link_to(skater.isu_number, skater.isu_bio) %></td>
     <td><%= skater.birthday %></td>    
-    <td><%= skater.hobbies %></td>        
     <td><%= skater.height %></td>        
     <td><%= skater.club %></td>        
     <td><%= skater.coach %></td>    

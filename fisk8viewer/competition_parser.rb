@@ -166,11 +166,9 @@ module Fisk8Viewer
       data[:categories] = category_data
       data[:start_date] = dates.min
       data[:end_date] = dates.max
-
       return data
     end
-=begin
-    
+=begin  
     ################
     def parse_segment_result(result_url)
       data = []
@@ -249,6 +247,7 @@ module Fisk8Viewer
       end
       return data
     end
+=end
     def parse_category_result(url)
       data = []
       begin
@@ -281,6 +280,5 @@ module Fisk8Viewer
       end
       return data
     end
-=end      
   end  ## class
 end

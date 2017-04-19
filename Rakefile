@@ -15,6 +15,7 @@ require 'active_record'
 require './models/score'
 require './models/competition'
 require './models/skater'
+require './models/category_rank'
 
 require './fisk8viewer/competition_parser'
 require './fisk8viewer/skater_parser'
@@ -101,8 +102,8 @@ task :update do
           "http://www.isuresults.com/results/season1617/gpjpn2016/",
           "http://www.isuresults.com/results/season1617/fc2017/",
           "http://www.isuresults.com/results/season1617/ec2017/",
-          "http://www.isuresults.com/results/season1617/wc2017/",
           "http://www.isuresults.com/results/season1617/gpf1617/",
+          "http://www.isuresults.com/results/season1617/wc2017/",
          ]
   updater = Fisk8Viewer::Updater.new
   num = 1
