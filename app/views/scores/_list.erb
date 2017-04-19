@@ -16,7 +16,7 @@
     <th>Competition</th>
     <th>Category</th>
     <th>Segment</th>
-    <th>Refult PDF</th>
+    <th>Result PDF</th>
     <th>Date</th>
     <th>Rank</th>    
     <th>Starting</th>
@@ -37,7 +37,7 @@
     <td><%= link_to(score.category, url_for(:competitions, :id, id: score.competition_id, category: score.category)) %></td>
 
     <td><%= link_to(score.segment, url_for(:competitions, :id, id: score.competition_id, category: score.category, segment: score.segment)) %></td>
-    <td><%= link_to(image_tag("http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"), score.result_pdf) %></td>
+    <td><%= link_to_result_pdf(score.result_pdf) %></td>
     <td><%= score.date %></td>
     <td><%= score.rank %></td>
     <td><%= score.starting_number %></td>

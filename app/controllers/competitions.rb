@@ -21,7 +21,7 @@ ScoreViewer::App.controllers :competitions do
   get :id, with: [:id, :category, :segment] do
     if competition = Competition.find(params[:id])
       scores = competition.scores.where(category: params[:category], segment: params[:segment])
-      render :"competitions/show", locals: {competition: competition, scores: scores.order(:rank)}
+      render :"competitions/show_segment_result", locals: {competition: competition}
     else
       render :record_not_found
     end

@@ -1,0 +1,9 @@
+<!-- locals: competitions, scores -->
+
+<h2>Competition Info</h2>
+<%= partial '/competitions/competition_info', locals: {competition: competition} %>
+
+<h2>Segment Result</h2>
+
+<%= partial '/scores/list', locals: {scores: competition.scores.where(category: params[:category], segment: params[:segment]).order(:rank), paginate: true} %>
+

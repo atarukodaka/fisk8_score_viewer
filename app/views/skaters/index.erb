@@ -29,6 +29,7 @@
     <th>Choreographer</th>
   </tr>
   <% skaters.each do |skater| %>
+  <% next if skater.name.blank? %>
   <tr>
     <td><%= skater.id %></td>
     <td><%= link_to(skater.name, url_for(:skaters, :name, name: skater.name)) %></td>

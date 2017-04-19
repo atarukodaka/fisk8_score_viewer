@@ -53,6 +53,9 @@ module ScoreViewer
          [:format, ['html', 'csv']],
         ]
       end
+      def link_to_result_pdf(url)
+        link_to(image_tag("http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"), url, target: "_blank")
+      end
     end ## module
     helpers ScoresHelper
   end  # class

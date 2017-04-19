@@ -25,7 +25,7 @@ require './fisk8viewer/updater'
 task :default => :test
 
 task :server do
-  system 'bundle exec padrino start --port 1234 -h 0.0.0.0'
+  system 'bundle exec padrino start -h 0.0.0.0'
 end
 
 task :update_skaters do
@@ -102,8 +102,9 @@ task :update do
           "http://www.isuresults.com/results/season1617/gpjpn2016/",
           "http://www.isuresults.com/results/season1617/fc2017/",
           "http://www.isuresults.com/results/season1617/ec2017/",
-          "http://www.isuresults.com/results/season1617/gpf1617/",
+
           "http://www.isuresults.com/results/season1617/wc2017/",
+          "http://www.isuresults.com/results/season1617/gpf1617/",
          ]
   updater = Fisk8Viewer::Updater.new
   num = 1
