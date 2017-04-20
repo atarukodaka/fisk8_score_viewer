@@ -25,7 +25,7 @@ ScoreViewer::App.controllers :components do
       end
       output_csv(header, ret, filename: "components.csv")
     else
-      render :"components/index", locals: {components: components, score_filter_forms: score_filter_forms}
+      render :"components/index", locals: {components: components}
     end
   end
 

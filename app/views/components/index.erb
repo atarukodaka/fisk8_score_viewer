@@ -10,10 +10,18 @@
   </div>
 </div>
 
+<%= partial :select_form, locals: {tag: :skater_name,
+    options: Skater.select(:name).order(:name).map(&:name)} %>
+<%= partial :select_form, locals: {tag: :category,
+    options: Score.select(:category).distinct.order(:category).map(&:category)} %>
+<%= partial :select_form, locals: {tag: :segment,
+    options: Score.select(:segment).distinct.order(:segment).map(&:segment)} %>
+<%= partial :select_form, locals: {tag: :nation,
+    options: Score.select(:nation).distinct.order(:nation).map(&:nation)} %>
+<%= partial :select_form, locals: {tag: :competition_name,
+    options: Competition.order("start_date DESC").map(&:name)} %>
+<%= partial :select_form, locals: {tag: :format, options: ['html', 'csv']} %>
 
-<% score_filter_forms.each do |form| %>
-<%= partial :select_form, locals: {tag: form[0], options: form[1]} %>
-<% end %>
 <%= partial :submit_form %>
 <% end %>
 

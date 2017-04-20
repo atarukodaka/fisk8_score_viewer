@@ -25,8 +25,7 @@ task :server do
   system 'bundle exec padrino start -h 0.0.0.0'
 end
 
-task :update_skaters do
-  
+task :update_skaters do  
   updater = Fisk8Viewer::Updater.new
   updater.update_skaters
 end
@@ -112,6 +111,7 @@ task :update do
           "http://www.isuresults.com/results/season1617/gpf1617/",
           "http://www.isuresults.com/results/wtt2013/",
          ]
+  
   updater = Fisk8Viewer::Updater.new
   num = (ENV["number"] || 1).to_i
   [urls.last(num).reverse].flatten.each do |url|
