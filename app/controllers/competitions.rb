@@ -1,7 +1,6 @@
 ScoreViewer::App.controllers :competitions do
   ## show
   get :id, with: :id do
-    foo()
     if competition = Competition.find_by(id: params[:id])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
     else

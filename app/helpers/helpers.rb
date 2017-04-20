@@ -33,6 +33,11 @@ module ScoreViewer
         query = params.select {|k,v| permitted_keys.include?(k.to_sym) && v.present? }.map {|k, v|
           [k, ERB::Util.url_encode(v.to_s)].join(':')
         }.join('/')
+=begin
+        query = params.reject {|k, v| v.blank? }.each do |k, v|
+          [k, ERB::Util.url_encode(v.to_s)].join(':')
+        end.join('/')
+=end          
         query += ".#{params[:format]}" if params[:format].present?
         return query
       end
