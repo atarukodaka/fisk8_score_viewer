@@ -118,7 +118,7 @@ module Fisk8Viewer
 
       main_summary_table.search("tr")[1..-1].each {|tr|
         tds = tr / "td"
-        next if tds.empty?
+        next if tds.empty?   # || tds[0].text =~ /^#{@nbsp}*$/
         
         if tds[0].text != "" && tds[0].text.ord != 160
           category = tds[0].text
@@ -126,6 +126,7 @@ module Fisk8Viewer
           result_url = get_href_on_td(site_url, tds[3])
           category_data[category] = {entry_url: entry_url, result_url: result_url, segment: {}}
         elsif tds[1].text != ""
+          next if category == ""   # for team trohpy
           segment = tds[1].text
           starting_order_url = get_href_on_td(site_url, tds[3])
           judge_score_url = get_href_on_td(site_url, tds[4])

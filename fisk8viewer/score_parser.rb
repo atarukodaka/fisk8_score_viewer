@@ -10,7 +10,7 @@ module Fisk8Viewer
         component_number: 1,
       }
     end
-    def parse(text, opts={})
+    def parse(text) # , opts={})
       scores = []
       score = {technicals: [], components: []}
       status = init_status()
@@ -68,12 +68,14 @@ module Fisk8Viewer
             score[:competition_name] = status[:competition_name]
             score[:category] = status[:category]
             score[:segment] = status[:segment]
+=begin            
             if opts[:date]
               score[:date] = opts[:date]
             end
             if opts[:result_pdf]
               score[:result_pdf] = opts[:result_pdf]
             end
+=end
             scores << score
             score = {technicals: [], components: []}
             status[:component_number] = 1
@@ -94,13 +96,14 @@ module Fisk8Viewer
       score[:competition_name] = status[:competition_name]
       score[:category] = status[:category]
       score[:segment] = status[:segment]
+=begin      
       if opts[:date]
         score[:date] = opts[:date]
       end
       if opts[:result_pdf]
         score[:result_pdf] = opts[:result_pdf]
       end
-
+=end
       scores << score
       return scores
     end  ## def

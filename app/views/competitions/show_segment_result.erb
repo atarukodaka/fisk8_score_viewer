@@ -16,7 +16,7 @@
   </tr>
   <tr>
     <th>Result PDF</th>
-    <td></td>
+    <td><%= link_to_result_pdf(scores.first.try(:result_pdf)) %></td>
 </table>
 
 <!-- %= partial '/scores/list', locals: {scores: competition.scores.where(category: params[:category], segment: params[:segment]).order(:rank), paginate: false} % -->

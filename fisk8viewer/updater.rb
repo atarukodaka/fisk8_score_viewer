@@ -50,7 +50,7 @@ module Fisk8Viewer
       logger.debug " - update category"
       score_parser = Fisk8Viewer::ScoreParser.new
       competition_hash[:categories].each do |category, c_hash|
-        logger.debug "  ..[#{category}]"
+        logger.debug "  [#{category}]"
 
         ar = competition_parser.parse_category_result(c_hash[:result_url])
         ar.each do |result_hash|
@@ -59,12 +59,9 @@ module Fisk8Viewer
         c_hash[:segment].each do |segment, s_hash|
           ## scores
           score_text = convert_pdf(s_hash[:score_url], dir: "pdf")
-          opts = {
-            date: s_hash[:starting_time],
-            result_pdf: s_hash[:score_url],
-          }
-          ar = score_parser.parse(score_text, opts)
+          ar = score_parser.parse(score_text) # , opts)
           ar.each do |score_hash|
+            score_hash.merge!(date: s_hash[:starting_time], result_pdf: s_hash[:score_url])
             score_rec = competition.scores.create
             update_score(score_hash, score_rec)
           end

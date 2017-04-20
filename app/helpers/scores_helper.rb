@@ -55,6 +55,7 @@ module ScoreViewer
         ]
       end
       def link_to_result_pdf(url)
+        return "-" if url.nil?
         link_to(image_tag("http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"), url, target: "_blank")
       end
     end ## module

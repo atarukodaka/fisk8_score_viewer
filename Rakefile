@@ -110,6 +110,7 @@ task :update do
           "http://www.isuresults.com/results/season1617/wc2017/",
           "http://www.isuresults.com/results/season1617/wjc2017/",
           "http://www.isuresults.com/results/season1617/gpf1617/",
+          "http://www.isuresults.com/results/wtt2013/",
          ]
   updater = Fisk8Viewer::Updater.new
   num = (ENV["number"] || 1).to_i
