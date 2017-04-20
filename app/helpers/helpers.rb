@@ -1,9 +1,7 @@
-# Helper methods defined here can be accessed in any controller or view in the application
 
 module ScoreViewer
   class App
-    module ScoresHelper
-
+    module Helper
       ## filter
       def filter_keys
         [:skater_name, :category, :segment, :nation, :competition_name,
@@ -20,7 +18,6 @@ module ScoreViewer
         return rel
       end
       
-
       ## params, query
       def splat_to_params(params)
         return if params[:splat].blank?
@@ -52,7 +49,7 @@ module ScoreViewer
         return "-" if url.nil?
         link_to(image_tag("http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"), url, target: "_blank")
       end
-    end ## module
-    helpers ScoresHelper
-  end  # class
+    end  ## module
+    helpers Helper
+  end ## class
 end

@@ -109,6 +109,7 @@ module Fisk8Viewer
         Skater.where(category: category).each do |skater|
           isu_number = isu_number_hash[skater.name]
           next if isu_number.blank?
+          next if skater[:isu_number].present?
           
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")
@@ -116,7 +117,6 @@ module Fisk8Viewer
           [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
             skater[key] = skater_hash[key]
           end
-          
           skater.save
         end
       end

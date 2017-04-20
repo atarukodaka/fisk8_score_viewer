@@ -1,3 +1,6 @@
+require 'open-uri'
+require 'pdftotext'
+
 module Fisk8Viewer
   VERSION = 1.0
 
@@ -30,6 +33,8 @@ module Fisk8Viewer
   end
 end
 
+################
+## require relevant libs
 require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/skater_parser'
 require 'fisk8viewer/score_parser'

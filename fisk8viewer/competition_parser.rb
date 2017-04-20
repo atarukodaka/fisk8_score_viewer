@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-require 'pdftotext'
+
 require 'active_support/core_ext/time/zones'
 require 'mechanize'
 require 'uri'
-require 'open-uri'
-
-#require 'fisk8viewer/score_parser'
 
 module Fisk8Viewer
   class CompetitionParser
@@ -19,39 +16,32 @@ module Fisk8Viewer
     def parse(url)
       logger.debug  "  parsing #{url}..."
       res = parse_summary(url)
-      #score_parser = Fisk8Viewer::ScoreParser.new
-      #scores = []
+
       res[:categories].each do |c, v|
-        #["Men", "Ladies"].each do |c|
         v[:segment].each do |s, hash|
-          #["Short Program", "Free Skating"].each do |s|
-          #score_url = res[:categories][c][:segment][s][:score_url]
           score_url = hash[:score_url]
-=begin          
-          score_text = retrieve(score_url, dir: "pdf")
-          opts = {
-            #date: res[:categories][c][:segment][s][:starting_time],
-            date: hash[:starting_time],
-            result_pdf: score_url,
-          }
-          scores << score_parser.parse(score_text, opts)
-=end
         end
       end
 
       ## type
-      res[:competition_type] = 
-        if res[:name] =~ /^ISU GP/ || res[:name] =~ /^ISU Grand Prix/
+      res[:competition_type] =
+        case res[:name]
+        when /^ISU GP/, /^ISU Grand Prix/
           :gp
-        elsif res[:name] =~ /Olympic/
+        when /Olymic/
           :olympic
-        elsif res[:name] =~ /^ISU World Figure/
+        when /^ISU World Figure/
           :world
-        elsif res[:name] =~ /^ISU Four Continents/
+        when /^ISU Four Continents/
           :fc
-        elsif res[:name] =~ /^ISU European/
+        when /^ISU European/
           :europe
-        elsif res[:name] =~ /^ISU World Junior/
+        when /^ISU World Team/
+          :team
+
+        when /^ISU World Junior/
+          :jworld
+        when /^ISU JGP/, /^ISU Junior Grand Prix/
           :jworld
         else
           :unknown
@@ -66,9 +56,6 @@ module Fisk8Viewer
       year -= 1 if month <= 6
       res[:season] = "%04d-%02d" % [year, (year+1) % 100]
       
-      ## return hash
-      #res[:scores] = scores.flatten
-      #{competition: res, scores: scores.flatten}
       res
     end
 
@@ -140,7 +127,7 @@ module Fisk8Viewer
       }
 
       ## time schedule
-      dates = []
+      dates = []  ## to get start_date and end_date
       if time_schedule_table = search_time_schedule_table(page)
         date = time = ""
         time_schedule_table.search("tr").each {|tr|
@@ -170,6 +157,39 @@ module Fisk8Viewer
       data[:categories] = category_data
       data[:start_date] = dates.min
       data[:end_date] = dates.max
+      return data
+    end
+    def parse_category_result(url)
+      data = []
+      begin
+        page = @agent.get(url)
+        #page.encoding = "utf-8"
+      rescue Mechanize::ResponseCodeError => e
+        case e.response_code
+        when "404"
+          return data
+        end
+      end
+      if table = search_table_by_first_header(page, "FPl.")
+        table.search("./tr").each {|tr|
+          tds = tr.search("./td")
+          next if tds.empty?
+          
+          hash = {
+            ranking: tds[0].text.to_i,
+            skater_name: tds[1].text,
+            skater_nation: tds[2].text,
+            points: tds[3].text.to_f
+          }
+          if tds.size == 6
+            hash[:sp_ranking] = tds[4].text.to_i
+            hash[:fs_ranking] = tds[5].text.to_i
+          elsif tds.size == 5
+            hash[:sp_ranking] = tds[4].text.to_i
+          end
+          data << hash
+        }
+      end
       return data
     end
 =begin  
@@ -252,38 +272,5 @@ module Fisk8Viewer
       return data
     end
 =end
-    def parse_category_result(url)
-      data = []
-      begin
-        page = @agent.get(url)
-        #page.encoding = "utf-8"
-      rescue Mechanize::ResponseCodeError => e
-        case e.response_code
-        when "404"
-          return data
-        end
-      end
-      if table = search_table_by_first_header(page, "FPl.")
-        table.search("./tr").each {|tr|
-          tds = tr.search("./td")
-          next if tds.empty?
-          
-          hash = {
-            ranking: tds[0].text.to_i,
-            skater_name: tds[1].text,
-            skater_nation: tds[2].text,
-            points: tds[3].text.to_f
-          }
-          if tds.size == 6
-            hash[:sp_ranking] = tds[4].text.to_i
-            hash[:fs_ranking] = tds[5].text.to_i
-          elsif tds.size == 5
-            hash[:sp_ranking] = tds[4].text.to_i
-          end
-          data << hash
-        }
-      end
-      return data
-    end
   end  ## class
 end
