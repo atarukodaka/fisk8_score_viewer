@@ -102,19 +102,23 @@ module Fisk8Viewer
     def update_skaters
       logger.debug("update skaters")
       parser = SkaterParser.new
-      skaters_hash = parser.scrape_isu_bio
-      
-      Skater.order("id DESC").each do |skater|
-        ar = skaters_hash.select {|h| h[:name] == skater.name}
-        next if ar.blank?
-        hash = ar.first
-        skater_bio = parser.parse_skater(hash[:isu_number], hash[:category])
-        logger.debug("  update skater: #{skater.name} (#{hash[:isu_number]})")
+
+      [:MEN, :LADIES, :PAIRS, :"ICE DANCE"].each do |category|
+        isu_number_hash = parser.scrape_isu_numbers(category)
         
-        [:nation, :category, :isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
-          skater[key] = skater_bio[key]
+        Skater.where(category: category).each do |skater|
+          isu_number = isu_number_hash[skater.name]
+          next if isu_number.blank?
+          
+          skater_hash = parser.parse_skater(isu_number, category)
+          logger.debug("  update skater: #{skater.name} (#{isu_number})")
+          
+          [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
+            skater[key] = skater_hash[key]
+          end
+          
+          skater.save
         end
-        skater.save
       end
     end
   end  ## class

@@ -11,32 +11,29 @@ module Fisk8Viewer
       PAIRS: "http://www.isuresults.com/bios/fsbiospairs.htm",
       :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
     }
-    def scrape_isu_bio(categories = nil)
-      categories ||= [:MEN, :LADIES, :PAIRS, :"ICE DANCE"]
-      skaters = []
+    def scrape_isu_numbers(category)
+      hash = {}
+
+      url = URLS[category]
+      return {} if url.nil?
       
-      [categories].flatten.each do |category|
-        url = URLS[category]
-        next if url.nil?
+      logger.debug("scrape #{category} on #{url}")
+      
+      agent = Mechanize.new
+      page = agent.get(url)
+      links = page.search("table//a")
+      
+      links.each do |link|
+        href = link[:href]
+        href =~ /(\d+)\.htm/
+        name = link.inner_text
+        href =~ /(\d+)\.htm$/
+        isu_number = $1.to_i
         
-        logger.debug("scrape #{category} on #{url}")
-
-        agent = Mechanize.new
-        page = agent.get(url)
-        links = page.search("table//a")
-
-        skaters = []
-        links.each do |link|
-          href = link[:href]
-          href =~ /(\d+)\.htm/
-          name = link.inner_text
-          href =~ /(\d+)\.htm$/
-          isu_number = $1.to_i
-
-          skaters << {name: name, category: category, isu_number: isu_number, url: URI.join(url, href).to_s}
-        end
+        hash[name] = isu_number
+        #skaters[name] = {name: name, category: category, isu_number: isu_number, url: URI.join(url, href).to_s}
       end
-      skaters
+      hash
     end
 
     def parse_skater(isu_number, category)
