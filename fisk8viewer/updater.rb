@@ -49,14 +49,14 @@ module Fisk8Viewer
         competition[k] = competition_hash[k]
       }
       ## category rank
-      puts " - update category rank"
+      puts " - update category result"
       competition_parser = Fisk8Viewer::CompetitionParser.new
       competition_hash[:categories].each do |category, value|
         result_url = value[:result_url]
         ar = competition_parser.parse_category_result(result_url)
         #binding.pry
         ar.each do |result_hash|
-          category_rank = competition.category_ranks.create(rank: result_hash[:ranking], skater_name: result_hash[:skater_name], points: result_hash[:points], category: category.upcase)
+          category_result = competition.category_results.create(rank: result_hash[:ranking], skater_name: result_hash[:skater_name], points: result_hash[:points], category: category.upcase)
         end
       end
       competition.save

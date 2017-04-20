@@ -1,6 +1,6 @@
-class CreateCategoryRanks < ActiveRecord::Migration
+class CreateCategoryResults < ActiveRecord::Migration
   def change
-    create_table :category_ranks do |t|
+    create_table :category_results do |t|
       t.string :category
 
       t.integer :rank

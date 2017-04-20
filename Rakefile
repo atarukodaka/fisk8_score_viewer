@@ -1,5 +1,5 @@
-#lib = File.expand_path('../lib', __FILE__)
-#$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+lib = File.expand_path('../', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'bundler/setup'
 require 'padrino-core/cli/rake'
@@ -15,12 +15,9 @@ require 'active_record'
 require './models/score'
 require './models/competition'
 require './models/skater'
-require './models/category_rank'
+require './models/category_result'
 
-require './fisk8viewer/competition_parser'
-require './fisk8viewer/skater_parser'
-require './fisk8viewer/score_parser'
-require './fisk8viewer/updater'
+require 'fisk8viewer'
 
 task :default => :test
 
@@ -44,6 +41,7 @@ task :update do
           "http://www.isuresults.com/results/gprus2011/",
           "http://www.isuresults.com/results/gpjpn2011/",
           "http://www.isuresults.com/results/gpf1112/",
+          "http://www.isuresults.com/results/ec2012/",
           "http://www.isuresults.com/results/fc2012/",          
           "http://www.isuresults.com/results/wc2012/",
           
@@ -67,6 +65,7 @@ task :update do
           "http://www.isuresults.com/results/gpjpn2013/",
           "http://www.isuresults.com/results/gpf1314/",
           "http://www.isuresults.com/results/fc2014/",          
+          "http://www.isuresults.com/results/ec2014/",
           "http://www.isuresults.com/results/wc2014/",
           "http://www.isuresults.com/results/owg2014/",
           
@@ -79,6 +78,7 @@ task :update do
           "http://www.isuresults.com/results/gpjpn2014/",
           "http://www.isuresults.com/results/gpf1415/",
           "http://www.isuresults.com/results/fc2015/",          
+          "http://www.isuresults.com/results/ec2015/",
           "http://www.isuresults.com/results/wc2015/",
           
           ## 2015-16

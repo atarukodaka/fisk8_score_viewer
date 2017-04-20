@@ -10,9 +10,9 @@ ScoreViewer::App.controllers :competitions do
 
   get :id, with: [:id, :category] do
     if competition = Competition.find_by(id: params[:id])
-      ranks = competition.category_ranks.where(category: params[:category]).order(:rank)
+      results = competition.category_results.where(category: params[:category]).order(:rank)
 
-      render :"competitions/show_category_rank", locals: {competition: competition, ranks: ranks}
+      render :"competitions/show_category_result", locals: {competition: competition, results: results}
     else
       render :record_not_found
     end
