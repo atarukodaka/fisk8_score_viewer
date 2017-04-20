@@ -33,10 +33,11 @@ ScoreViewer::App.controllers :competitions do
   end
   get :list, map: "/competitions/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    render :"competitions/index", locals: {competitions: filter(Competition.order("start_date DESC"))}
+    rel = Competition.order("start_date DESC")
+    render :"competitions/index", locals: {competitions: filter(rel, :competitions)}
   end
 
   post :list do
-    redirect url_for(:competitions, :list, params_to_query(params))
+    redirect url_for(:competitions, :list, params_to_query(params, :competitions))
   end
 end

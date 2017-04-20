@@ -22,7 +22,7 @@ ScoreViewer::App.controllers :skaters do
   end
   get :list, map: "/skaters/list/*", provides: [:csv, :html] do
     splat_to_params(params)
-    skaters = filter(Skater.order(:category).order(:name)).distinct
+    skaters = filter(Skater.order(:category).order(:name), :skaters)
     #binding.pry
 
     case content_type
@@ -36,6 +36,6 @@ ScoreViewer::App.controllers :skaters do
   end
 
   post :list do
-    redirect url_for(:skaters, :list, params_to_query(params))
+    redirect url_for(:skaters, :list, params_to_query(params, :skaters))
   end
 end

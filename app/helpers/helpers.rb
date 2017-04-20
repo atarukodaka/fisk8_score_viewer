@@ -4,14 +4,17 @@ module ScoreViewer
     module Helper
       ## filter
       def filter_keys
-        [:skater_name, :category, :segment, :nation, :competition_name,
-         :element, :component_number, :partial_match,
-         :competition_type, :season,
-        ]
+        {
+          scores: [:skater_name, :category, :segment, :nation, :competition_name,],
+          skaters: [:category, :nation],
+          competitions: [:competition_type, :season],
+          elements: [:element, :partial_match, :skater_name, :category, :segment, :nation, :competition_name,],
+          components: [:component_number, :skater_name, :category, :segment, :nation, :competition_name,],
+        }
       end
       
-      def filter(rel, keys=nil)
-        keys ||= filter_keys
+      def filter(rel, controller)
+        keys = filter_keys[controller]
         keys.each do |filter|
           rel = rel.where(filter =>params[filter]) if params[filter].present?
         end
@@ -28,19 +31,15 @@ module ScoreViewer
         end
       end
 
-      def params_to_query(params) # , keys)
-        permitted_keys = [filter_keys, :page].flatten
+      def params_to_query(params, controller)
+        permitted_keys = [filter_keys[controller], :page].flatten
         query = params.select {|k,v| permitted_keys.include?(k.to_sym) && v.present? }.map {|k, v|
           [k, ERB::Util.url_encode(v.to_s)].join(':')
         }.join('/')
-=begin
-        query = params.reject {|k, v| v.blank? }.each do |k, v|
-          [k, ERB::Util.url_encode(v.to_s)].join(':')
-        end.join('/')
-=end          
         query += ".#{params[:format]}" if params[:format].present?
         return query
       end
+      
       ## utilities
       def output_csv(header, records, filename: "attachement.csv")
         require 'csv'

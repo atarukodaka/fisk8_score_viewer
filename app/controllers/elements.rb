@@ -5,7 +5,8 @@ ScoreViewer::App.controllers :elements do
   
   get :list, map: "/elements/list/*", provides: [:csv, :html] do
     splat_to_params(params)
-    scores = filter(Score.order("updated_at DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
+    rel = Score.order("updated_at DESC")
+    scores = filter(rel, :scores)
 
     element = params[:element]
     partial_match = params[:partial_match]
@@ -33,6 +34,6 @@ ScoreViewer::App.controllers :elements do
   end
 
   post :list do
-    redirect url_for(:elements, :list, params_to_query(params))
+    redirect url_for(:elements, :list, params_to_query(params, :elements))
   end
 end

@@ -11,7 +11,7 @@ ScoreViewer::App.controllers :scores do
   ## list
   get :list, map: "/scores/list/*", provides: [:csv, :html] do
     splat_to_params(params)
-    rel = filter(Score.order("id DESC"))
+    rel = filter(Score.order("id DESC"), :scores)
 
     case content_type
     when :csv
@@ -29,6 +29,6 @@ ScoreViewer::App.controllers :scores do
   end
 
   post :list do
-    redirect url_for(:scores, :list, params_to_query(params))
+    redirect url_for(:scores, :list, params_to_query(params, :scores))
   end
 end # controller

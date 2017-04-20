@@ -7,7 +7,7 @@ ScoreViewer::App.controllers :components do
     splat_to_params(params)
 
     # first, filter by score
-    scores = filter(Score.order("updated_at DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
+    scores = filter(Score.order("updated_at DESC"), :scores)
     
     # next, filter by component number
     number = params[:component_number].to_i
@@ -30,6 +30,6 @@ ScoreViewer::App.controllers :components do
   end
 
   post :list do
-    redirect url_for(:components, :list, params_to_query(params))
+    redirect url_for(:components, :list, params_to_query(params, :components))
   end
 end
