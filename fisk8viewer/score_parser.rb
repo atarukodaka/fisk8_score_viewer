@@ -26,19 +26,26 @@ module Fisk8Viewer
           if status[:competition_name].nil?
             status[:competition_name] = line
             next
-          elsif line =~ /^([A-Z]+) ([A-Z ]+) JUDGES DETAILS PER SKATER$/
-            status[:category] = $1
-            status[:segment] = $2
+          elsif line =~ /^([A-Z ]+) JUDGES DETAILS PER SKATER$/
+            cat_seg = $1
+            if cat_seg =~ /^([A-Z ]+) (SHORT[A-Z ]+)$/
+              status[:category] = $1
+              status[:segment] = $2
+            elsif cat_seg =~ /^([A-Z ]+) (FREE[A-Z ]+)$/
+              status[:category] = $1
+              status[:segment] = $2
+            end
             status[:mode] = :skater
           end
         when :skater
-          if line =~ /^ *([0-9]+) ([[:alpha:]\- ]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
+          if line =~ /^ *([0-9]+) ([[:alpha:]\- \/]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
             score = {
               rank: $1, starting_number: $3.to_i, tss: $4,tes: $5, pcs: $6,
               deductions: $7.to_i.abs * -1,
               technicals: [], components: [],
             }
             $2 =~ /(.*) ([A-Z]+)$/
+            #binding.pry if $1 =~ /^Shaline/
             score.merge!({ skater_name: $1, nation: $2})
           elsif line =~ /^ *Elements Value/
             status[:mode] = :tes

@@ -7,6 +7,7 @@
   <tr>
     <th>Rank</th>
     <th>Skater</th>
+    <th>Nation</th>
     <th>Points</th>
     <th>Short Rank</th>
     <th>Short Points</th>
@@ -16,7 +17,13 @@
   <% results.sort_by {|rec| rank = rec[:rank]; rank = 1000 if rank == 0; rank}.each do |rec| %>
   <tr>
     <td><%= (rec.rank == 0) ? 'FNR' : rec.rank %></td>
+    <% begin %>
     <td><%= link_to(rec.skater_name, url_for(:skaters, :name, name: rec.skater_name)) %></td>
+    <% rescue %>
+    <% binding.pry %>
+    <% end %>
+       
+    <td><%= Skater.find_by(name: rec.skater_name).try(:nation) %></td>
     <td><%= (rec.points == 0.0) ? '' : rec.points %></td>
     
     <% if short_score = competition.scores.where(skater_name: rec.skater_name, segment: "SHORT PROGRAM").first %>

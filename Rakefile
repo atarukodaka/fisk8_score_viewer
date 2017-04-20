@@ -43,6 +43,7 @@ task :update do
           "http://www.isuresults.com/results/gpf1112/",
           "http://www.isuresults.com/results/ec2012/",
           "http://www.isuresults.com/results/fc2012/",          
+          "http://www.isuresults.com/results/wjc2012/",
           "http://www.isuresults.com/results/wc2012/",
           
           ## 2012-3
@@ -54,6 +55,7 @@ task :update do
           "http://www.isuresults.com/results/gpjpn2012/",
           "http://www.isuresults.com/results/gpf1213/",
           "http://www.isuresults.com/results/fc2013/",          
+          "http://www.isuresults.com/results/wjc2013/",
           "http://www.isuresults.com/results/wc2013/",
           
           ## 2013-4
@@ -66,6 +68,7 @@ task :update do
           "http://www.isuresults.com/results/gpf1314/",
           "http://www.isuresults.com/results/fc2014/",          
           "http://www.isuresults.com/results/ec2014/",
+          "http://www.isuresults.com/results/wjc2014/",
           "http://www.isuresults.com/results/wc2014/",
           "http://www.isuresults.com/results/owg2014/",
           
@@ -79,6 +82,7 @@ task :update do
           "http://www.isuresults.com/results/gpf1415/",
           "http://www.isuresults.com/results/fc2015/",          
           "http://www.isuresults.com/results/ec2015/",
+          "http://www.isuresults.com/results/wjc2015/",
           "http://www.isuresults.com/results/wc2015/",
           
           ## 2015-16
@@ -91,6 +95,7 @@ task :update do
           "http://www.isuresults.com/results/season1516/gpf1516/",
           "http://www.isuresults.com/results/season1516/fc2016/",          
           "http://www.isuresults.com/results/season1516/ec2016/",
+          "http://www.isuresults.com/results/season1516/wjc2016/",
           "http://www.isuresults.com/results/season1516/wc2016/",
           
           ## 2016-17
@@ -102,11 +107,13 @@ task :update do
           "http://www.isuresults.com/results/season1617/gpjpn2016/",
           "http://www.isuresults.com/results/season1617/fc2017/",
           "http://www.isuresults.com/results/season1617/ec2017/",
-
           "http://www.isuresults.com/results/season1617/wc2017/",
+          "http://www.isuresults.com/results/season1617/wjc2017/",
           "http://www.isuresults.com/results/season1617/gpf1617/",
          ]
   updater = Fisk8Viewer::Updater.new
-  num = 1
-  updater.update_competitions([urls.last(num)].flatten)
+  num = (ENV["number"] || 1).to_i
+  [urls.last(num).reverse].flatten.each do |url|
+    updater.update_competition(url)
+  end
 end

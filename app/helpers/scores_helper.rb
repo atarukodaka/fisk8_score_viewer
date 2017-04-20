@@ -37,7 +37,8 @@ module ScoreViewer
       end
 
       def params_to_query(params) # , keys)
-        query = params.select {|k,v| filter_keys.include?(k.to_sym) && v.present? }.map {|k, v|
+        permitted_keys = [filter_keys, :page].flatten
+        query = params.select {|k,v| permitted_keys.include?(k.to_sym) && v.present? }.map {|k, v|
           [k, ERB::Util.url_encode(v.to_s)].join(':')
         }.join('/')
         query += ".#{params[:format]}" if params[:format].present?
@@ -46,10 +47,10 @@ module ScoreViewer
       def score_filter_forms
         [
          [:skater_name, Score.select(:skater_name).distinct.order(:skater_name).map(&:skater_name)],
-         [:category, ['MEN', 'LADIES']],
-         [:segment, ['SHORT PROGRAM', 'FREE SKATING']],
-         [:nation, Score.select(:nation).distinct.to_a.map(&:nation)],
-         [:competition_name, Score.select(:competition_name).distinct.to_a.map(&:competition_name)],
+         [:category, Score.select(:category).distinct.order(:category).map(&:category)],
+         [:segment, Score.select(:segment).distinct.order(:segment).map(&:segment)],
+         [:nation, Score.select(:nation).distinct.order(:nation).map(&:nation)],
+         [:competition_name, Competition.order("start_date DESC").map(&:name)],
          [:format, ['html', 'csv']],
         ]
       end

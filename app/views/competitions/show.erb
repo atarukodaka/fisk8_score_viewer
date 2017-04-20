@@ -14,7 +14,7 @@
     <th>2nd</th>
     <th>3rd</th>
   </tr>
-  <% competition.category_ranks.select(:category).distinct.each do |res| %>
+  <% competition.category_results.select(:category).distinct.each do |res| %>
   <tr>
     <td>
       <%= link_to(res.category, url_for(:competitions, :id, id: competition.id, category: res.category)) %>
@@ -24,7 +24,7 @@
         <%= link_to(seg.segment, url_for(:competitions, :id, id: competition.id, category: res.category, segment: seg.segment)) %>,  
       <% end %>      
     </td>
-    <% competition.category_ranks.where(category: res.category).where("rank > 0 and rank <= 3").order(:rank).select(:skater_name).each do |item| %>
+    <% competition.category_results.where(category: res.category).where("rank > 0 and rank <= 3").order(:rank).select(:skater_name).each do |item| %>
     <td>
       <%= item.skater_name %>
     </td>

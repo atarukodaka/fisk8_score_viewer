@@ -9,40 +9,33 @@ require 'open-uri'
 
 module Fisk8Viewer
   class CompetitionParser
+    include Logger
+    
     def initialize
       @agent = Mechanize.new
       @nbsp = Nokogiri::HTML.parse("&nbsp;").text
     end
 
-    def retrieve(url, dir: "./")
-      return "" if url.blank?
-
-      ## create dir if not exists
-      FileUtils.mkdir_p(dir) unless FileTest.exist?(dir)
-
-      ## convert pdf to text
-      filename = File.join(dir, URI.parse(url).path.split('/').last)
-      open(url) do |f|
-        File.open(filename, "w") do |out|
-          out.puts f.read
-        end
-      end
-      Pdftotext.text(filename)
-    end
-
     def parse(url)
+      logger.debug  "  parsing #{url}..."
       res = parse_summary(url)
-      score_parser = Fisk8Viewer::ScoreParser.new
-      scores = []
-      ["Men", "Ladies"].each do |c|
-        ["Short Program", "Free Skating"].each do |s|
-          score_url = res[:categories][c][:segment][s][:score_url]
+      #score_parser = Fisk8Viewer::ScoreParser.new
+      #scores = []
+      res[:categories].each do |c, v|
+        #["Men", "Ladies"].each do |c|
+        v[:segment].each do |s, hash|
+          #["Short Program", "Free Skating"].each do |s|
+          #score_url = res[:categories][c][:segment][s][:score_url]
+          score_url = hash[:score_url]
+=begin          
           score_text = retrieve(score_url, dir: "pdf")
           opts = {
-            date: res[:categories][c][:segment][s][:starting_time],
+            #date: res[:categories][c][:segment][s][:starting_time],
+            date: hash[:starting_time],
             result_pdf: score_url,
           }
           scores << score_parser.parse(score_text, opts)
+=end
         end
       end
 
@@ -52,12 +45,14 @@ module Fisk8Viewer
           :gp
         elsif res[:name] =~ /Olympic/
           :olympic
-        elsif res[:name] =~ /^ISU World/
+        elsif res[:name] =~ /^ISU World Figure/
           :world
         elsif res[:name] =~ /^ISU Four Continents/
           :fc
         elsif res[:name] =~ /^ISU European/
           :europe
+        elsif res[:name] =~ /^ISU World Junior/
+          :jworld
         else
           :unknown
         end
@@ -72,7 +67,9 @@ module Fisk8Viewer
       res[:season] = "%04d-%02d" % [year, (year+1) % 100]
       
       ## return hash
-      {competition: res, scores: scores.flatten}
+      #res[:scores] = scores.flatten
+      #{competition: res, scores: scores.flatten}
+      res
     end
 
     ################
@@ -156,7 +153,13 @@ module Fisk8Viewer
             segment = tds[3].text
 
             Time.zone = normalize_timezone(offset_timezone)
-            starting_time = Time.zone.parse("#{date} #{time}")
+            begin
+              starting_time = Time.zone.parse("#{date} #{time}")
+            rescue ArgumentError   # 'm/d/y' format on european comp
+              m, d, y = date.split(/[\/\-]/)
+              dt = [y, m, d].join('/')
+              starting_time = Time.zone.parse("#{dt} #{time}")
+            end
             category_data[category][:segment][segment][:starting_time] = starting_time
             dates << starting_time
           end
@@ -252,6 +255,7 @@ module Fisk8Viewer
       data = []
       begin
         page = @agent.get(url)
+        #page.encoding = "utf-8"
       rescue Mechanize::ResponseCodeError => e
         case e.response_code
         when "404"
