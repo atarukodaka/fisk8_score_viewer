@@ -9,14 +9,14 @@
     <th>Skater</th>
     <th>Nation</th>
     <th>Points</th>
-    <th>Short Rank</th>
-    <th>Short Points</th>
-    <th>Free Rank</th>
-    <th>Free Points</th>
+    <th><%= (params[:category] =~ /DANCE/) ? 'SD' : 'SP' %></th>
+    <th>Tss</th>
+    <th><%= (params[:category] =~ /DANCE/) ? 'FD' : 'FP' %></th>
+    <th>Tss</th>
   </tr>
   <% results.sort_by {|rec| rank = rec[:rank]; rank = 1000 if rank == 0; rank}.each do |rec| %>
   <tr>
-    <td><%= (rec.rank == 0) ? 'FNR' : rec.rank %></td>
+    <td><%= (rec.rank == 0) ? 'FNR/WD' : rec.rank %></td>
     <% begin %>
     <td><%= link_to(rec.skater_name, url_for(:skaters, :name, name: rec.skater_name)) %></td>
     <% rescue %>
@@ -26,13 +26,13 @@
     <td><%= Skater.find_by(name: rec.skater_name).try(:nation) %></td>
     <td><%= (rec.points == 0.0) ? '' : rec.points %></td>
     
-    <% if short_score = competition.scores.where(skater_name: rec.skater_name, segment: "SHORT PROGRAM").first %>
+    <% if short_score = competition.scores.where(skater_name: rec.skater_name).where("segment like(?)",  "%SHORT%").first %>
       <td><%= link_to(short_score.rank, url_for(:scores, :id, id: short_score.id)) %></td>
       <td><%= short_score.tss %></td>
     <% else %>
       <td></td><td></td>
     <% end %>
-    <% if free_score = competition.scores.where(skater_name: rec.skater_name, segment: "FREE SKATING").first %>
+    <% if free_score = competition.scores.where(skater_name: rec.skater_name,).where("segment like(?)", "%FREE%").first %>
       <td><%= link_to(free_score.rank, url_for(:scores, :id, id: free_score.id)) %></td>
       <td><%= free_score.tss %></td>
     <% else %>
