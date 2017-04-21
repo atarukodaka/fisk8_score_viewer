@@ -31,7 +31,7 @@ end
 
 task :update_competitions do
   competitions = YAML.load_file("config/competitions.yaml")
-  binding.pry
+
   updater = Fisk8Viewer::Updater.new
   num = (ENV["number"] || 1).to_i
   [competitions.last(num).reverse].flatten.each do |url|
