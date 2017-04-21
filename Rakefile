@@ -44,3 +44,12 @@ task :update_skaters do
   updater.update_skaters
 end
 
+task :parse_score do
+  pdf_url = ENV["pdf_url"]
+  score_parser = Fisk8Viewer::ScoreParser.new
+  include Fisk8Viewer::Utils
+  
+  score_text = convert_pdf(pdf_url, dir: "pdf")
+  ar = score_parser.parse(score_text)
+  puts ar.inspect
+end

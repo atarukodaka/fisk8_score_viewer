@@ -12,6 +12,9 @@ module Fisk8Viewer
     end
 
     def establish_connection
+      require 'padrino'
+      # require 'config/database'
+
       unless ENV['DATABASE_URL']
         ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/score_viewer_development.db')
       else
@@ -26,6 +29,7 @@ module Fisk8Viewer
         }
         ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
       end
+
     end
     def update_competition(url)
       logger.debug " - update competition: #{url}"

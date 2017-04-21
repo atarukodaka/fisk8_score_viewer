@@ -3,6 +3,7 @@ module ScoreViewer
   class App
     module Helper
       ## filter
+=begin
       def filter_keys
         {
           scores: [:skater_name, :category, :segment, :nation, :competition_name,],
@@ -12,9 +13,10 @@ module ScoreViewer
           components: [:component_number, :skater_name, :category, :segment, :nation, :competition_name,],
         }
       end
-      
+=end      
       def filter(rel, controller)
-        keys = filter_keys[controller]
+        #keys = filter_keys[controller]
+        keys = settings.filter_keys[controller]
         keys.each do |filter|
           rel = rel.where(filter =>params[filter]) if params[filter].present?
         end
@@ -32,7 +34,7 @@ module ScoreViewer
       end
 
       def params_to_query(params, controller)
-        permitted_keys = [filter_keys[controller], :page].flatten
+        permitted_keys = [settings.filter_keys[controller], :page].flatten
         query = params.select {|k,v| permitted_keys.include?(k.to_sym) && v.present? }.map {|k, v|
           [k, ERB::Util.url_encode(v.to_s)].join(':')
         }.join('/')

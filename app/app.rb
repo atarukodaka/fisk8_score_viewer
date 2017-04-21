@@ -6,14 +6,20 @@ module ScoreViewer
     enable :sessions
 
     layout :layout
+    set :filter_keys, {}
     
-    get :index, map: '/' do
+    get :index do
+      redirect url_for(:scores, :index)
+    end
+=begin    
+    get :_index, map: '/' do
       erb %Q[
 <li><a href="/skaters">skater</a>
 <li><a href="/competitions">competition</a>
 <li><a href="/elements">element</a>
 ], layout: :layout
     end
+=end
     ##
 
     # Caching support.

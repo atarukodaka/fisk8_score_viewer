@@ -1,4 +1,7 @@
 ScoreViewer::App.controllers :competitions do
+
+  settings.filter_keys[:competitions] =  [:competition_type, :season]
+  
   ## show
   get :id, with: :id do
     if competition = Competition.find_by(id: params[:id])

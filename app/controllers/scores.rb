@@ -1,5 +1,8 @@
 ScoreViewer::App.controllers :scores do
   ## show
+
+  settings.filter_keys[:scores] = [:skater_name, :category, :segment, :nation, :competition_name,]
+  
   get :id, with: :id do
     if score = Score.find_by(id: params[:id])
       render :"scores/show", locals: {score: score}

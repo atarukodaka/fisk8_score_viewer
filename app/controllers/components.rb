@@ -1,4 +1,7 @@
 ScoreViewer::App.controllers :components do
+
+  settings.filter_keys[:components] = [:component_number, :skater_name, :category, :segment, :nation, :competition_name,]
+  
   get :index do
     redirect url_for(:components, :list)
   end

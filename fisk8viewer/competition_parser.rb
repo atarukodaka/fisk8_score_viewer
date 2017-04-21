@@ -13,15 +13,17 @@ module Fisk8Viewer
       @nbsp = Nokogiri::HTML.parse("&nbsp;").text
     end
 
-    def parse(url)
+    def parse
       logger.debug  "  parsing #{url}..."
-      res = parse_summary(url)
+      res = summary_parser.parse_summary(url)
 
+=begin
       res[:categories].each do |c, v|
         v[:segment].each do |s, hash|
           score_url = hash[:score_url]
         end
       end
+=end
 
       ## type
       res[:competition_type] =
@@ -42,7 +44,7 @@ module Fisk8Viewer
         when /^ISU World Junior/
           :jworld
         when /^ISU JGP/, /^ISU Junior Grand Prix/
-          :jworld
+          :jgp
         else
           :unknown
         end

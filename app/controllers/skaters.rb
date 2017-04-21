@@ -1,4 +1,7 @@
 ScoreViewer::App.controllers :skaters do
+
+  settings.filter_keys[:skaters] =  [:category, :nation]
+  
   ## show
   get :id, with: :id do
     id = params[:id]
