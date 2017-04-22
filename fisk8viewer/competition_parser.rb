@@ -5,8 +5,6 @@ require 'mechanize'
 require 'uri'
 require 'forwardable'
 
-require 'fisk8viewer/competition_summary_parsers/isu_generic'
-
 module Fisk8Viewer
   class CompetitionParser
     include Logger
@@ -15,7 +13,6 @@ module Fisk8Viewer
     class << self
       attr_reader :registered
       def register(key, klass)
-        binding.pry
         @registered[key] = klass
       end
     end
@@ -32,7 +29,7 @@ module Fisk8Viewer
     def parse(url)
       logger.debug  "  parsing #{url}..."
       res = parse_summary(url)
-      binding.pry
+      
       ## type
       res[:competition_type] =
         case res[:name]
@@ -56,21 +53,17 @@ module Fisk8Viewer
         else
           :unknown
         end
-
-=begin      
-      ## abbr
-      uri = URI.parse(url)
-      res[:abbr] = uri.path.split('/').last
-=end
-
       ## season
+
+      res[:start_date] = res[:time_schedule].map {|e| e[:time]}.min
+      res[:end_date] = res[:time_schedule].map {|e| e[:time]}.max
       year, month = res[:start_date].year, res[:start_date].month
       year -= 1 if month <= 6
       res[:season] = "%04d-%02d" % [year, (year+1) % 100]
-      
       res
     end
   end
+
   module CompetitionSummaryParser
     class ISUGeneric
       def initialize
@@ -213,4 +206,6 @@ module Fisk8Viewer
     end
   end  ## class
 end
-Fisk8Viewer::CompetitionParser.register(:isu_generic, Fisk8Viewer::CompetitionSummaryParser::ISUGeneric)
+#Fisk8Viewer::CompetitionParser.register(:isu_generic, Fisk8Viewer::CompetitionSummaryParser::ISUGeneric)
+
+require 'fisk8viewer/competition_summary_parsers/isu_generic'

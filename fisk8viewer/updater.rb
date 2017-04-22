@@ -53,19 +53,29 @@ module Fisk8Viewer
       ## category
       logger.debug " - update category"
       score_parser = Fisk8Viewer::ScoreParser.new
-      competition_hash[:categories].each do |category, c_hash|
-        logger.debug "  [#{category}]"
 
-        ar = competition_parser.parse_category_result(c_hash[:result_url])
-        ar.each do |result_hash|
-          competition.category_results.create(rank: result_hash[:ranking], skater_name: result_hash[:skater_name], points: result_hash[:points], category: category.upcase)
-        end
-        c_hash[:segment].each do |segment, s_hash|
-          ## scores
-          score_text = convert_pdf(s_hash[:score_url], dir: "pdf")
-          ar = score_parser.parse(score_text) # , opts)
+      ## for each categories
+      competition_hash[:result_summary].each do |e|
+        category = e[:category]
+        segment = e[:segment]
+        result_url = e[:result_url]
+        score_url = e[:score_url]
+
+        if segment.blank?    ## category result
+          results = competition_parser.parse_category_result(result_url)
+          results.each do |result_hash|
+            rec = competition.category_results.create(category: category)
+            [:rank, :skater_name, :points].each do |k|
+              rec[k] = result_hash[k]
+            end
+          end
+        else    ## segment scores
+          score_text = convert_pdf(score_url, dir: "pdf")
+          ar = score_parser.parse(score_text)
           ar.each do |score_hash|
-            score_hash.merge!(date: s_hash[:starting_time], result_pdf: s_hash[:score_url])
+            elem = competition_hash[:time_schedule].select {|e| e[:category] == category && e[:segment] == segment}
+            starting_time = (elem.present?) ? elem.first[:time]  : nil
+            score_hash.merge!(date: starting_time, result_pdf: score_url)
             score_rec = competition.scores.create
             update_score(score_hash, score_rec)
           end
