@@ -21,7 +21,10 @@ gem 'activesupport', '>= 3.1'
 gem 'bcrypt'
 gem 'erubi', '~> 1.6'
 gem 'activerecord', '>= 3.1', :require => 'active_record'
+
+group :development, :test do
   gem 'sqlite3'
+end
 
 group :production do   ## for heroku
   gem 'pg'
