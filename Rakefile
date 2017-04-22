@@ -42,13 +42,15 @@ task :update_competitions do
       url = item["url"]
       summary_parser_type = item["summary_parser_type"]
     end
-    updater.update_competition(url, summary_parser_type: summary_parser_type)
+    force = ENV['force'].try(:to_sym)
+    updater.update_competition(url, summary_parser_type: summary_parser_type, force: force)
   end
 end
 
 task :update_skaters do  
   updater = Fisk8Viewer::Updater.new
-  updater.update_skaters
+  force = ENV['force'].try(:to_sym)
+  updater.update_skaters(force: force)
 end
 
 task :parse_score do

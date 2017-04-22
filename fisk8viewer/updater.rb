@@ -26,15 +26,20 @@ module Fisk8Viewer
       end
 
     end
-    def update_competition(url, summary_parser_type: :isu_generic)
+    def update_competition(url, summary_parser_type: :isu_generic, force: false)
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
-        logger.debug " already exists"
-        return
-      else
-        competition = Competition.create
+        if force
+          logger.debug " exists but re-create"
+          competition.destroy
+        else
+          logger.debug " already exists"
+          return
+        end
       end
+
+      competition = Competition.create
       score_parser = Fisk8Viewer::ScoreParser.new
       competition_parser = Fisk8Viewer::CompetitionParser.new(summary_parser_type: summary_parser_type)
       competition_hash = competition_parser.parse(url)
@@ -110,7 +115,7 @@ module Fisk8Viewer
       score_rec.save
     end
     ################
-    def update_skaters
+    def update_skaters(force: false)
       logger.debug("update skaters")
       parser = SkaterParser.new
 
@@ -120,7 +125,9 @@ module Fisk8Viewer
         Skater.where(category: category).each do |skater|
           isu_number = isu_number_hash[skater.name]
           next if isu_number.blank?
-          next if skater[:isu_number].present?
+          if skater[:isu_number].present? && force.blank?
+            next
+          end
           
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")

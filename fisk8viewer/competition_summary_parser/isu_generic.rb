@@ -54,9 +54,15 @@ module Fisk8Viewer
             next
           end
           tm_str = row.xpath("td[2]").text
-
+          begin
+            tm = Time.zone.parse("#{dt_str} #{tm_str}")
+          rescue ArgumentError => e   ## m/d/yyyy
+            m, d, y = dt_str.split(/[,\/]/)
+            dt_str = "%s/%s/%s" % [d, m, y]
+            tm = Time.zone.parse("#{dt_str} #{tm_str}")
+          end
           time_schedule << {
-            time: Time.zone.parse("#{dt_str} #{tm_str}"),
+            time: tm,
             category: row.xpath("td[3]").text.upcase,
             segment: row.xpath("td[4]").text.upcase,
           }
