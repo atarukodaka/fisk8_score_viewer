@@ -38,14 +38,14 @@
 
     <td><%= link_to(score.segment, url_for(:competitions, :id, id: score.competition_id, category: score.category, segment: score.segment)) %></td>
     <td><%= link_to_result_pdf(score.result_pdf) %></td>
-    <td><%= score.starting_time %></td>
+    <td><%= score.starting_time.strftime("%Y-%m-%d") %></td>
     <td><%= score.rank %></td>
     <td><%= score.starting_number %></td>
     <td><%= score.tss %></td>
     <td><%= score.tes %></td>
     <td><%= score.pcs %></td>
     <td><%= score.deductions %></td>
-    <td><%= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) %></td>
+    <td style="font-size: x-small;"><%= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) %></td>
     <td><%= link_to(score.components_summary, url_for(:scores, :id, id: score.id)) %></td>
   </tr>
   <% end %>
