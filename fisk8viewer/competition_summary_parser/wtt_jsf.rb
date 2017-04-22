@@ -39,32 +39,8 @@ module Fisk8Viewer
         data[:result_summary] = summary
 
         ## time schdule
-        Time.zone = "UTC"
-        date_elem = page/"//*[text()='Date']"
-        rows = date_elem/"../../tr"
-        dt_str = ""
-        time_schedule = []
-
-        rows.each do |row|
-          next if row.xpath("td").blank?
-
-          tds = row.xpath("td")
-          if tds.count == 4
-            dt_str = tds[0].text
-            tds.pop
-          end
-          tm_str, category, segment = tds
-          tm = Time.zone.parse("#{dt_str} #{tm_str.text}")
-          next if tm.nil?
-          
-          time_schedule << {
-            time: tm,
-            category: category.text.upcase,
-            segment: segment.text.upcase,
-          }
-        end
-        binding.pry
-        data[:time_schedule] = time_schedule
+        ## fxxing sxxt HTML....TD has no TR parents...gave up to parse
+        data[:time_schedule] = []
         data
       end
 
@@ -80,6 +56,46 @@ module Fisk8Viewer
         data[:city] = "Tokyo"
         data[:country] = "JPN"
 
+        Time.zone = "UTC"
+        data[:time_schedule] =
+          [
+           {
+             time: Time.zone.parse("2017/04/20 15:15:00"),
+             category: "ICE DANCE",
+             segment: "SHORT DANCE",
+           },
+           {
+             time: Time.zone.parse("2017/04/20 16:35:00"),
+             category: "LADIES",
+             segment: "SHORT PROGRAM",
+           },
+           {
+             time: Time.zone.parse("2017/04/20 18:40:00"),
+             category: "MEN",
+             segment: "FREE SKATING",
+           },
+           {
+             time: Time.zone.parse("2017/04/21 16:00:00"),
+             category: "PAIRS",
+             segment: "SHORT PROGRAM",
+           },
+           {
+             time: Time.zone.parse("2017/04/21 17:25:00"),
+             category: "ICE DANCE",
+             segment: "FREE DANCE",
+           },
+           {
+             time: Time.zone.parse("2017/04/22 15:15:00"),
+             category: "PAIRS",
+             segment: "FREE SKATING",
+           },
+           
+           {
+             time: Time.zone.parse("2017/04/22 16:50:00"),
+             category: "LADIES",
+             segment: "FREE SKATING",
+           },
+          ]
         data
       end
       ## register
