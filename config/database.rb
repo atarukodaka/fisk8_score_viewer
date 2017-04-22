@@ -29,22 +29,23 @@ ActiveRecord::Base.configurations[:development] = {
   database: Padrino.root('db', 'score_viewer_development.db'),
 }
 
-=begin
-ActiveRecord::Base.configurations[:production] = {
-  adapter: 'sqlite3',
-  database: Padrino.root('db', 'score_viewer_production.db'),
-}
-=end
-postgres = URI.parse(ENV['DATABASE_URL'] || '')
+if database_url = ENV['DATABASE_URL'].presence  ## for heroku deploy using postgres
+  postgres = URI.parse(ENV['DATABASE_URL'])
 
-ActiveRecord::Base.configurations[:production] = {
-  :adapter  => 'postgresql',
-  :encoding => 'utf8',
-  :database => postgres.path[1..-1],
-  :username => postgres.user,
-  :password => postgres.password,
-  :host     => postgres.host
-}
+  ActiveRecord::Base.configurations[:production] = {
+    :adapter  => 'postgresql',
+    :encoding => 'utf8',
+    :database => postgres.path[1..-1],
+    :username => postgres.user,
+    :password => postgres.password,
+    :host     => postgres.host
+  }
+else
+  ActiveRecord::Base.configurations[:production] = {
+    adapter: 'sqlite3',
+    database: Padrino.root('db', 'score_viewer_production.db'),
+  }
+end
 
 # Setup our logger
 ActiveRecord::Base.logger = logger

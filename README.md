@@ -22,10 +22,10 @@ Score viewer of figureskating competitions. you can register/see:
 % heroku create --app app_name
 % heroku addons:add heroku-postgresql
 % heroku run rake db:migrate
-% heroku config | sed -n "/DATABASE_URL/s/: /=/p"
+% heroku config:get DATABASE_URL
 DATABASE_URL=postgres://.....
-% DATABASE_URL=postgres://..... rake update
-% DATABASE_URL=postgres://..... rake update_skaters _(optinoal)_
+% DATABASE_URL=postgres://..... RACK_ENV=production rake update
+% DATABASE_URL=postgres://..... RACK_ENV=production rake update_skaters _(optinoal)_
 ```
 ### Reset database
 
