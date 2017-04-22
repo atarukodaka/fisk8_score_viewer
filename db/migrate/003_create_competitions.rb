@@ -6,7 +6,7 @@ class CreateCompetitions < ActiveRecord::Migration
       t.string :country
       t.date :start_date
       t.date :end_date
-      t.string :isu_site
+      t.string :site_url
 
       t.string :competition_type
       t.string :season

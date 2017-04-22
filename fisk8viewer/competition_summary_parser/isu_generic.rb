@@ -10,7 +10,7 @@ module Fisk8Viewer
         data[:name] = page.title
         city_country = page.xpath("//td[contains(text(), '/')]").first.text
         data[:city], data[:country] = city_country.split(/ *\/ */)
-        data[:isu_site] = url
+        data[:site_url] = url
         
         ## summary table
         category_elem = page.xpath("//*[text()='Category']").first

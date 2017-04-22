@@ -28,7 +28,7 @@ module Fisk8Viewer
     def update_competition(url, summary_parser_type: :isu_generic)
       logger.debug " - update competition: #{url}"
 
-      if competition = Competition.find_by(isu_site: url)
+      if competition = Competition.find_by(site_url: url)
         logger.debug " already exists"
         return
       else
@@ -38,7 +38,7 @@ module Fisk8Viewer
       competition_parser = Fisk8Viewer::CompetitionParser.new(summary_parser_type: summary_parser_type)
       competition_hash = competition_parser.parse(url)
 
-      keys = [:name, :city, :country, :isu_site, :start_date, :end_date,
+      keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :abbr, :season,]
       keys.each {|k|
         competition[k] = competition_hash[k]
