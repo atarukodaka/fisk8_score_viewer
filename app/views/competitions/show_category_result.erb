@@ -20,7 +20,6 @@
     <% begin %>
     <td><%= link_to(rec.skater_name, url_for(:skaters, :name, name: rec.skater_name)) %></td>
     <% rescue %>
-    <% binding.pry %>
     <% end %>
        
     <td><%= Skater.find_by(name: rec.skater_name).try(:nation) %></td>

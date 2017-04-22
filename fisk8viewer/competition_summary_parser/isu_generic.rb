@@ -1,9 +1,8 @@
+require 'fisk8viewer/competition_summary_parser'
+
 module Fisk8Viewer
   module CompetitionSummaryParser
-    class ISU_Generic
-      def initialize
-        @agent = Mechanize.new
-      end
+    class ISU_Generic < Base
       def parse_summary(url)
         page = @agent.get(url)
         data = {}
@@ -25,6 +24,9 @@ module Fisk8Viewer
             category = c.upcase
           end
           segment = (elem = row.xpath("td[2]")) ? elem.text.upcase : ""
+
+          next if category.blank? && segment.blank?
+          
           result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(url, elem.text): ""
           score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(url, elem.text): ""
           summary << {
@@ -70,8 +72,9 @@ module Fisk8Viewer
             return data
           end
         end
-        fpi = page.xpath("//th[contains(text(), 'FPl.')]").first
-        rows = fpi.xpath("../../tr")
+        fpi = page.xpath("//th[contains(text(), 'FPl.')]")
+        return {} if fpi.blank?
+        rows = fpi.first.xpath("../../tr")
         rows.each do |row|
           tds = row.xpath("td")
           next if tds.blank?
@@ -92,7 +95,9 @@ module Fisk8Viewer
         end
         return data
       end
-      Fisk8Viewer::CompetitionParser.register(:isu_generic, self)
+
+      ## register
+      Fisk8Viewer::CompetitionSummaryParser.register(:isu_generic, self)
     end  ## class
   end
 end

@@ -51,7 +51,6 @@ module Fisk8Viewer
       competition.save
       
       ## category
-      logger.debug " - update category"
       score_parser = Fisk8Viewer::ScoreParser.new
 
       ## for each categories
@@ -62,14 +61,17 @@ module Fisk8Viewer
         score_url = e[:score_url]
 
         if segment.blank?    ## category result
+          logger.debug " - update category [#{category}]"
           results = competition_parser.parse_category_result(result_url)
           results.each do |result_hash|
             rec = competition.category_results.create(category: category)
             [:rank, :skater_name, :points].each do |k|
               rec[k] = result_hash[k]
             end
+            rec.save
           end
         else    ## segment scores
+          logger.debug " - update scores on segment [#{category}/#{segment}]"
           score_text = convert_pdf(score_url, dir: "pdf")
           ar = score_parser.parse(score_text)
           ar.each do |score_hash|
