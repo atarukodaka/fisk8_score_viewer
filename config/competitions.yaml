@@ -88,4 +88,6 @@
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
   summary_parser_type: :wtt_2017
 - http://www.isuresults.com/results/season1516/ec2016/
-- http://www.isuresults.com/results/wjc2012/
+-
+  url: http://www.isuresults.com/results/wjc2012/
+  summary_parser_type: :isu_generic_mdy

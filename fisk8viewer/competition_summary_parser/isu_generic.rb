@@ -3,6 +3,9 @@ require 'fisk8viewer/competition_summary_parser'
 module Fisk8Viewer
   module CompetitionSummaryParser
     class ISU_Generic < Base
+      def datetime_parse(str)
+        tm = Time.zone.parse("#{dt_str} #{tm_str}")
+      end
       def parse_summary(url)
         page = @agent.get(url)
         data = {}
@@ -54,13 +57,8 @@ module Fisk8Viewer
             next
           end
           tm_str = row.xpath("td[2]").text
-          begin
-            tm = Time.zone.parse("#{dt_str} #{tm_str}")
-          rescue ArgumentError => e   ## m/d/yyyy
-            m, d, y = dt_str.split(/[,\/]/)
-            dt_str = "%s/%s/%s" % [d, m, y]
-            tm = Time.zone.parse("#{dt_str} #{tm_str}")
-          end
+          tm = parse_datetime("#{dt_str} #{tm_str}")
+
           time_schedule << {
             time: tm,
             category: row.xpath("td[3]").text.upcase,
@@ -113,3 +111,18 @@ module Fisk8Viewer
 end
 
 
+################################################################
+
+module Fisk8Viewer
+  module CompetitionSummaryParser
+    class ISU_Generic_mdy < ISU_Generic
+      def parse_datetime(str)
+        dt_str, tm_str = str.split(/ /)
+        m, d, y = dt_str.split(/[,\/]/)
+        dt_str = "%s/%s/%s" % [d, m, y]
+        Time.zone.parse("#{dt_str} #{tm_str}")
+      end
+      Fisk8Viewer::CompetitionSummaryParser.register(:isu_generic_mdy, self)
+    end
+  end
+end

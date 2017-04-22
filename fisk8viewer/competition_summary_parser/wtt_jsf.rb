@@ -72,7 +72,7 @@ module Fisk8Viewer
            {
              time: Time.zone.parse("2017/04/20 18:40:00"),
              category: "MEN",
-             segment: "FREE SKATING",
+             segment: "SHORT PROGRAM",
            },
            {
              time: Time.zone.parse("2017/04/21 16:00:00"),
@@ -83,6 +83,11 @@ module Fisk8Viewer
              time: Time.zone.parse("2017/04/21 17:25:00"),
              category: "ICE DANCE",
              segment: "FREE DANCE",
+           },
+           {
+             time: Time.zone.parse("2017/04/21 19:00:00"),
+             category: "MEN",
+             segment: "FREE PROGRAM",
            },
            {
              time: Time.zone.parse("2017/04/22 15:15:00"),

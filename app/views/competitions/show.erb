@@ -4,6 +4,22 @@
 <%= partial '/competitions/competition_info', locals: {competition: competition} %>
 <!-- %= partial '/scores/list', locals: {scores: scores, paginate: true} % -->
 
+<h2>Schedule</h2>
+<table class="table table-striped table-hover table-condensed">
+  <tr>
+    <th>Starting Time</th>
+    <th>Category</th>
+    <th>Schedule</th>
+  </tr>
+  <% competition.scores.select(:category, :segment, :starting_time).distinct.order(:starting_time).each do |elem| %>
+  <tr>
+    <td><%= elem[:starting_time].strftime("%Y-%m-%d %H:%M") %></td>
+    <td><%= link_to(elem[:category], url_for(:competitions, :id, id: competition.id, category: elem[:category])) %></td>
+    <td><%= link_to(elem[:segment], url_for(:competitions, :id, id: competition.id, category: elem[:category], segment: elem[:segment])) %></td>
+  </tr>    
+  <% end %>
+</table>
+
 <h2>Category Result</h2>
 
 <table class="table table-striped table-hover table-condensed">
@@ -20,7 +36,7 @@
       <%= link_to(res.category, url_for(:competitions, :id, id: competition.id, category: res.category)) %>
     </td>
     <td>
-      <% competition.scores.where(category: res.category).order(:date).select(:segment).distinct.each do |seg| %>
+      <% competition.scores.where(category: res.category).order(:starting_time).select(:segment).distinct.each do |seg| %>
         <%= link_to(seg.segment, url_for(:competitions, :id, id: competition.id, category: res.category, segment: seg.segment)) %>,  
       <% end %>      
     </td>

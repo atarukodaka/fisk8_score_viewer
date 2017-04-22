@@ -77,7 +77,7 @@ module Fisk8Viewer
           ar.each do |score_hash|
             elem = competition_hash[:time_schedule].select {|e| e[:category] == category && e[:segment] == segment}
             starting_time = (elem.present?) ? elem.first[:time]  : nil
-            score_hash.merge!(date: starting_time, result_pdf: score_url)
+            score_hash.merge!(starting_time: starting_time, result_pdf: score_url)
             score_rec = competition.scores.create
             update_score(score_hash, score_rec)
           end
@@ -88,7 +88,7 @@ module Fisk8Viewer
     def update_score(score_hash, score_rec)
       logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]}/#{score_hash[:category]}/#{score_hash[:segment]}/#{score_hash[:competition_name]}"
       [:skater_name, :rank, :starting_number, :nation,
-       :competition_name, :category, :segment, :date, :result_pdf,
+       :competition_name, :category, :segment, :starting_time, :result_pdf,
        :tss, :tes, :pcs, :deductions].each do |k|
         score_rec[k] = score_hash[k]
       end
