@@ -14,7 +14,7 @@ ScoreViewer::App.controllers :scores do
   ## list
   get :list, map: "/scores/list/*", provides: [:csv, :html] do
     splat_to_params(params)
-    rel = filter(Score.order("id DESC"), :scores)
+    rel = filter(Score.order("starting_time DESC"), :scores)
 
     case content_type
     when :csv

@@ -34,11 +34,9 @@ ActiveRecord::Base.configurations[:production] = {
   database: Padrino.root('db', 'score_viewer_production.db'),
 }
 
-binding.pry
-=begin
 postgres = URI.parse(ENV['DATABASE_URL'] || '')
 
-ActiveRecord::Base.configurations[:production] = {
+ActiveRecord::Base.configurations[:heroku] = {
   :adapter  => 'postgresql',
   :encoding => 'utf8',
   :database => postgres.path[1..-1],
@@ -46,7 +44,7 @@ ActiveRecord::Base.configurations[:production] = {
   :password => postgres.password,
   :host     => postgres.host
 }
-=end
+
 # Setup our logger
 ActiveRecord::Base.logger = logger
 
