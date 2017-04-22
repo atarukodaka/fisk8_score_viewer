@@ -22,7 +22,7 @@ module Fisk8Viewer
         ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
       else
         rack_env = ENV["RACK_ENV"] || "development"
-        ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/score_viewer_#{rack_env}.db')
+        ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "db/score_viewer_#{rack_env}.db")
       end
 
     end

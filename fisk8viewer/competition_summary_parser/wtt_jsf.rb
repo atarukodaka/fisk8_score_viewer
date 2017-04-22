@@ -45,23 +45,26 @@ module Fisk8Viewer
         dt_str = ""
         time_schedule = []
 
-        binding.pry
         rows.each do |row|
           next if row.xpath("td").blank?
-          if t = row.xpath("td").count == 4
-            dt_str = t
-            next
-          end
-          tm_str = row.xpath("td[1]").text
 
+          tds = row.xpath("td")
+          if tds.count == 4
+            dt_str = tds[0].text
+            tds.pop
+          end
+          tm_str, category, segment = tds
+          tm = Time.zone.parse("#{dt_str} #{tm_str.text}")
+          next if tm.nil?
+          
           time_schedule << {
-            time: Time.zone.parse("#{dt_str} #{tm_str}"),
-            category: row.xpath("td[2]").text.upcase,
-            segment: row.xpath("td[3]").text.upcase,
+            time: tm,
+            category: category.text.upcase,
+            segment: segment.text.upcase,
           }
         end
-        data[:time_schedule] = time_schedule
         binding.pry
+        data[:time_schedule] = time_schedule
         data
       end
 
