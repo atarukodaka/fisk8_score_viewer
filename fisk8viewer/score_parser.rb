@@ -14,6 +14,7 @@ module Fisk8Viewer
       scores = []
       score = {technicals: [], components: []}
       status = init_status()
+      text.force_encoding('UTF-8')
       
       text.split("\n").each do |line|
         line.gsub!(/ +/, ' ')
