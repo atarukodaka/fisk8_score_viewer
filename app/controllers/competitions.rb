@@ -10,6 +10,13 @@ ScoreViewer::App.controllers :competitions do
       render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Competition"}
     end
   end
+  get :name, with: :name do
+    if competition = Competition.find_by(name: params[:name])
+      render :"competitions/show", locals: {competition: competition, scores: competition.scores}
+    else
+      render :record_not_found
+    end
+  end
 
   get :id, with: [:id, :category] do
     if competition = Competition.find_by(id: params[:id])
