@@ -20,8 +20,10 @@ module Fisk8Viewer
       end
 
       def parse_summary(url)
+        {result_summary: [], time_schedule: []}
       end
       def parse_category_result(url)
+        []
       end
     end
   end  ## module

@@ -80,7 +80,7 @@ module Fisk8Viewer
           next if tds.blank?
           
           hash = {
-            ranking: tds[0].text.to_i,
+            rank: tds[0].text.to_i,
             skater_name: tds[1].text,
             skater_nation: tds[2].text,
             points: tds[3].text.to_f

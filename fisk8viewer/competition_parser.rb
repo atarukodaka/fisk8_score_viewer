@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 require 'fisk8viewer/competition_summary_parser/isu_generic'
+require 'fisk8viewer/competition_summary_parser/wtt_jsf'
 
 module Fisk8Viewer
   class CompetitionParser
@@ -56,9 +57,11 @@ module Fisk8Viewer
       res[:end_date] = res[:time_schedule].map {|e| e[:time]}.max
 
       ## season
-      year, month = res[:start_date].year, res[:start_date].month
-      year -= 1 if month <= 6
-      res[:season] = "%04d-%02d" % [year, (year+1) % 100]
+      if res[:start_date].present?
+        year, month = res[:start_date].year, res[:start_date].month
+        year -= 1 if month <= 6
+        res[:season] = "%04d-%02d" % [year, (year+1) % 100]
+      end
       res
     end
   end ## class

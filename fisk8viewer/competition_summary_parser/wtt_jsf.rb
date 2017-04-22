@@ -2,8 +2,7 @@ require 'fisk8viewer/competition_summary_parser'
 
 module Fisk8Viewer
   module CompetitionSummaryParser
-    class WTT_JSF
-      
+    class WTT_JSF < Base
       ## register
       Fisk8Viewer::CompetitionSummaryParser.register(:wtt_jsf, self)
     end ## class

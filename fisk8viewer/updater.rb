@@ -1,6 +1,3 @@
-require 'active_record'
-require 'fisk8viewer'
-#require 'fisk8viewer/competition_parser'
 
 module Fisk8Viewer
   class Updater
@@ -12,9 +9,6 @@ module Fisk8Viewer
     end
 
     def establish_connection
-      require 'padrino'
-      # require 'config/database'
-
       unless ENV['DATABASE_URL']
         ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/score_viewer_development.db')
       else
@@ -31,7 +25,7 @@ module Fisk8Viewer
       end
 
     end
-    def update_competition(url)
+    def update_competition(url, summary_parser_type: :isu_generic)
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(isu_site: url)
@@ -40,7 +34,8 @@ module Fisk8Viewer
       else
         competition = Competition.create
       end
-      competition_parser = Fisk8Viewer::CompetitionParser.new
+      score_parser = Fisk8Viewer::ScoreParser.new
+      competition_parser = Fisk8Viewer::CompetitionParser.new(summary_parser_type: summary_parser_type)
       competition_hash = competition_parser.parse(url)
 
       keys = [:name, :city, :country, :isu_site, :start_date, :end_date,
@@ -51,7 +46,6 @@ module Fisk8Viewer
       competition.save
       
       ## category
-      score_parser = Fisk8Viewer::ScoreParser.new
 
       ## for each categories
       competition_hash[:result_summary].each do |e|

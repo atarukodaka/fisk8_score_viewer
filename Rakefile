@@ -34,8 +34,16 @@ task :update_competitions do
 
   updater = Fisk8Viewer::Updater.new
   num = (ENV["number"] || 1).to_i
-  [competitions.last(num).reverse].flatten.each do |url|
-    updater.update_competition(url)
+  [competitions.last(num).reverse].flatten.each do |item|
+    binding.pry
+    if item.is_a? String
+      url = item
+      summary_parser_type = :isu_generic
+    elsif item.is_a? Hash
+      url = item["url"]
+      summary_parser_type = item["summary_parser_type"]
+    end
+    updater.update_competition(url, summary_parser_type: summary_parser_type)
   end
 end
 

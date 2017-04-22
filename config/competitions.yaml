@@ -84,8 +84,8 @@
 - http://www.isuresults.com/results/season1617/wjc2017/
 - http://www.isuresults.com/results/wtt2012/
 - http://www.isuresults.com/results/season1617/wc2017/
-#- http://foo.bar,parser1,parser2
-#-
-#  foo: bar
-#  bar: baz
+-
+  url: http://www.jsfresults.com/intl/2016-2017/wtt/
+  summary_parser_type: :wtt_jsf
+
 
