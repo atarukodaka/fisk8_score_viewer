@@ -8,7 +8,6 @@ module Fisk8Viewer
         data = {}
 
         data[:name] = page.title
-        binding.pry
         
         city_country = page.xpath("//td[contains(text(), '/')]").presence ||
           page.xpath("//td[contains(text(), ',')]")
