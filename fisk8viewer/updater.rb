@@ -9,6 +9,8 @@ module Fisk8Viewer
     end
 
     def establish_connection
+      return  ## 'rake :foo => :skeleton' to use config/database.rb
+=begin
       if database_url=ENV['DATABASE_URL']
         postgres = URI.parse(database_url)
         ActiveRecord::Base.configurations[:production] = {
@@ -24,7 +26,7 @@ module Fisk8Viewer
         rack_env = ENV["RACK_ENV"] || "development"
         ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: "db/score_viewer_#{rack_env}.db")
       end
-
+=end
     end
     def update_competition(url, summary_parser_type: :isu_generic, force: false)
       logger.debug " - update competition: #{url}"

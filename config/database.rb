@@ -34,6 +34,7 @@ ActiveRecord::Base.configurations[:production] = {
   database: Padrino.root('db', 'score_viewer_production.db'),
 }
 
+binding.pry
 =begin
 postgres = URI.parse(ENV['DATABASE_URL'] || '')
 

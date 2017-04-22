@@ -29,7 +29,7 @@ end
 task update: [:update_competitions, :update_skaters] do
 end
 
-task :update_competitions do
+task :update_competitions => :skeleton do
   competitions = YAML.load_file("config/competitions.yaml")
 
   updater = Fisk8Viewer::Updater.new
@@ -48,13 +48,13 @@ task :update_competitions do
   end
 end
 
-task :update_skaters do  
+task :update_skaters => :skeleton do  
   updater = Fisk8Viewer::Updater.new
   force = ENV['force'].try(:to_sym)
   updater.update_skaters(force: force)
 end
 
-task :parse_score do
+task :parse_score => :skeleton do
   pdf_url = ENV["url"]
   score_parser = Fisk8Viewer::ScoreParser.new
   include Fisk8Viewer::Utils
@@ -62,4 +62,8 @@ task :parse_score do
   score_text = convert_pdf(pdf_url, dir: "pdf")
   ar = score_parser.parse(score_text)
   puts ar.inspect
+end
+
+task :foo => :skeleton do
+  puts Padrino.root("db", "score.db")
 end
