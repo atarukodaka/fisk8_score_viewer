@@ -3,8 +3,8 @@ require 'fisk8viewer/competition_summary_parser'
 module Fisk8Viewer
   module CompetitionSummaryParser
     class ISU_Generic < Base
-      def datetime_parse(str)
-        tm = Time.zone.parse("#{dt_str} #{tm_str}")
+      def parse_datetime(str)
+        tm = Time.zone.parse(str)
       end
       def parse_summary(url)
         page = @agent.get(url)
