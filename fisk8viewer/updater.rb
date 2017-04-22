@@ -9,10 +9,8 @@ module Fisk8Viewer
     end
 
     def establish_connection
-      unless ENV['DATABASE_URL']
-        ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/score_viewer_development.db')
-      else
-        postgres = URI.parse(ENV['DATABASE_URL'] || '')
+      if database_url=ENV['DATABASE_URL']
+        postgres = URI.parse(database_url)
         ActiveRecord::Base.configurations[:production] = {
           :adapter  => 'postgresql',
           :encoding => 'utf8',
@@ -22,6 +20,9 @@ module Fisk8Viewer
           :host     => postgres.host
         }
         ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
+      else
+        rack_env = ENV["RACK_ENV"] || "development"
+        ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/score_viewer_#{rack_env}.db')
       end
 
     end
