@@ -1,3 +1,12 @@
+# add any competitions that you want to add into the database.
+# if the result site conform to ISU standards format, just add the url as array.
+# if it requires specific parser, add it with parser key as hash e.g.
+#   -
+#     url: http://www.foo.bar/results/xxxx2017/
+#     summary_parser: foo
+#
+#  on that case you need to register the parser into Fisk8Viewer::CompetitionSummaryParser.registered. see fisk8viewer/competition_summary_parser.rb and fisk8viewer/competition_summary_parser/isu_generic.rb
+
 ##2011-12
 - http://www.isuresults.com/results/gpusa2011/
 - http://www.isuresults.com/results/gpcan2011/

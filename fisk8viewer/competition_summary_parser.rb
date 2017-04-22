@@ -25,6 +25,7 @@ module Fisk8Viewer
       def parse_category_result(url)
         []
       end
+      # Fisk8Viewer::CompetitionSummaryParser.register(:base, self)
     end
   end  ## module
 end

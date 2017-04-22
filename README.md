@@ -12,12 +12,12 @@ Score viewer of figureskating competitions. you can register/see:
 % bundle install
 % bundle exec rake db:migrate
 % bundle exec rake update
-% bundle exec rake update_skaters _(optional)_
 % bundle exec padrino start
 ```
 
 ## Deploy to heroku
 
+### deploy
 ```sh
 % heroku create --app app_name
 % heroku addons:add heroku-postgresql
@@ -25,8 +25,8 @@ Score viewer of figureskating competitions. you can register/see:
 % heroku config:get DATABASE_URL
 DATABASE_URL=postgres://.....
 % DATABASE_URL=postgres://..... RACK_ENV=production rake update
-% DATABASE_URL=postgres://..... RACK_ENV=production rake update_skaters _(optinoal)_
 ```
+
 ### Reset database
 
 ```sh
@@ -35,3 +35,6 @@ DATABASE_URL=postgres://.....
 
 and do migrate so on as ablove.
 
+## Maintain competitions list
+
+Add site url of competitions that you want to add into 'config/competitions.yaml' and run 'rake update'.

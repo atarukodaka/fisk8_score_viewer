@@ -15,10 +15,12 @@ require 'pry-byebug'
 require 'active_record'
 require 'fisk8viewer'
 
+=begin
 require './models/score'
 require './models/competition'
 require './models/skater'
 require './models/category_result'
+=end
 
 task :default => :server
 
@@ -29,7 +31,7 @@ end
 task update: [:update_competitions, :update_skaters] do
 end
 
-task :update_competitions => :skeleton do
+task :update_competitions => :environment do
   competitions = YAML.load_file("config/competitions.yaml")
 
   updater = Fisk8Viewer::Updater.new
@@ -48,13 +50,13 @@ task :update_competitions => :skeleton do
   end
 end
 
-task :update_skaters => :skeleton do  
+task :update_skaters => :environment do  
   updater = Fisk8Viewer::Updater.new
   force = ENV['force'].try(:to_sym)
   updater.update_skaters(force: force)
 end
 
-task :parse_score => :skeleton do
+task :parse_score => :environment do
   pdf_url = ENV["url"]
   score_parser = Fisk8Viewer::ScoreParser.new
   include Fisk8Viewer::Utils
@@ -64,6 +66,15 @@ task :parse_score => :skeleton do
   puts ar.inspect
 end
 
-task :foo => :skeleton do
+task :foo => :bar do
+  binding.pry
+  puts ENV['foo']
+  puts ENV['bar']
+  
   puts Padrino.root("db", "score.db")
+end
+
+
+task :bar => :environment do
+  bar = :bar
 end
