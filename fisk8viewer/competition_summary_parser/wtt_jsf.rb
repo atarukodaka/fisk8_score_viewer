@@ -87,7 +87,7 @@ module Fisk8Viewer
            {
              time: Time.zone.parse("2017/04/21 19:00:00"),
              category: "MEN",
-             segment: "FREE PROGRAM",
+             segment: "FREE SKATING",
            },
            {
              time: Time.zone.parse("2017/04/22 15:15:00"),

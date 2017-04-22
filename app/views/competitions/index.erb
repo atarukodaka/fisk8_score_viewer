@@ -14,7 +14,8 @@
   <tr>
     <th>ID</th>
     <th>Competition</th>
-    <th>City / Country</th>
+    <th>City</th>
+    <th>Country</th>
     <th>Abbr</th>
     <th>Type</th>
     <th>Season</th>
@@ -26,7 +27,8 @@
   <tr>
     <td><%= competition.id %></td>
     <td><%= link_to(competition.name, url_for(:competitions, :id, id: competition.id)) %></td>
-    <td><%= competition.city %> / <%= competition.country %></td>
+    <td><%= competition.city %></td>
+    <td><%= competition.country %></td>
     <td><%= competition.abbr %></td>    
     <td><%= link_to(competition.competition_type, url_for(:competitions, :list, "competition_type:#{competition.competition_type}")) %></td>    
     <td><%= link_to(competition.season, url_for(:competitions, :list, "season:#{competition.season}")) %></td>    

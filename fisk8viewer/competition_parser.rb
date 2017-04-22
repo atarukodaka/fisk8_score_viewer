@@ -23,34 +23,38 @@ module Fisk8Viewer
       @summary_parser_type = summary_parser_type
       @summary_parser = Fisk8Viewer::CompetitionSummaryParser.registered[summary_parser_type].new
     end
-    
+
+    def competition_type(name)
+      case name
+      when /^ISU GP/, /^ISU Grand Prix/
+        :gp
+      when /Olympic/
+        :olympic
+      when /^ISU World Figure/
+        :world
+      when /^ISU Four Continents/
+        :fc
+      when /^ISU European/
+        :europe
+      when /^ISU World Team/
+        :team
+        
+      when /^ISU World Junior/
+        :jworld
+      when /^ISU JGP/, /^ISU Junior Grand Prix/
+        :jgp
+      else
+        :unknown
+      end
+    end
+    def short_name(name)
+    end
     def parse(url)
       logger.debug  "  parsing #{url} with #{@summary_parser_type}..."
       res = parse_summary(url)
       
       ## type
-      res[:competition_type] =
-        case res[:name]
-        when /^ISU GP/, /^ISU Grand Prix/
-          :gp
-        when /Olymic/
-          :olympic
-        when /^ISU World Figure/
-          :world
-        when /^ISU Four Continents/
-          :fc
-        when /^ISU European/
-          :europe
-        when /^ISU World Team/
-          :team
-
-        when /^ISU World Junior/
-          :jworld
-        when /^ISU JGP/, /^ISU Junior Grand Prix/
-          :jgp
-        else
-          :unknown
-        end
+      res[:competition_type] = competition_type(res[:name])
 
       ## dates
       res[:start_date] = res[:time_schedule].map {|e| e[:time]}.min

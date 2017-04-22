@@ -6,7 +6,9 @@
 - http://www.isuresults.com/results/gprus2011/
 - http://www.isuresults.com/results/gpjpn2011/
 - http://www.isuresults.com/results/gpf1112/
-- http://www.isuresults.com/results/ec2012/
+-
+  url: http://www.isuresults.com/results/ec2012/
+  summary_parser: :isu_generic_mdy
 - http://www.isuresults.com/results/fc2012/
 - http://www.isuresults.com/results/wjc2012/
 - http://www.isuresults.com/results/wc2012/
@@ -86,8 +88,8 @@
 - http://www.isuresults.com/results/season1617/wc2017/
 -
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
-  summary_parser_type: :wtt_2017
+  summary_parser: :wtt_2017
 - http://www.isuresults.com/results/season1516/ec2016/
 -
   url: http://www.isuresults.com/results/wjc2012/
-  summary_parser_type: :isu_generic_mdy
+  summary_parser: :isu_generic_mdy
