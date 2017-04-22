@@ -64,7 +64,7 @@ module Fisk8Viewer
             score[:technicals] << tech
           end
         when :pcs
-          if line =~ /^ *Starting/
+          if line =~ /^ *Rank +Name/
             score[:competition_name] = status[:competition_name]
             score[:category] = status[:category]
             score[:segment] = status[:segment]

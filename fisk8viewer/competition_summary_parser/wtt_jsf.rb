@@ -12,31 +12,29 @@ module Fisk8Viewer
         city_country = page.xpath("//td[contains(text(), '/')]").first.text
         data[:city], data[:country] = city_country.split(/ *\/ */)
 =end
-        data[:isu_site] = url
-        
+        data[:site_url] = url
         ## summary table
-        category_elem = page.xpath("//*[text()='Category']").first
-        rows = category_elem.xpath("../../tr")
+        header_elem = page.xpath("//*[text()='Teams']").first
+        rows = header_elem.xpath("../../tr")
         category = ""
+        segment = ""
         summary = []
-        rows.map do |row|
+        rows.each do |row|
           next if row.xpath("td").blank?
 
-          if c = row.xpath("td[1]").text.presence
-            category = c.upcase
+          if row.xpath("td[2]").text == 'Entries'
+            category = row.xpath("td[1]").text.upcase
+          elsif row.xpath("td").count == 2
+            segment = row.xpath("td[1]").text.upcase
+          elsif row.xpath("td[1]").text == "Judges Score (pdf)"
+            score_url = URI.join(url, row.xpath("td[1]/a/@href").text).to_s
+            summary << {
+              category: category, 
+              segment: segment,
+              result_url: "",
+              score_url: score_url,
+            }
           end
-          segment = (elem = row.xpath("td[2]")) ? elem.text.upcase : ""
-
-          next if category.blank? && segment.blank?
-          
-          result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(url, elem.text): ""
-          score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(url, elem.text): ""
-          summary << {
-            category: category, 
-            segment: segment,
-            result_url: result_url.to_s,
-            score_url: score_url.to_s,
-          }
         end
         data[:result_summary] = summary
 
@@ -46,27 +44,45 @@ module Fisk8Viewer
         rows = date_elem/"../../tr"
         dt_str = ""
         time_schedule = []
+
+        binding.pry
         rows.each do |row|
           next if row.xpath("td").blank?
-          if t = row.xpath("td[1]").text.presence
+          if t = row.xpath("td").count == 4
             dt_str = t
             next
           end
-          tm_str = row.xpath("td[2]").text
+          tm_str = row.xpath("td[1]").text
 
           time_schedule << {
             time: Time.zone.parse("#{dt_str} #{tm_str}"),
-            category: row.xpath("td[3]").text.upcase,
-            segment: row.xpath("td[4]").text.upcase,
+            category: row.xpath("td[2]").text.upcase,
+            segment: row.xpath("td[3]").text.upcase,
           }
         end
         data[:time_schedule] = time_schedule
+        binding.pry
         data
       end
 
       ## register
       Fisk8Viewer::CompetitionSummaryParser.register(:wtt_jsf, self)
     end ## class
+
+    ################
+    class WTT_2017 < WTT_JSF
+      def parse_summary(url)
+        data = super(url)
+        data[:name] = "ISU World Team Trophy 2017"
+        data[:city] = "Tokyo"
+        data[:country] = "JPN"
+
+        data
+      end
+      ## register
+      Fisk8Viewer::CompetitionSummaryParser.register(:wtt_2017, self)
+    end ## class
+  
   end
 end
 

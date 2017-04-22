@@ -35,7 +35,6 @@ task :update_competitions do
   updater = Fisk8Viewer::Updater.new
   num = (ENV["number"] || 1).to_i
   [competitions.last(num).reverse].flatten.each do |item|
-    binding.pry
     if item.is_a? String
       url = item
       summary_parser_type = :isu_generic
@@ -53,7 +52,7 @@ task :update_skaters do
 end
 
 task :parse_score do
-  pdf_url = ENV["pdf_url"]
+  pdf_url = ENV["url"]
   score_parser = Fisk8Viewer::ScoreParser.new
   include Fisk8Viewer::Utils
   

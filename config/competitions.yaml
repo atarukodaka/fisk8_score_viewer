@@ -86,6 +86,5 @@
 - http://www.isuresults.com/results/season1617/wc2017/
 -
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
-  summary_parser_type: :wtt_jsf
-
+  summary_parser_type: :wtt_2017
 

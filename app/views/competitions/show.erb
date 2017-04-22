@@ -33,3 +33,6 @@
   </tr>
   <% end %>
 </table>
+
+<h2>Scores</h2>
+<%= partial :"/scores/list", locals: {scores: competition.scores} %>

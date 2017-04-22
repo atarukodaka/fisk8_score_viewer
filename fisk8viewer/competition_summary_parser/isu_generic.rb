@@ -61,6 +61,7 @@ module Fisk8Viewer
         data[:time_schedule] = time_schedule
         data
       end
+      ################
       def parse_category_result(url)
         data = []
         begin
