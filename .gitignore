@@ -10,3 +10,6 @@ db/*.db
 *~
 .bundle
 vendor/
+tmp/
+pdf/
+log/
