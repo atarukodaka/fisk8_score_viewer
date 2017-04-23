@@ -15,13 +15,6 @@ require 'pry-byebug'
 require 'active_record'
 require 'fisk8viewer'
 
-=begin
-require './models/score'
-require './models/competition'
-require './models/skater'
-require './models/category_result'
-=end
-
 task :default => :server
 
 task :server do
@@ -45,8 +38,7 @@ task :update_competitions => :environment do
       url = item["url"]
       summary_parser_type = item["summary_parser"]
     end
-    force = ENV['force'].try(:to_sym)
-    updater.update_competition(url, summary_parser_type: summary_parser_type, force: force)
+    updater.update_competition(url, summary_parser_type: summary_parser_type)
   end
 end
 
