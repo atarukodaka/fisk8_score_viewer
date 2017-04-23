@@ -52,24 +52,27 @@ module Fisk8Viewer
 
           additional_hash = {
             starting_time: data.starting_time(category, segment),
-            score_url: data.score_url(category, segment),
+            result_pdf: data.score_url(category, segment),
           }
           score_text = convert_pdf(additional_hash[:score_url], dir: "pdf")
           
           score_parser.parse(score_text).each do |score_hash|
-            update_score(score_hash.merge(additional_hash), competition: competition)
+            update_score(score_hash.merge(additional_hash)) do
+              competition.scores.create
+            end
           end
         end
       end
     end
     ################################################################
-    def update_score(score_hash, competition: nil)
+    def update_score(score_hash) 
       logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]}/#{score_hash[:category]}/#{score_hash[:segment]}/#{score_hash[:competition_name]}"
       keys = [:skater_name, :rank, :starting_number, :nation,
               :competition_name, :category, :segment, :starting_time, :result_pdf,
               :tss, :tes, :pcs, :deductions] # .each do |k|
-      score = competition.scores.create(score_hash.slice(*keys))
-
+      score = (block_given?) ? yield : Score.create
+      score.update(score_hash.slice(*keys))
+      
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
       score_hash[:technicals].each do |element|
@@ -86,18 +89,19 @@ module Fisk8Viewer
 
       ## skater
       sk_keys = [:nation, :category]
-      Skater.find_or_create_by(name: score.skater_name) do |skater|
+      skater = Skater.find_or_create_by(name: score.skater_name) do |skater|
         skater.update(score_hash.slice(*sk_keys))
-        skater.scores << score
-        score.skater = skater
       end
+      skater.scores << score
+      score.skater = skater
       score.save
     end
     ################
     def update_skaters
       logger.debug("update skaters")
       parser = SkaterParser.new
-
+      keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
+      
       [:MEN, :LADIES, :PAIRS, :"ICE DANCE"].each do |category|
         isu_number_hash = parser.scrape_isu_numbers(category)
         
@@ -107,10 +111,8 @@ module Fisk8Viewer
           
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")
-          
-          [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club].each do |key|
-            skater[key] = skater_hash[key]
-          end
+
+          skater.update(skater_hash.slice(*keys))
           skater.save
         end
       end
