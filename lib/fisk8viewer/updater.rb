@@ -54,7 +54,7 @@ module Fisk8Viewer
             starting_time: data.starting_time(category, segment),
             result_pdf: data.score_url(category, segment),
           }
-          score_text = convert_pdf(additional_hash[:score_url], dir: "pdf")
+          score_text = convert_pdf(additional_hash[:result_pdf], dir: "pdf")
           
           score_parser.parse(score_text).each do |score_hash|
             update_score(score_hash.merge(additional_hash)) do
