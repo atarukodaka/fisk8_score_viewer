@@ -34,7 +34,7 @@ module Fisk8Viewer
       (hash = _select(:result_summary, category, segment)) ? hash[:score_url] : ""      
     end
     def starting_time(category, segment)
-      (hash = _select(:time_schedule, category, segment)) ? hash[:score_url] : ""      
+      (hash = _select(:time_schedule, category, segment)) ? hash[:starting_time] : ""      
     end
     def method_missing(name, *args)
       @data.send(name, *args)
