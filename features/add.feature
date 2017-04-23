@@ -1,3 +1,10 @@
+Feature: test
+  Scenario: foo
+    Given I visit the app
+    Then I should see 'foo'
+
+
+
 Feature: Addition
   In order to avoid silly mistakes
   As a math idiot
