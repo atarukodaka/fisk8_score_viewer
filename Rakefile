@@ -33,12 +33,13 @@ task :update_competitions => :environment do
   [competitions.last(number).reverse].flatten.each do |item|
     if item.is_a? String
       url = item
-      summary_parser_type = :isu_generic
+      parser_type = :isu_generic
     elsif item.is_a? Hash
       url = item["url"]
-      summary_parser_type = item["summary_parser"]
+      parser_type = item["parser"]
     end
-    updater.update_competition(url, summary_parser_type: summary_parser_type)
+    registered = {isu_generic: Fisk8Viewer::CompetitionParser::ISU_Generic}
+    updater.update_competition(url, parser: registered[parser_type].new)
   end
 end
 

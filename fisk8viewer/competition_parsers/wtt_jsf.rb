@@ -1,7 +1,7 @@
-require 'fisk8viewer/competition_summary_parser'
+require 'fisk8viewer/competition_parsers/base'
 
 module Fisk8Viewer
-  module CompetitionSummaryParser
+  module CompetitionParser
     class WTT_JSF < Base
       def parse_summary(url)
         page = @agent.get(url)
@@ -45,7 +45,7 @@ module Fisk8Viewer
       end
 
       ## register
-      Fisk8Viewer::CompetitionSummaryParser.register(:wtt_jsf, self)
+      Fisk8Viewer::CompetitionParserRegister.register(:wtt_jsf, self)
     end ## class
 
     ################
@@ -104,7 +104,7 @@ module Fisk8Viewer
         data
       end
       ## register
-      Fisk8Viewer::CompetitionSummaryParser.register(:wtt_2017, self)
+      Fisk8Viewer::CompetitionParserRegister.register(:wtt_2017, self)
     end ## class
   
   end

@@ -1,7 +1,7 @@
-require 'fisk8viewer/competition_summary_parser'
+require 'fisk8viewer/competition_parsers/base'
 
 module Fisk8Viewer
-  module CompetitionSummaryParser
+  module CompetitionParser
     class ISU_Generic < Base
       def parse_datetime(str)
         tm = Time.zone.parse(str)
@@ -105,7 +105,7 @@ module Fisk8Viewer
       end
 
       ## register
-      Fisk8Viewer::CompetitionSummaryParser.register(:isu_generic, self)
+      Fisk8Viewer::CompetitionParserRegister.register(:isu_generic, self)
     end  ## class
   end
 end
@@ -114,7 +114,7 @@ end
 ################################################################
 
 module Fisk8Viewer
-  module CompetitionSummaryParser
+  module CompetitionParser
     class ISU_Generic_mdy < ISU_Generic
       def parse_datetime(str)
         dt_str, tm_str = str.split(/ /)
@@ -122,7 +122,7 @@ module Fisk8Viewer
         dt_str = "%s/%s/%s" % [d, m, y]
         Time.zone.parse("#{dt_str} #{tm_str}")
       end
-      Fisk8Viewer::CompetitionSummaryParser.register(:isu_generic_mdy, self)
+      Fisk8Viewer::CompetitionParserRegister.register(:isu_generic_mdy, self)
     end
   end
 end

@@ -1,3 +1,4 @@
+require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_adaptor'
 
 module Fisk8Viewer
@@ -5,25 +6,27 @@ module Fisk8Viewer
     include Logger
     include Utils
     
-    def update_competition(url, summary_parser_type: :isu_generic)
+    def update_competition(url, parser: nil)
       logger.debug " - update competition: #{url}"
 
-      competition = Competition.find_or_create_by(site_url: url)
-      competition_parser = Fisk8Viewer::CompetitionParser.new(summary_parser_type: summary_parser_type)
-      data = Fisk8Viewer::CompetitionAdaptor.new(competition_parser.parse(url))
+      if competition = Competition.find_by(site_url: url)
+        logger.debug "   alread exists"
+        return
+      end
+      #competition_parser = Fisk8Viewer::CompetitionSummaryParser::ISU_Generic.new
+
+      data = Fisk8Viewer::CompetitionAdaptor.new(parser.parse_summary(url))
 
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :abbr, :season,]
-      keys.each {|k|
-        competition[k] = data[k]
-      }
-      competition.save
+      competition = Competition.create(data.slice(*keys))
 
       ## for each categories
       score_parser = Fisk8Viewer::ScoreParser.new
       data.categories.each do |category|
         result_url = data.result_url(category)
 
+=begin
         logger.debug " - update category [#{category}]"
         results = competition_parser.parse_category_result(result_url)
         results.each do |result_hash|
@@ -33,7 +36,7 @@ module Fisk8Viewer
           end
             rec.save
         end
-
+=end
         ## for segments
         data.segments(category).each do |segment|
           logger.debug " - update scores on segment [#{category}/#{segment}]"

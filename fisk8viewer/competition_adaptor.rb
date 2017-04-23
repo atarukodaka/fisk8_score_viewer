@@ -6,7 +6,7 @@ module Fisk8Viewer
     
     def initialize(parsed_hash)
       @data = parsed_hash  # .with_indifferent_access
-      @data[:competition_type] = competition_type(res[:name])
+      @data[:competition_type] = competition_type(@data[:name])
 
       ## dates
       @data[:start_date] = @data[:time_schedule].map {|e| e[:time]}.min
@@ -36,7 +36,10 @@ module Fisk8Viewer
     def starting_time(category, segment)
       (hash = _select(:time_schedule, category, segment)) ? hash[:score_url] : ""      
     end
-
+    def method_missing(name, *args)
+      @data.send(name, *args)
+    end
+    
     ################
     def competition_type(name)
       case name

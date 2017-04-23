@@ -97,9 +97,9 @@
 - http://www.isuresults.com/results/season1617/wc2017/
 -
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
-  summary_parser: :wtt_2017
+  parser: :wtt_2017
 - http://www.isuresults.com/results/season1516/ec2016/
 -
   url: http://www.isuresults.com/results/wjc2012/
-  summary_parser: :isu_generic_mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/season1617/gpf1617/

@@ -1,17 +1,9 @@
+require 'fisk8viewer/competition_parser'
+
 require 'mechanize'
 
 module Fisk8Viewer
-  module CompetitionSummaryParser
-    @registered = {}
-
-    class << self
-      attr_reader :registered
-      
-      def register(key, klass)
-        @registered[key] = klass
-      end
-    end
-
+  module CompetitionParser
     class Base
       attr_reader :agent
       
@@ -25,9 +17,7 @@ module Fisk8Viewer
       def parse_category_result(url)
         []
       end
-      # Fisk8Viewer::CompetitionSummaryParser.register(:base, self)
+      Fisk8Viewer::CompetitionParserRegister.register(:base, self)
     end
-  end  ## module
+  end ## class
 end
-
-
