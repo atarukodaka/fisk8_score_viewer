@@ -26,17 +26,13 @@ module Fisk8Viewer
       data.categories.each do |category|
         result_url = data.result_url(category)
 
-=begin
         logger.debug " - update category [#{category}]"
-        results = competition_parser.parse_category_result(result_url)
+        results = parser.parse_category_result(result_url)
         results.each do |result_hash|
-          rec = competition.category_results.create(category: category)
-          [:rank, :skater_name, :points].each do |k|
-            rec[k] = result_hash[k]
-          end
-            rec.save
+          keys = [:category, :rank, :skater_name, :points]
+          competition.category_results.create(result_hash.slice(*keys))
         end
-=end
+
         ## for segments
         data.segments(category).each do |segment|
           logger.debug " - update scores on segment [#{category}/#{segment}]"

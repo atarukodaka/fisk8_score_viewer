@@ -80,9 +80,10 @@ module Fisk8Viewer
             return data
           end
         end
-        fpi = page.xpath("//th[contains(text(), 'FPl.')]")
-        return {} if fpi.blank?
-        rows = fpi.first.xpath("../../tr")
+        category = page.xpath("//table/tr/td")[2].text.upcase
+        fpl = page.xpath("//th[contains(text(), 'FPl.')]")
+        return {} if fpl.blank?
+        rows = fpl.first.xpath("../../tr")
         rows.each do |row|
           tds = row.xpath("td")
           next if tds.blank?
@@ -94,6 +95,7 @@ module Fisk8Viewer
             points: tds[3].text.to_f
           }
           if tds.size == 6
+            hash[:category] = category
             hash[:sp_ranking] = tds[4].text.to_i
             hash[:fs_ranking] = tds[5].text.to_i
           elsif tds.size == 5
