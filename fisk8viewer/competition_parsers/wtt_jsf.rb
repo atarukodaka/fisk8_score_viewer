@@ -45,7 +45,7 @@ module Fisk8Viewer
       end
 
       ## register
-      Fisk8Viewer::CompetitionParserRegister.register(:wtt_jsf, self)
+      Fisk8Viewer::CompetitionParsers.register(:wtt_jsf, self)
     end ## class
 
     ################
@@ -104,7 +104,7 @@ module Fisk8Viewer
         data
       end
       ## register
-      Fisk8Viewer::CompetitionParserRegister.register(:wtt_2017, self)
+      Fisk8Viewer::CompetitionParsers.register(:wtt_2017, self)
     end ## class
   
   end

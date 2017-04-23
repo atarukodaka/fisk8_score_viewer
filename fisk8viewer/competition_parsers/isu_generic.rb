@@ -107,7 +107,7 @@ module Fisk8Viewer
       end
 
       ## register
-      Fisk8Viewer::CompetitionParserRegister.register(:isu_generic, self)
+      Fisk8Viewer::CompetitionParsers.register(:isu_generic, self)
     end  ## class
   end
 end
@@ -124,7 +124,7 @@ module Fisk8Viewer
         dt_str = "%s/%s/%s" % [d, m, y]
         Time.zone.parse("#{dt_str} #{tm_str}")
       end
-      Fisk8Viewer::CompetitionParserRegister.register(:isu_generic_mdy, self)
+      Fisk8Viewer::CompetitionParsers.register(:isu_generic_mdy, self)
     end
   end
 end

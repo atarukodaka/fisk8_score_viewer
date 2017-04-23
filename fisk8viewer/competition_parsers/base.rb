@@ -1,4 +1,4 @@
-require 'fisk8viewer/competition_parser'
+require 'fisk8viewer/competition_parsers'
 
 require 'mechanize'
 
@@ -17,7 +17,7 @@ module Fisk8Viewer
       def parse_category_result(url)
         []
       end
-      Fisk8Viewer::CompetitionParserRegister.register(:base, self)
+      Fisk8Viewer::CompetitionParsers.register(:base, self)
     end
   end ## class
 end
