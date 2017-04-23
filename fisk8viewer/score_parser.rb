@@ -1,112 +1,55 @@
 module Fisk8Viewer
   class ScoreParser
-    def init_status
-      {
-        mode: :competition,
-        #score: {technicals: [], components: []},
-        competition_name: nil,
-        category: nil,
-        segment: nil,
-        component_number: 1,
-      }
-    end
-    def parse(text) # , opts={})
-      scores = []
-      score = {technicals: [], components: []}
-      status = init_status()
-      text.force_encoding('UTF-8')
-      
-      text.split("\n").each do |line|
-        line.gsub!(/ +/, ' ')
-        line.gsub!(/^ */, '')
-        line.chomp!
-        next if line =~ /^ *$/
-        
-        case status[:mode]
-        when :competition
-          if status[:competition_name].nil?
-            status[:competition_name] = line
-            next
-          elsif line =~ /^([A-Z ]+) JUDGES DETAILS PER SKATER$/
-            cat_seg = $1
-            if cat_seg =~ /^([A-Z ]+) (SHORT[A-Z ]+)$/
-              status[:category] = $1
-              status[:segment] = $2
-            elsif cat_seg =~ /^([A-Z ]+) (FREE[A-Z ]+)$/
-              status[:category] = $1
-              status[:segment] = $2
-            end
-            status[:mode] = :skater
-          end
-        when :skater
-          if line =~ /^ *([0-9]+) ([[:alpha:]\- \/]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
-            score = {
-              rank: $1, starting_number: $3.to_i, tss: $4,tes: $5, pcs: $6,
-              deductions: $7.to_i.abs * -1,
-              technicals: [], components: [],
-            }
-            $2 =~ /(.*) ([A-Z]+)$/
-            #binding.pry if $1 =~ /^Shaline/
-            score.merge!({ skater_name: $1, nation: $2})
-          elsif line =~ /^ *Elements Value/
-            status[:mode] = :tes
-            next
-          end
-        when :tes
-          if line =~ /^ *Program Components/
-            status[:mode] = :pcs
-            next
-          end
-          if line =~ / *([0-9]+) ([0-9A-Za-z\+\!<\*]+) ([<\!\*]*) *([0-9\.]+) (x?) *([0-9\.\-]+) ([0-9\- ]+) ([0-9\.\-]+)$/
-            tech = {
-              number: $1.to_i, element: $2, info: $3, base_value: $4,
-              credit: $5, goe: $6, judges: $7, value: $8,
-            }
-            score[:technicals] << tech
-          end
-        when :pcs
-          if line =~ /^ *Rank +Name/
-            score[:competition_name] = status[:competition_name]
-            score[:category] = status[:category]
-            score[:segment] = status[:segment]
-=begin            
-            if opts[:date]
-              score[:date] = opts[:date]
-            end
-            if opts[:result_pdf]
-              score[:result_pdf] = opts[:result_pdf]
-            end
-=end
-            scores << score
-            score = {technicals: [], components: []}
-            status[:component_number] = 1
-            status[:mode] = :skater
-            next
-          end
-          if line =~ / *([A-Za-z\s]+) ([0-9\.]+) ([0-9\. ]+) ([0-9\.]+)$/
-            comp = {
-              component: $1, factor: $2, judges: $3, value: $4, number: status[:component_number],
-            }
-            score[:components] << comp
-            status[:component_number] += 1
-          end
-        end
-      end
+    def parse(text)
+      text = text.force_encoding('UTF-8').gsub(/  +/, ' ').gsub(/^ */, '').gsub(/\n\n+/, "\n").chomp
+      text_by_skaters = text.split(/ *Starting Total/)
 
-      ## TODO: refactoring
-      score[:competition_name] = status[:competition_name]
-      score[:category] = status[:category]
-      score[:segment] = status[:segment]
-=begin      
-      if opts[:date]
-        score[:date] = opts[:date]
-      end
-      if opts[:result_pdf]
-        score[:result_pdf] = opts[:result_pdf]
-      end
-=end
-      scores << score
-      return scores
-    end  ## def
+      header = text_by_skaters.shift
+      header =~ /^(.*)\n([A-Z\s]+) (SHORT|FREE) ([A-Z]+) JUDGES DETAILS PER SKATER/
+      competition_name = $1
+      category = $2
+      segment = $3 + " " + $4
+
+      scores = []
+      text_by_skaters.each do |t|
+        mode = :skater
+        score = {competition_name: competition_name, category: category, segment: segment,
+          technicals: [], components: [],}
+        t.split(/\n/).each do |line|
+          case mode
+          when :skater
+            if line =~ /^([0-9]+) ([[:alpha:]\- \/]+) ([A-Z]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
+              score[:rank] = $1.to_i
+              score[:skater_name] = $2
+              score[:nation] = $3
+              score[:starting_number] = $4.to_i
+              score[:tss] = $5.to_f
+              score[:tes] = $6.to_f              
+              score[:pcs] = $7.to_f
+              score[:deductions] = $8.to_f              
+              mode = :tes
+            end
+          when :tes
+            if line =~ /^([0-9]+) ([0-9A-Za-z\+\!<\*]+) ([<\!\*]*) *([0-9\.]+) (x?) *([0-9\.\-]+) ([0-9\- ]+) ([0-9\.\-]+)$/
+              score[:technicals] << {
+                number: $1.to_i, element: $2, info: $3, base_value: $4.to_f,
+                credit: $5, goe: $6.to_f, judges: $7, value: $8.to_f,
+              }
+            elsif line =~ /^Program Components/
+              mode = :pcs
+            end
+          when :pcs
+            if line =~ /^([A-Za-z\s\/]+) ([\d\.]+) ([\d\. ]+) ([\d\.]+)$/
+              score[:components] << {
+                component: $1, factor: $2.to_f, judges: $3, value: $4.to_f,
+                number: (score[:components].size+1).to_i,
+              }
+            end
+          end
+        end  ## each line
+        scores << score
+      end  ## by skater
+      scores
+    end  # def parser
   end
 end
