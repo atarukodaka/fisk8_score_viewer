@@ -1,3 +1,4 @@
+require 'fisk8viewer/competition_parsers'
 require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_adaptor'
 
@@ -6,6 +7,20 @@ module Fisk8Viewer
     include Logger
     include Utils
     
+    def update_competitions(ary)
+      ary.each do |item|
+        if item.is_a? String
+          url = item
+          parser_type = :isu_generic
+        elsif item.is_a? Hash
+          url = item["url"]
+          parser_type = item["parser"]
+        end
+        parser = Fisk8Viewer::CompetitionParsers.registered[parser_type].new
+        update_competition(url, parser: parser)
+      end
+    end
+    
     def update_competition(url, parser: nil)
       logger.debug " - update competition: #{url}"
 
@@ -13,8 +28,6 @@ module Fisk8Viewer
         logger.debug "   alread exists"
         return
       end
-      #competition_parser = Fisk8Viewer::CompetitionSummaryParser::ISU_Generic.new
-
       data = Fisk8Viewer::CompetitionAdaptor.new(parser.parse_summary(url))
 
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
@@ -37,54 +50,51 @@ module Fisk8Viewer
         data.segments(category).each do |segment|
           logger.debug " - update scores on segment [#{category}/#{segment}]"
 
-          starting_time = data.starting_time(category, segment)
-          score_url = data.score_url(category, segment)
-          score_text = convert_pdf(score_url, dir: "pdf")
+          additional_hash = {
+            starting_time: data.starting_time(category, segment),
+            score_url: data.score_url(category, segment),
+          }
+          score_text = convert_pdf(additional_hash[:score_url], dir: "pdf")
           
-          ar = score_parser.parse(score_text)
-          
-          ar.each do |score_hash|
-            score_url = data.score_url(category, segment)
-
-            score = competition.scores.create
-            update_score(score_hash.merge({starting_time: starting_time, result_pdf: score_url}), score)
-            
+          score_parser.parse(score_text).each do |score_hash|
+            update_score(score_hash.merge(additional_hash), competition: competition)
           end
         end
       end
     end
     ################################################################
-    def update_score(score_hash, score_rec)
+    def update_score(score_hash, competition: nil)
       logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]}/#{score_hash[:category]}/#{score_hash[:segment]}/#{score_hash[:competition_name]}"
-      [:skater_name, :rank, :starting_number, :nation,
-       :competition_name, :category, :segment, :starting_time, :result_pdf,
-       :tss, :tes, :pcs, :deductions].each do |k|
-        score_rec[k] = score_hash[k]
-      end
-      ## skater
-      skater = Skater.where(name: score_hash[:skater_name]).first.presence || Skater.create(name: score_hash[:skater_name], nation: score_hash[:nation], category: score_hash[:category])
-      score_rec.skater_id = skater.id
-      skater.scores << score_rec
+      keys = [:skater_name, :rank, :starting_number, :nation,
+              :competition_name, :category, :segment, :starting_time, :result_pdf,
+              :tss, :tes, :pcs, :deductions] # .each do |k|
+      score = competition.scores.create(score_hash.slice(*keys))
+
       ## technicals
+      tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
       score_hash[:technicals].each do |element|
-        ar = [:number, :element, :info, :base_value, :credit,:goe, :judges, :value]
-        hash = Hash[*ar.map {|k| [k, element[k]]}.flatten]
-        score_rec.technicals.create(hash)
+        score.technicals.create(element.slice(*tech_keys))
       end
-      score_rec[:technicals_summary] = score_hash[:technicals].map {|e| e[:element]}.join('/')
+      score[:technicals_summary] = score_hash[:technicals].map {|e| e[:element]}.join('/')
       
       ## components
-      score_hash[:components].each_with_index do |comp, i|
-        ar = [:component, :factor, :judges, :value]
-        hash = Hash[*ar.map {|k| [k, comp[k]]}.flatten]
-        hash.merge!(number: i + 1)
-        r = score_rec.components.create(hash)
+      comp_keys = [:component, :number, :factor, :judges, :value]
+      score_hash[:components].each do |comp|
+        score.components.create(comp.slice(*comp_keys))
       end
-      score_rec[:components_summary] = score_hash[:components].map {|c| c[:value]}.join('/')
-      score_rec.save
+      score[:components_summary] = score_hash[:components].map {|c| c[:value]}.join('/')
+
+      ## skater
+      sk_keys = [:nation, :category]
+      Skater.find_or_create_by(name: score.skater_name) do |skater|
+        skater.update(score_hash.slice(*sk_keys))
+        skater.scores << score
+        score.skater = skater
+      end
+      score.save
     end
     ################
-    def update_skaters(force: false)
+    def update_skaters
       logger.debug("update skaters")
       parser = SkaterParser.new
 
@@ -93,10 +103,7 @@ module Fisk8Viewer
         
         Skater.where(category: category).each do |skater|
           isu_number = isu_number_hash[skater.name]
-          next if isu_number.blank?
-          if skater[:isu_number].present? && force.blank?
-            next
-          end
+          next if isu_number.blank? || skater[:isu_number].present?
           
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")

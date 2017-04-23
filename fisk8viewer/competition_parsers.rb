@@ -10,5 +10,3 @@ module Fisk8Viewer
     end
   end
 end
-
-
