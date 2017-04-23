@@ -31,6 +31,10 @@ group :production do   ## for heroku
 end
 
 # Test requirements
+gem 'rspec', :group => 'test'
+gem 'capybara', :group => 'test'
+gem 'cucumber', :group => 'test'
+gem 'rack-test', :require => 'rack/test', :group => 'test'
 
 # Padrino Stable Gem
 gem 'padrino', '0.14.0.1'
