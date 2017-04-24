@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+
 describe 'competition' do
   before do
     cmp = Competition.create(name: "ISU World Figure", competition_type: "world", season: "2016-17")

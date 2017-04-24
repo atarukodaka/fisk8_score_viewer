@@ -14,6 +14,11 @@ PadrinoTasks.use(:database)
 PadrinoTasks.use(:activerecord)
 PadrinoTasks.init
 
+task :foo do
+  binding.pry
+end
+
+
 
 task :default => :server
 
