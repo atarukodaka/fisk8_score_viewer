@@ -30,18 +30,7 @@
 <% components_limitted = components.limit(limit).offset((page-1)*limit) %>
 
 <table class="table table-striped table-hover table-condensed">
-  <tr>
-    <th>Score ID</th>
-    <th>Skater</th>
-    <th>Competition</th>
-    <th>Category</th>
-    <th>Segment</th>
-    <th>Number</th>
-    <th>Component</th>
-    <th>Factor</th>
-    <th>Judges</th>
-    <th>Score</th>
-  </tr>
+  <%= partial "table_headers", locals: {table_headers: ["Score ID", :Skater, :Competition, :Category, :Segment, :Number, :Component, :Factor, :Judges, :Score]} %>
   <% components_limitted.each do |component| %>
   <% score = component.score %>
   <tr>

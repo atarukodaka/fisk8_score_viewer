@@ -11,18 +11,7 @@
 <% end %>
 
 <table class="table table-striped table-hover table-condensed">
-  <tr>
-    <th>ID</th>
-    <th>Competition</th>
-    <th>City</th>
-    <th>Country</th>
-    <th>Abbr</th>
-    <th>Type</th>
-    <th>Season</th>
-    <th>ISU Site</th>
-    <th>Start Date</th>
-    <th>End Date</th>
-  </tr>
+  <%= partial "table_headers", locals: {table_headers: [:ID, :Competition, :City, :Country, :Abbr, :Type, :Season, :ISU_Site, :Start_date, :End_Date]} %>
   <% competitions.each do |competition| %>
   <tr>
     <td><%= competition.id %></td>
