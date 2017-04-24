@@ -6,7 +6,7 @@ ScoreViewer::App.controllers :elements do
     redirect url_for(:elements, :list)
   end
   
-  get :list, map: "/elements/list/*", provides: [:csv, :html] do
+  get :list, map: "/elements/list/*", provides: [:html, :csv] do
     splat_to_params(params)
     rel = Score.order("updated_at DESC")
     scores = filter(rel, :scores)

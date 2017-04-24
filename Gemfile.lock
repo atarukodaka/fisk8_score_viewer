@@ -127,7 +127,7 @@ GEM
       thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.2)
+    unf_ext (0.0.7.4)
     webrobots (0.1.2)
 
 PLATFORMS

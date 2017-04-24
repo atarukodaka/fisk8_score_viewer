@@ -6,7 +6,7 @@ ScoreViewer::App.controllers :components do
     redirect url_for(:components, :list)
   end
 
-  get :list, map: "/components/list/*", provides: [:json, :csv, :html] do
+  get :list, map: "/components/list/*", provides: [:html, :csv] do
     splat_to_params(params)
 
     # first, filter by score

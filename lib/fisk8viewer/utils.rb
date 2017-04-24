@@ -5,9 +5,7 @@ module Fisk8Viewer
   module Utils
    
     def convert_pdf(url, dir: "./")
-      binding.pry
       return "" if url.blank?
-
 
       ## create dir if not exists
       FileUtils.mkdir_p(dir) unless FileTest.exist?(dir)
