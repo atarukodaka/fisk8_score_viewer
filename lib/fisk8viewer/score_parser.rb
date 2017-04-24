@@ -18,7 +18,7 @@ module Fisk8Viewer
         t.split(/\n/).each do |line|
           case mode
           when :skater
-            if line =~ /^([0-9]+) ([[:alpha:]\- \/]+) ([A-Z]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
+            if line =~ /^([0-9]+) ([[:alpha:]\- \/']+) ([A-Z]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
               hash = {
                 rank: $1.to_i, skater_name: $2, nation: $3, starting_number: $4.to_i,
                 tss: $5.to_f, tes: $6.to_f, pcs: $7.to_f, deductions: $8.to_f,

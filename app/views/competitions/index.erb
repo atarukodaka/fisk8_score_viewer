@@ -11,14 +11,14 @@
 <% end %>
 
 <table class="table table-striped table-hover table-condensed">
-  <%= partial "table_headers", locals: {table_headers: [:ID, :Competition, :City, :Country, :Abbr, :Type, :Season, :ISU_Site, :Start_date, :End_Date]} %>
+  <%= partial "table_headers", locals: {table_headers:
+      [:ID, :Competition, :City, :Country, :Type, :Season, :ISU_Site, :Start_date, :End_Date]} %>
   <% competitions.each do |competition| %>
   <tr>
     <td><%= competition.id %></td>
     <td><%= link_to(competition.name, url_for(:competitions, :id, id: competition.id)) %></td>
     <td><%= competition.city %></td>
     <td><%= competition.country %></td>
-    <td><%= competition.abbr %></td>    
     <td><%= link_to(competition.competition_type, url_for(:competitions, :list, "competition_type:#{competition.competition_type}")) %></td>    
     <td><%= link_to(competition.season, url_for(:competitions, :list, "season:#{competition.season}")) %></td>    
 

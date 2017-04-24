@@ -14,12 +14,6 @@ PadrinoTasks.use(:database)
 PadrinoTasks.use(:activerecord)
 PadrinoTasks.init
 
-task :foo do
-  binding.pry
-end
-
-
-
 task :default => :server
 
 task :server do
@@ -50,4 +44,7 @@ task :parse_score => :environment do
   score_text = convert_pdf(pdf_url, dir: "pdf")
   ar = score_parser.parse(score_text)
   puts ar.inspect
+end
+
+task :test => :spec do
 end

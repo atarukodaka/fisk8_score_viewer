@@ -15,7 +15,7 @@ module Fisk8Viewer
         city_country = page.xpath("//td[contains(text(), '/')]").presence ||
           page.xpath("//td[contains(text(), ',')]")
 
-        data[:city], data[:country] = city_country.first.text.split(/ *\/ */)
+        data[:city], data[:country] = city_country.first.text.split(/ *[\/,] */)
         data[:site_url] = url
         
         ## summary table
