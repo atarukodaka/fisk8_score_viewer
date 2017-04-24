@@ -8,7 +8,7 @@ module Fisk8Viewer
       header =~ /^(.*)\n([A-Z\s]+) (SHORT|FREE) ([A-Z]+) JUDGES DETAILS PER SKATER/
       competition_name = $1
       category = $2
-      segment = $3 + " " + $4
+      segment = "#{$3} #{$4}"
 
       scores = []
       text_by_skaters.each do |t|
@@ -19,14 +19,11 @@ module Fisk8Viewer
           case mode
           when :skater
             if line =~ /^([0-9]+) ([[:alpha:]\- \/]+) ([A-Z]+) ([0-9]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.]+) ([0-9\.\-]+)/
-              score[:rank] = $1.to_i
-              score[:skater_name] = $2
-              score[:nation] = $3
-              score[:starting_number] = $4.to_i
-              score[:tss] = $5.to_f
-              score[:tes] = $6.to_f              
-              score[:pcs] = $7.to_f
-              score[:deductions] = $8.to_f              
+              hash = {
+                rank: $1.to_i, skater_name: $2, nation: $3, starting_number: $4.to_i,
+                tss: $5.to_f, tes: $6.to_f, pcs: $7.to_f, deductions: $8.to_f,
+              }
+              score.merge!(hash)
               mode = :tes
             end
           when :tes

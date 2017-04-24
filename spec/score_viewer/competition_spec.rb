@@ -10,10 +10,10 @@ describe 'competition' do
     Competition.all.map(&:destroy)
   end
   
-  let (:id) { Competition.first.id }
+  let (:id) { Competition.last.id }
   
   describe 'id' do
-    subject(:response) { id = Competition.first.id; get "/competitions/id/#{id}" }
+    subject { get "/competitions/id/#{id}" }
     its(:body) { should include('ISU World') }
   end
 

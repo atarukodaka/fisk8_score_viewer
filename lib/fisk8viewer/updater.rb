@@ -1,6 +1,6 @@
 require 'fisk8viewer/competition_parsers'
 require 'fisk8viewer/competition_parser'
-require 'fisk8viewer/competition_adaptor'
+require 'fisk8viewer/competition_summary_adaptor'
 
 module Fisk8Viewer
   class Updater
@@ -28,7 +28,7 @@ module Fisk8Viewer
         logger.debug "   alread exists"
         return
       end
-      data = Fisk8Viewer::CompetitionAdaptor.new(parser.parse_summary(url))
+      data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
 
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :abbr, :season,]

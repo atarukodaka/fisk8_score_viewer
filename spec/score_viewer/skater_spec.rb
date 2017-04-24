@@ -9,7 +9,7 @@ describe 'skater' do
   end
 
   describe 'skaters/id' do
-    subject { id = Skater.first.id; get "/skaters/id/#{id}" }
+    subject { id = Skater.last.id; get "/skaters/id/#{id}" }
     its(:body) { should include('Skater NAME') }
   end
 
