@@ -1,0 +1,69 @@
+require 'spec_helper'
+
+describe 'competition' do
+  before do
+    cmp = Competition.create(name: "ISU World Figure", competition_type: "world", season: "2016-17")
+    cmp.category_results.create(category: "MEN")
+    cmp.scores.create(skater_name: "Foo BAR", category: "MEN", segment: "SHORT PROGRAM")
+  end
+  after do
+    Competition.all.map(&:destroy)
+  end
+  
+  let (:id) { Competition.first.id }
+  
+  describe 'id' do
+    subject(:response) { id = Competition.first.id; get "/competitions/id/#{id}" }
+    its(:body) { should include('ISU World') }
+  end
+
+  describe 'id/MEN' do
+    subject { get "/competitions/id/#{id}/MEN" }
+    its(:body) {
+      should include('ISU World');
+      should include('MEN')
+    }
+  end
+
+  describe 'id/MEN/SHORT PROGRAM' do
+    subject { get "/competitions/id/#{id}/MEN/SHORT%20PROGRAM" }
+    its(:body) {
+      should include('ISU World');
+      should include('MEN');
+      should include('SHORT PROGRAM')
+    }
+  end
+
+  describe 'name/xxx' do
+    subject { get '/competitions/name/ISU%20World%20Figure' }
+    its(:body) { should include('ISU World') }
+  end
+
+  ## list
+  describe 'redirect' do
+    subject(:response) { get '/competitions'}
+    its(:status) { should eq 302 }
+    it { expect(response.header["Location"]).to include("/competitions/list/") }
+  end
+
+  describe 'list/' do 
+    subject { get "/competitions/list/" }
+    its(:body) { should include('ISU World') }
+  end
+  
+  describe 'list/competition_type' do
+    subject { get "/competitions/list/competition_type:world" }
+    its(:body) {
+      should include('ISU World')
+      should include('world')
+    }
+  end
+  
+  describe 'list/season' do
+    subject { get "/competitions/list/season:2016-17" }
+    its(:body){
+      should include('ISU World')
+      should include('2016-17')
+    }
+  end
+end

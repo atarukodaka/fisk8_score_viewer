@@ -8,12 +8,8 @@ module ScoreViewer
     layout :layout
     set :filter_keys, {}
 
-    #access_logger = Logger.new(Padrino.root('log', 'access.log'))
-    #access_logger
-                               
-    
     get :index do
-      redirect url_for(:scores, :index)
+      redirect url_for(:scores, :list)
     end
   end
 end

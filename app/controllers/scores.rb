@@ -12,7 +12,7 @@ ScoreViewer::App.controllers :scores do
   end
 
   ## list
-  get :list, map: "/scores/list/*", provides: [:csv, :html] do
+  get :list, map: "/scores/list/*", provides: [:html, :csv] do
     splat_to_params(params)
     rel = filter(Score.order("starting_time DESC"), :scores)
 

@@ -23,6 +23,7 @@ gem 'erubi', '~> 1.6'
 gem 'activerecord', '>= 3.1', :require => 'active_record'
 
 group :development, :test do
+  gem 'pry-byebug'
   gem 'sqlite3'
 end
 
@@ -32,21 +33,13 @@ end
 
 # Test requirements
 gem 'rspec', :group => 'test'
-gem 'capybara', :group => 'test'
-gem 'cucumber', :group => 'test'
+gem 'rspec-its', :group => 'test'
+#gem 'capybara', :group => 'test'
+#gem 'cucumber', :group => 'test'
 gem 'rack-test', :require => 'rack/test', :group => 'test'
 
 # Padrino Stable Gem
 gem 'padrino', '0.14.0.1'
 
-# Or Padrino Edge
-# gem 'padrino', :github => 'padrino/padrino-framework'
-
-# Or Individual Gems
-# %w(core support gen helpers cache mailer admin).each do |g|
-#   gem 'padrino-' + g, '0.14.0.1'
-# end
-
-gem 'pry-byebug'
 gem 'pdftotext'
 gem 'mechanize'

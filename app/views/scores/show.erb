@@ -21,7 +21,7 @@
   </tr>
   <tr>
     <th>Date</th>
-    <td><%= score.date %></td>
+    <td><%= (t = score.starting_time ) ? t.strftime("%y-%m-%d") : "" %></td>
   </tr>
   <tr>
     <th>TSS</th>
