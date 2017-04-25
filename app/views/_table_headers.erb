@@ -2,6 +2,6 @@
 
 <tr>
   <% table_headers.each do |header| %>
-  <th><%= header %></th>
+  <th><%= (header.class == Symbol) ? header.to_s.gsub(/_/, " ") : header %></th>
   <% end %>
 </tr>

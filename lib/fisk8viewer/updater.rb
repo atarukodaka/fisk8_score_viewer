@@ -5,23 +5,23 @@ require 'fisk8viewer/competition_summary_adaptor'
 module Fisk8Viewer
   class Updater
     include Logger
-    include Utils
-    
+
+    def _item_to_hash(item)
+      if item.is_a? String
+        {url: item, parser_type: :isu_generic}
+      elsif item.is_a? Hash
+        item
+      end
+    end
     def update_competitions(ary)
       ary.each do |item|
-        if item.is_a? String
-          url = item
-          parser_type = :isu_generic
-        elsif item.is_a? Hash
-          url = item["url"]
-          parser_type = item["parser"]
-        end
-        parser = Fisk8Viewer::CompetitionParsers.registered[parser_type].new
-        update_competition(url, parser: parser)
+        hash = _item_to_hash(item)
+        parser = Fisk8Viewer::CompetitionParsers.registered[hash[:parser_type]].try(:new) || raise "no such parser registered"
+        update_competition(hash[:url], parser: hash[:parser])
       end
     end
     
-    def update_competition(url, parser: nil)
+    def update_competition(url, parser: Fisk8Viewer::CompetitionParser::ISU_Generic)
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
@@ -52,26 +52,27 @@ module Fisk8Viewer
 
           additional_hash = {
             starting_time: data.starting_time(category, segment),
-            result_pdf: data.score_url(category, segment),
+            competition_name: competition.name,
+            category: category,
+            segment: segment,
           }
-          score_text = convert_pdf(additional_hash[:result_pdf], dir: "pdf")
-          
-          score_parser.parse(score_text).each do |score_hash|
-            update_score(score_hash.merge(additional_hash)) do
-              competition.scores.create
+
+          score_url = data.score_url(category, segment)    
+          score_parser.parse(score_url).each do |score_hash|
+            update_score(score_hash, score: competition.scores.create(additional_hash))
             end
           end
         end
       end
     end
     ################################################################
-    def update_score(score_hash) 
+    def update_score(score_hash, score: Score.create) 
       logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]}/#{score_hash[:category]}/#{score_hash[:segment]}/#{score_hash[:competition_name]}"
       keys = [:skater_name, :rank, :starting_number, :nation,
               :competition_name, :category, :segment, :starting_time, :result_pdf,
               :tss, :tes, :pcs, :deductions] # .each do |k|
-      score = (block_given?) ? yield : Score.create
-      score.update(score_hash.slice(*keys))
+      #score = (block_given?) ? yield : Score.create
+      #score.update(score_hash.slice(*keys))
       
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]

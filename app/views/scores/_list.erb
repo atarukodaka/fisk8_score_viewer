@@ -9,24 +9,8 @@
 <% end %>
 
 <table class="table table-striped table-hover table-condensed">
-  <tr>
-    <th>Score ID</th>
-    <th>Skater</th>
-    <th>Nation</th>
-    <th>Competition</th>
-    <th>Category</th>
-    <th>Segment</th>
-    <th>Result PDF</th>
-    <th>Date</th>
-    <th>Rank</th>    
-    <th>Starting</th>
-    <th>TSS</th>    
-    <th>TES</th>
-    <th>PCS</th>
-    <th>deduction</th>    
-    <th>Elements</th>
-    <th>Components</th>
-  </tr>
+  <%= partial "table_headers", locals: {table_headers:
+      [:Score_ID, :Skater, :Nation, :Competition, :Category, :Segment, :Result_PDF, :Date, :Rank, :Starting, :TSS, :TES, :PCS, :Deductions]} %>
 
   <% scores_limitted.each do |score| %>
   <tr>
@@ -45,8 +29,8 @@
     <td><%= score.tes %></td>
     <td><%= score.pcs %></td>
     <td><%= score.deductions %></td>
-    <td style="font-size: x-small;"><%= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) %></td>
-    <td><%= link_to(score.components_summary, url_for(:scores, :id, id: score.id)) %></td>
+    <td style="font-size: x-small;"><!-- %= link_to(score.technicals_summary, url_for(:scores, :id, id: score.id)) % --></td>
+    <td><!-- %= link_to(score.components_summary, url_for(:scores, :id, id: score.id)) % --></td>
   </tr>
   <% end %>
 </table>
