@@ -24,7 +24,7 @@ module Fisk8Viewer
         update_competition(item[:url], parser: parser)
       end
     end
-    def update_competition(url, parser: Fisk8Viewer::CompetitionParser::ISU_Generic)
+    def update_competition(url, parser: Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new)
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
@@ -49,9 +49,7 @@ module Fisk8Viewer
           cr = competition.category_results.create(result_hash.slice(*keys))
 
           skater = Skater.find_or_create_by(name: result_hash[:skater_name])
-          skater.update(name: result_hash[:skater_name],
-                        nation: result_hash[:nation],
-                        category: result_hash[:category])
+          skater.update(result_hash(*[:nation, :categoryh]))
           skater.category_results << cr
           cr.skater = skater; cr.save
         end
