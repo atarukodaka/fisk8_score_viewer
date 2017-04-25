@@ -8,6 +8,7 @@ class CreateCategoryResults < ActiveRecord::Migration
       t.float :points
 
       t.belongs_to :competition
+      t.references :skater
     end
   end
 end

@@ -46,7 +46,14 @@ module Fisk8Viewer
         results = parser.parse_category_result(result_url)
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
-          competition.category_results.create(result_hash.slice(*keys))
+          cr = competition.category_results.create(result_hash.slice(*keys))
+
+          skater = Skater.find_or_create_by(name: result_hash[:skater_name])
+          skater.update(name: result_hash[:skater_name],
+                        nation: result_hash[:nation],
+                        category: result_hash[:category])
+          skater.category_results << cr
+          cr.skater = skater; cr.save
         end
         
         ## for segments
@@ -74,7 +81,7 @@ module Fisk8Viewer
               :competition_name, :category, :segment, :starting_time, :result_pdf,
               :tss, :tes, :pcs, :deductions] # .each do |k|
       #score = (block_given?) ? yield : Score.create
-      #score.update(score_hash.slice(*keys))
+      score.update(score_hash.slice(*keys))
       
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]

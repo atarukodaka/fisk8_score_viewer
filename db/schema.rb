@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.string  "skater_name"
     t.float   "points"
     t.integer "competition_id"
+    t.integer "skater_id"
   end
 
   create_table "competitions", force: :cascade do |t|
