@@ -6,21 +6,21 @@ module Fisk8Viewer
   class Updater
     include Logger
 
-    def _item_to_hash(item)
-      if item.is_a? String
-        {url: item, parser_type: :isu_generic}
-      elsif item.is_a? Hash
-        item
+    def load_config(yaml_filename)
+      YAML.load_file(yaml_filename).map do |item|
+        if item.is_a? String
+          {url: item, parser_type: :isu_generic}
+        elsif item.is_a? Hash
+          item
+        end
       end
     end
-    def update_competitions(ary)
-      ary.each do |item|
-        hash = _item_to_hash(item)
-        parser = Fisk8Viewer::CompetitionParsers.registered[hash[:parser_type]].try(:new) || raise "no such parser registered"
-        update_competition(hash[:url], parser: hash[:parser])
+    def update_competitions(items)
+      items.each do |item|
+        parser = Fisk8Viewer::CompetitionParsers.registered[item[:parser_type]].new
+        update_competition(item[:url], parser: parser)
       end
     end
-    
     def update_competition(url, parser: Fisk8Viewer::CompetitionParser::ISU_Generic)
       logger.debug " - update competition: #{url}"
 
@@ -38,29 +38,28 @@ module Fisk8Viewer
       score_parser = Fisk8Viewer::ScoreParser.new
       data.categories.each do |category|
         result_url = data.result_url(category)
-
+        
         logger.debug " - update category [#{category}]"
         results = parser.parse_category_result(result_url)
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
           competition.category_results.create(result_hash.slice(*keys))
         end
-
+        
         ## for segments
         data.segments(category).each do |segment|
           logger.debug " - update scores on segment [#{category}/#{segment}]"
-
+          
           additional_hash = {
             starting_time: data.starting_time(category, segment),
             competition_name: competition.name,
             category: category,
             segment: segment,
           }
-
+          
           score_url = data.score_url(category, segment)    
           score_parser.parse(score_url).each do |score_hash|
             update_score(score_hash, score: competition.scores.create(additional_hash))
-            end
           end
         end
       end

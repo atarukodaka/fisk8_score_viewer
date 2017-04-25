@@ -24,11 +24,10 @@ task update: [:update_competitions, :update_skaters] do
 end
 
 task :update_competitions => :environment do
-  competitions = YAML.load_file("config/competitions.yaml")
-
   number = (ENV["number"] || 1).to_i
+  yaml_filename = Padrino.root("config", "competitions.yaml")
   updater = Fisk8Viewer::Updater.new
-  updater.update_competitions([competitions.last(number).reverse].flatten)
+  updater.update_competitions([updater.load_config(yaml_filename).last(number).reverse].flatten)
 end
 
 task :update_skaters => :environment do  
