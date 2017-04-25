@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(version: 5) do
     t.string   "competition_type"
     t.string   "season"
     t.string   "short_name"
-    t.string   "abbr"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

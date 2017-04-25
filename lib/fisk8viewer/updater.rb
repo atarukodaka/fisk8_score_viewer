@@ -42,7 +42,7 @@ module Fisk8Viewer
       data.categories.each do |category|
         result_url = data.result_url(category)
         
-        logger.debug " - update category result of '#{category}'"
+        logger.debug " = update category result of '#{category}'"
         results = parser.parse_category_result(result_url)
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
@@ -56,7 +56,7 @@ module Fisk8Viewer
         
         ## for segments
         data.segments(category).each do |segment|
-          logger.debug " - update scores on segment [#{category}/#{segment}]"
+          logger.debug "  - update scores on segment [#{category}/#{segment}]"
           
           additional_hash = {
             starting_time: data.starting_time(category, segment),
@@ -64,7 +64,6 @@ module Fisk8Viewer
             category: category,
             segment: segment,
           }
-          
           score_url = data.score_url(category, segment)    
           score_parser.parse(score_url).each do |score_hash|
             update_score(score_hash, score: competition.scores.create(additional_hash))

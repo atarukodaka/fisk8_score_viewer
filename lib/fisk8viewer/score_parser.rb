@@ -47,7 +47,7 @@ module Fisk8Viewer
       scores = []
       page_number = 1
       text.split(/\f/).map do |page_text|
-        page_text.split(/ *Starting Total/)[1..-1].each_with_index do |t, i|
+        page_text.split(/^Rank Name Nation/)[1..-1].each_with_index do |t, i|
           result_pdf =  "#{score_url}\#page=#{i+1}"
           score = parse_skater(t)
           scores << score.merge(result_pdf: result_pdf)

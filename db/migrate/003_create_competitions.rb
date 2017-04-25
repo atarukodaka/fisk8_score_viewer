@@ -11,7 +11,6 @@ class CreateCompetitions < ActiveRecord::Migration
       t.string :competition_type
       t.string :season
       t.string :short_name
-      t.string :abbr
       
       t.timestamps
     end

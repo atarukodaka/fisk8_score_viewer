@@ -23,8 +23,7 @@ end
 task update: [:update_competitions, :update_skaters] do
 end
 
-task :update_competitions => :environment do
-  ActiveRecord::Base.logger = Logger.new('log/sql.log')
+task :update_competitions => :update_env do
   number = (ENV["number"] || 0).to_i
   
   updater = Fisk8Viewer::Updater.new
@@ -33,12 +32,12 @@ task :update_competitions => :environment do
   updater.update_competitions(items)
 end
 
-task :update_skaters => :environment do  
+task :update_skaters => :update_env do  
   updater = Fisk8Viewer::Updater.new
   updater.update_skaters
 end
 
-task :parse_score => :environment do
+task :parse_score => :update_env do
   pdf_url = ENV["url"]
   score_parser = Fisk8Viewer::ScoreParser.new
   include Fisk8Viewer::Utils
@@ -47,6 +46,11 @@ task :parse_score => :environment do
   ar = score_parser.parse(score_text)
   puts ar.inspect
 end
+
+task :update_env => :environment do
+  ActiveRecord::Base.logger = Logger.new('log/sql.log')
+end
+
 
 task :test => :spec do
 end
