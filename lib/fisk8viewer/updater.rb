@@ -5,13 +5,16 @@ require 'fisk8viewer/competition_summary_adaptor'
 module Fisk8Viewer
   class Updater
     include Logger
-
+    DEFAULT_PARSER_TYPE = :isu_generic
+    
     def load_config(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
         if item.is_a? String
-          {url: item, parser_type: :isu_generic}
+          {url: item, parser_type: DEFAULT_PARSER_TYPE}
         elsif item.is_a? Hash
           item
+        else
+          raise
         end
       end
     end
