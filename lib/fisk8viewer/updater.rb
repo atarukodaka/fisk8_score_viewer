@@ -49,7 +49,7 @@ module Fisk8Viewer
           cr = competition.category_results.create(result_hash.slice(*keys))
 
           skater = Skater.find_or_create_by(name: result_hash[:skater_name])
-          skater.update(result_hash(*[:nation, :categoryh]))
+          skater.update(result_hash.slice(*[:nation, :category]))
           skater.category_results << cr
           cr.skater = skater; cr.save
         end
