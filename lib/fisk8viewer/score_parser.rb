@@ -49,7 +49,7 @@ module Fisk8Viewer
       text.split(/\f/).map do |page_text|
         page_text.split(/ *Starting Total/)[1..-1].each_with_index do |t, i|
           result_pdf =  "#{score_url}\#page=#{i+1}"
-          score = parse_skater(page_text)
+          score = parse_skater(t)
           scores << score.merge(result_pdf: result_pdf)
         end
       end

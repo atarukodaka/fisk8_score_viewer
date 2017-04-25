@@ -24,11 +24,12 @@ task update: [:update_competitions, :update_skaters] do
 end
 
 task :update_competitions => :environment do
+  ActiveRecord::Base.logger = Logger.new('log/sql.log')
   number = (ENV["number"] || 0).to_i
   
   updater = Fisk8Viewer::Updater.new
   items = updater.load_config(Padrino.root("config", "competitions.yaml"))
-  items = items.reverse.last(number) if number > 0
+  items = items.reverse.first(number) if number > 0
   updater.update_competitions(items)
 end
 

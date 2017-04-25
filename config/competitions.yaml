@@ -19,7 +19,9 @@
   url: http://www.isuresults.com/results/ec2012/
   summary_parser: :isu_generic_mdy
 - http://www.isuresults.com/results/fc2012/
-- http://www.isuresults.com/results/wjc2012/
+-
+  url: http://www.isuresults.com/results/wjc2012/
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/wc2012/
 - http://www.isuresults.com/results/wtt2012/
 

@@ -10,9 +10,9 @@ module Fisk8Viewer
     def load_config(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
         if item.is_a? String
-          {url: item, parser_type: DEFAULT_PARSER_TYPE}
+          {url: item, parser: DEFAULT_PARSER_TYPE}
         elsif item.is_a? Hash
-          item
+          {url: item["url"], parser: item["parser"]}
         else
           raise
         end
@@ -20,7 +20,7 @@ module Fisk8Viewer
     end
     def update_competitions(items)
       items.each do |item|
-        parser = Fisk8Viewer::CompetitionParsers.registered[item[:parser_type]].new
+        parser = Fisk8Viewer::CompetitionParsers.registered[item[:parser]].new
         update_competition(item[:url], parser: parser)
       end
     end
@@ -42,7 +42,7 @@ module Fisk8Viewer
       data.categories.each do |category|
         result_url = data.result_url(category)
         
-        logger.debug " - update category [#{category}]"
+        logger.debug " - update category result of '#{category}'"
         results = parser.parse_category_result(result_url)
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
@@ -74,11 +74,9 @@ module Fisk8Viewer
     end
     ################################################################
     def update_score(score_hash, score: Score.create) 
-      logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]}/#{score_hash[:category]}/#{score_hash[:segment]}/#{score_hash[:competition_name]}"
+      logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]} (#{score_hash[:nation]})"
       keys = [:skater_name, :rank, :starting_number, :nation,
-              :competition_name, :category, :segment, :starting_time, :result_pdf,
-              :tss, :tes, :pcs, :deductions] # .each do |k|
-      #score = (block_given?) ? yield : Score.create
+              :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
       score.update(score_hash.slice(*keys))
       
       ## technicals
