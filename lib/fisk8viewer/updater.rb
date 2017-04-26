@@ -123,6 +123,18 @@ module Fisk8Viewer
         end
       end
     end
+
+    def cleanup
+      ## skater
+      Skater.all.each do |skater|
+        skater.destroy if skater.scores.count == 0
+      end
+
+      ## competition
+      Competition.all.each do |competition|
+        competition.destroy if competition.scores.count == 0
+      end
+    end
   end  ## class
 end
 

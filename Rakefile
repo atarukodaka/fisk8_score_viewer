@@ -47,9 +47,15 @@ task :parse_score => :update_env do
   puts ar.inspect
 end
 
+task :cleanup => :update_env do
+  updater = Fisk8Viewer::Updater.new
+  updater.cleanup
+end
+
 task :update_env => :environment do
   ActiveRecord::Base.logger = Logger.new('log/sql.log')
 end
+
 
 
 task :test => :spec do
