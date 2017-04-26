@@ -9,7 +9,7 @@ describe 'score' do
     Competition.all.map(&:destroy)
   end
 
-  let (:id) { Score.first.id }
+  let (:id) { Score.order("updated_at DESC").first.id }
   
   describe 'id' do
     subject { get "/scores/id/#{id}" }

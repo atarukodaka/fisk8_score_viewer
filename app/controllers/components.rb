@@ -11,10 +11,11 @@ ScoreViewer::App.controllers :components do
 
     # first, filter by score
     scores = filter(Score.order("starting_time DESC"), :scores)
-    
+
     # next, filter by component number
+    #components = Component.where(score_id: scores.select(:id))
+    components = Component.joins(:score).merge(scores).order("starting_time DESC")
     number = params[:component_number].to_i
-    components = Component.where(score_id: scores.select(:id))
     components = components.where(number: number) if number >= 1
     
     case content_type
