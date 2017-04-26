@@ -24,7 +24,7 @@ describe 'competition summary' do
   it { expect(parsed.segments('MEN')).to eq(['SHORT PROGRAM', 'FREE SKATING']) }
   it { expect(parsed.result_url('MEN')).to eq('http://www.isuresults.com/results/season1617/gpjpn2016/CAT001RS.HTM') }
   it { expect(parsed.score_url('MEN', 'SHORT PROGRAM')).to eq('http://www.isuresults.com/results/season1617/gpjpn2016/gpjpn2016_Men_SP_Scores.pdf') }
-  it { expect(parsed.starting_time('MEN', 'SHORT PROGRAM')).to eq(Time.zone.new(2016, 11, 25, 19, 11, 30))}
+  it { expect(parsed.starting_time('MEN', 'SHORT PROGRAM')).to eq(Time.zone.parse('2016/11/25 19:11:30')) }
 end
 
 describe 'competition category result' do
