@@ -20,7 +20,7 @@ module Fisk8Viewer
           end
         when :tes
           element_re = '[\w\+\!<\*]+'
-          if line =~ /^(\d+) (#{element_re}) ([<\!\*]*) *([^d\.]+) (x?) *([\d\.\-]+) ([\d\- ]+) ([\d\.\-]+)$/
+          if line =~ /^(\d+) (#{element_re}) ([<\!\*]*) *([\d\.]+) (x?) *([\d\.\-]+) ([\d\- ]+) ([\d\.\-]+)$/
             score[:technicals] << {
               number: $1.to_i, element: $2, info: $3, base_value: $4.to_f,
               credit: $5, goe: $6.to_f, judges: $7, value: $8.to_f,

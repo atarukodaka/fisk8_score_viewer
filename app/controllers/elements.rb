@@ -8,12 +8,12 @@ ScoreViewer::App.controllers :elements do
   
   get :list, map: "/elements/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    rel = Score.order("updated_at DESC")
-    scores = filter(rel, :scores)
+    scores = filter(Score.order("updated_at DESC"), :scores)
 
     element = params[:element]
     partial_match = params[:partial_match]
-    elements Technical.joins(:score).merge(rel).order("starting_time DESC")
+
+    elements = Technical.joins(:score).merge(scores).order("starting_time DESC")
     #elements = Technical.where(score_id: scores.select(:id))
     elements = 
       if params[:partial_match]

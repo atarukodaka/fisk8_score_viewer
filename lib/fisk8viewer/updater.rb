@@ -6,6 +6,8 @@ module Fisk8Viewer
   class Updater
     include Logger
     DEFAULT_PARSER_TYPE = :isu_generic
+    ACCEPT_CATEGORIES = [:MEN, :LADIES, :PAIRS, :"ICE DANCE",
+                         :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
     
     def load_config(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
@@ -41,6 +43,7 @@ module Fisk8Viewer
       ## for each categories
       score_parser = Fisk8Viewer::ScoreParser.new
       data.categories.each do |category|
+        next if ACCEPT_CATEGORIES.include?(category.to_sym).blank?
         result_url = data.result_url(category)
         
         logger.debug " = update category result of '#{category}'"
@@ -78,7 +81,7 @@ module Fisk8Viewer
       keys = [:skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
       score.update(score_hash.slice(*keys))
-      
+
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
       score_hash[:technicals].each do |element|
