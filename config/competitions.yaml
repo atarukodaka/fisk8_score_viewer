@@ -112,3 +112,16 @@
   parser: :wtt_2017
 - http://www.isuresults.com/results/season1617/gpjpn2016/
 - http://www.isuresults.com/results/season1516/wjc2016/
+
+
+- http://www.isuresults.com/results/gpusa2011/
+- http://www.isuresults.com/results/gpcan2011/
+- http://www.isuresults.com/results/gpchn2011/
+- http://www.isuresults.com/results/gpfra2011/
+- http://www.isuresults.com/results/gprus2011/
+- http://www.isuresults.com/results/gpjpn2011/
+- http://www.isuresults.com/results/gpf1112/
+-
+  url: http://www.isuresults.com/results/ec2012/
+  parser: :isu_generic_mdy
+- http://www.isuresults.com/results/fc2012/

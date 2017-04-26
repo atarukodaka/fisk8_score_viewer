@@ -20,8 +20,9 @@ module Fisk8Viewer
     end
     def update_competitions(items)
       items.each do |item|
-        parser = Fisk8Viewer::CompetitionParsers.registered[item[:parser]].new
-        update_competition(item[:url], parser: parser)
+        logger.debug " '#{item[:url]}' with parser type: #{item[:parser]}"
+        parser_klass = Fisk8Viewer::CompetitionParsers.registered[item[:parser]] || raise
+        update_competition(item[:url], parser: parser_klass.new)
       end
     end
     def update_competition(url, parser: Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new)

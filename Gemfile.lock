@@ -23,6 +23,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     enumerable-lazy (0.0.2)
     erubi (1.6.0)
+    hashie (3.5.5)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     i18n (0.8.1)
@@ -138,6 +139,7 @@ DEPENDENCIES
   activesupport (>= 3.1)
   bcrypt
   erubi (~> 1.6)
+  hashie
   mechanize
   padrino (= 0.14.0.1)
   pdftotext
