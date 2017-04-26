@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'score' do
-  subject {
+  subject (:score){
     filename = "pdf/wtt2013_Pairs_SP_P_Scores.pdf"
     parser = Fisk8Viewer::ScoreParser.new
     url = "http://www.isuresults.com/results/season1617/gpjpn2016/gpjpn2016_Men_SP_Scores.pdf"
@@ -11,6 +11,11 @@ describe 'score' do
   }
   its(:skater_name) { should eq('Yuzuru HANYU') }
   its(:nation) { should eq('JPN') }
+  it { expect(score[:technicals][0].element).to eq('4Lo') }
+  it { expect(score[:technicals][0].base_value).to eq(12.0) }
+  it { expect(score[:technicals][0].value).to eq(9.37) }
+  it { expect(score[:components][0].component).to eq('Skating Skills') }
+  it { expect(score[:components][0].value).to eq(9.39) }
   
 end
 
