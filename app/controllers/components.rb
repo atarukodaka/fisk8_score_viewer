@@ -10,7 +10,7 @@ ScoreViewer::App.controllers :components do
     splat_to_params(params)
 
     # first, filter by score
-    scores = filter(Score.order("updated_at DESC"), :scores)
+    scores = filter(Score.order("starting_time DESC"), :scores)
     
     # next, filter by component number
     number = params[:component_number].to_i
@@ -23,7 +23,7 @@ ScoreViewer::App.controllers :components do
                 :number, :component, :factor, :judges, :value]
       records = components.map do |c|
         [c.score.skater_name, c.score.competition_name,
-         c.score.category, c.score.segment, c.score.starting_time.strftime("%Y-%m%d"),
+         c.score.category, c.score.segment, c.score.starting_time.strftime("%Y-%m-%d"),
          c.number, c.component, c.factor, c.judges, c.value]
       end
       output_csv(header, records, filename: "components.csv")
