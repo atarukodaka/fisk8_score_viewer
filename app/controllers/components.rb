@@ -22,7 +22,7 @@ ScoreViewer::App.controllers :components do
       header = [:skater, :competition_name, :category, :segment,
                 :number, :component, :factor, :judges, :value]
       records = components.map do |c|
-        [s.score.skater_name, s.score.competition_name, s.score.category, s.score.segment,
+        [c.score.skater_name, c.score.competition_name, c.score.category, c.score.segment,
          c.number, c.component, c.factor, c.judges, c.value]
       end
       output_csv(header, records, filename: "components.csv")
