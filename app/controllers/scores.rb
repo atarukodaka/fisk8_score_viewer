@@ -14,16 +14,17 @@ ScoreViewer::App.controllers :scores do
   ## list
   get :list, map: "/scores/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    rel = filter(Score.order("starting_time DESC"), :scores)
+    scores = filter(Score.order("starting_time DESC"), :scores)
 
     case content_type
     when :csv
       csv_keys = [:id, :skater_name, :nation, :competition_name, :category, :segment,
                   :date, :rank, :starting_number, :tss, :tes, :pcs, :deductions]
-      csv_records = rel.map {|r| csv_keys.map {|k| r[k]}}
+      csv_records = scores.slice(*csv_keys)
+      #csv_records = scores.map {|r| csv_keys.map {|k| r[k]}}
       output_csv(csv_keys, csv_records, filename: "scores.csv")
     else
-      render :"scores/index", locals: {scores: rel}
+      render :"scores/index", locals: {scores: scores}
     end
   end
   

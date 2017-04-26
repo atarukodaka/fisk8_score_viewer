@@ -16,18 +16,10 @@
 
 
 <table class="table table-striped table-hover table-condensed">
-  <tr>
-    <th>ID</th>
-    <th>Skater</th>
-    <th>Nation</th>
-    <th>Category</th>
-    <th>ISU Number</th>
-    <th>Birthday</th>
-    <th>Height</th>
-    <th>Club</th>
-    <th>Coach</th>
-    <th>Choreographer</th>
-  </tr>
+  <%= partial "table_headers", locals: {table_headers:
+      [:ID, :Skater, :Nation, :Category, :ISU_Number, :Birthday, :Height,
+      :Club, :Coach, :Choreographer]} %>
+
   <% skaters.each do |skater| %>
   <% next if skater.name.blank? %>
   <tr>

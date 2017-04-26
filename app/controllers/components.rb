@@ -20,13 +20,12 @@ ScoreViewer::App.controllers :components do
     case content_type
     when :csv
       header = [:skater, :competition_name, :category, :segment,
-                 :number, :component, :factor, :judges, :value]
-      ret = components.map do |c|
-        score = c.score
-        [score.skater_name, score.competition_name, score.category, score.segment,
+                :number, :component, :factor, :judges, :value]
+      records = components.map do |c|
+        [s.score.skater_name, s.score.competition_name, s.score.category, s.score.segment,
          c.number, c.component, c.factor, c.judges, c.value]
       end
-      output_csv(header, ret, filename: "components.csv")
+      output_csv(header, records, filename: "components.csv")
     else
       render :"components/index", locals: {components: components}
     end

@@ -3,17 +3,6 @@ module ScoreViewer
   class App
     module Helper
       ## filter
-=begin
-      def filter_keys
-        {
-          scores: [:skater_name, :category, :segment, :nation, :competition_name,],
-          skaters: [:category, :nation],
-          competitions: [:competition_type, :season],
-          elements: [:element, :partial_match, :skater_name, :category, :segment, :nation, :competition_name,],
-          components: [:component_number, :skater_name, :category, :segment, :nation, :competition_name,],
-        }
-      end
-=end      
       def filter(rel, controller)
         #keys = filter_keys[controller]
         keys = settings.filter_keys[controller]
@@ -53,7 +42,8 @@ module ScoreViewer
 
       def link_to_result_pdf(url)
         return "-" if url.nil?
-        link_to(image_tag("http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"), url, target: "_blank")
+        icon_url = "http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"
+        link_to(image_tag(icon_url), url, target: "_blank")
       end
     end  ## module
     helpers Helper

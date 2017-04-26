@@ -11,16 +11,20 @@ module Fisk8Viewer
         data = {}
 
         data[:name] = page.title
+        data[:site_url] = url
         
         city_country = page.xpath("//td[contains(text(), '/')]").presence ||
           page.xpath("//td[contains(text(), ',')]")
 
-        data[:city], data[:country] = city_country.first.text.split(/ *[\/,] */)
-        data[:site_url] = url
+        if city_country.present?
+          data[:city], data[:country] = city_country.first.text.split(/ *[\/,] */)
+        end
         
         ## summary table
         category_elem = page.xpath("//*[text()='Category']").first
-        rows = category_elem.xpath("../../tr")
+        #rows = category_elem.xpath("../../tr")
+        rows = category_elem.ancestors.xpath("table").first.xpath("tr")
+
         category = ""
         summary = []
         rows.map do |row|
@@ -73,7 +77,7 @@ module Fisk8Viewer
         data = []
         begin
           page = @agent.get(url)
-          #page.encoding = "utf-8"
+          page.encoding = 'iso-8859-1'  # for umlaut support
         rescue Mechanize::ResponseCodeError => e
           case e.response_code
           when "404"

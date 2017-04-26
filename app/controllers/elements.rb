@@ -25,12 +25,12 @@ ScoreViewer::App.controllers :elements do
     when :csv
       header = [:score_id, :skater, :competition_name, :category, :segment,
                  :number, :info, :element, :credit, :base_value, :eog, :judges, :value]
-      ret = elements.map do |e|
-        score = e.score
-        [score.id, score.skater_name, score.competition_name, score.category, score.segment,
+      records = elements.map do |e|
+        [e.score.id, e.score.skater_name, e.score.competition_name,
+         e.score.category, e.score.segment,
          e.number, e.info, e.element, e.credit, e.base_value, e.goe, e.judges, e.value]
       end
-      output_csv(header, ret, filename: "elements.csv")
+      output_csv(header, records, filename: "elements.csv")
     else
       render :"elements/index", locals: {elements: elements }
     end

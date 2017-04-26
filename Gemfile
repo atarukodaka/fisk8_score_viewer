@@ -1,14 +1,7 @@
 source 'https://rubygems.org'
 
-# Padrino supports Ruby version 1.9 and later
-# ruby '2.2.6'
-
-# Distribute your app as a gem
-# gemspec
-
-# Server requirements
-# gem 'thin' # or mongrel
-# gem 'trinidad', :platform => 'jruby'
+# Padrino supports Ruby version 2.1 and later (using Array.to_h)
+ruby '>=2.1'
 
 # Optional JSON codec (faster performance)
 # gem 'oj'
@@ -34,12 +27,11 @@ end
 # Test requirements
 gem 'rspec', :group => 'test'
 gem 'rspec-its', :group => 'test'
-#gem 'capybara', :group => 'test'
-#gem 'cucumber', :group => 'test'
 gem 'rack-test', :require => 'rack/test', :group => 'test'
 
 # Padrino Stable Gem
 gem 'padrino', '0.14.0.1'
 
+# Additional Gems
 gem 'pdftotext'
 gem 'mechanize'

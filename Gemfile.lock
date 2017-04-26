@@ -149,5 +149,8 @@ DEPENDENCIES
   rspec-its
   sqlite3
 
+RUBY VERSION
+   ruby 2.2.6p396
+
 BUNDLED WITH
    1.14.6
