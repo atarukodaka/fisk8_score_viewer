@@ -6,14 +6,10 @@ module Fisk8Viewer
       def parse_datetime(str)
         tm = Time.zone.parse(str)
       end
-      def _parse_city_country(str)
-        if str =~ /^(.*)\/ *(.*)$/
-          [$1, $2]
-        elsif str =~ /^(.*), *(.*)$/
-          [$1, $2]
-        else
-          raise
-        end
+      def parse_city_country(str)
+        str =~ %r{^(.*) *[,/] ([A-Z][A-Z][A-Z]) *$};
+        city, country = $1, $2
+        [city.sub(/ *$/, ''), country]
       end
       def parse_summary(url)
         page = @agent.get(url)
@@ -21,13 +17,7 @@ module Fisk8Viewer
 
         data[:name] = page.title
         data[:site_url] = url
-
-        #city_country = page.xpath("//td[contains(text(), '/')]").presence ||
-        #page.xpath("//td[contains(text(), ',')]")
-        
-        data[:city], data[:country] = _parse_city_country(page.search("td.caption3").first.text)
-        binding.pry
-        
+        data[:city], data[:country] = parse_city_country(page.search("td.caption3").first.text)
         ## summary table
         category_elem = page.xpath("//*[text()='Category']").first
         #rows = category_elem.xpath("../../tr")

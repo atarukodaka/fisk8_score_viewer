@@ -54,7 +54,7 @@ module Fisk8Viewer
         :gp
       when /Olympic/
         :olympic
-      when /^ISU World Figure/
+      when /^ISU World Figure/, /^ISU World Championships/
         :world
       when /^ISU Four Continents/
         :fc
@@ -79,7 +79,7 @@ module Fisk8Viewer
       @_short_name =
         case @data[:competition_type]
         when :olympic
-          "ISU OLYMPIC #{city} #{year}"
+          "ISU OLYMPIC #{year}"
         when :gp
           if @data[:name] =~ /Final/
             "ISU GPF #{year}"
