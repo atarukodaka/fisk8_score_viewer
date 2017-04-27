@@ -81,8 +81,12 @@ module Fisk8Viewer
         when :olympic
           "ISU OLYMPIC #{city} #{year}"
         when :gp
-          "ISU GP #{country} #{year}"
-        when :world
+          if @data[:name] =~ /Final/
+            "ISU GPF #{year}"
+          else
+            "ISU GP #{country} #{year}"
+          end
+          when :world
           "ISU WORLD #{year}"
         when :fc
           "ISU 4CC #{year}"
