@@ -8,20 +8,18 @@ ScoreViewer::App.controllers :elements do
   
   get :list, map: "/elements/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    scores = filter(Score.order("updated_at DESC"), :scores)
-
-    element = params[:element]
-    partial_match = params[:partial_match]
+    scores = filter(Score.order("starting_time DESC"), :scores)
 
     elements = Technical.joins(:score).merge(scores).order("starting_time DESC")
     #elements = Technical.where(score_id: scores.select(:id))
-    elements = 
-      if params[:partial_match]
-        elements.where("element like(?)", "%#{params[:element]}%")
-      else
+    if params[:element]
+      elements = 
+        if params[:partial_match]
+          elements.where("element like(?)", "%#{params[:element]}%")
+        else
         elements.where(element: params[:element])
-      end
-    
+        end
+    end
     case content_type
     when :csv
       header = [:score_id, :skater, :competition_name, :category, :segment,

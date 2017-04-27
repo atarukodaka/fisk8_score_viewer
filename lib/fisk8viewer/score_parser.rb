@@ -2,9 +2,9 @@ module Fisk8Viewer
   class ScoreParser
     include Utils
     
-    def parse_skater(text)
+    def parse_score(text, additional_entries: {})
       mode = :skater
-      score = { technicals: [], components: [],}
+      score = { technicals: [], components: [],}.merge(additional_entries)
 
       text.split(/\n/).each do |line|
         case mode
@@ -43,13 +43,20 @@ module Fisk8Viewer
     def parse(score_url)
       text = convert_pdf(score_url, dir: "pdf")
       text = text.force_encoding('UTF-8').gsub(/  +/, ' ').gsub(/^ */, '').gsub(/\n\n+/, "\n").chomp
+      
+      text =~ /^(.*)\n(.*) ((SHORT|FREE) (.*)) JUDGES DETAILS PER SKATER$/
 
+      additional_entries = {
+        competition_name: $1,
+        category: $2,
+        segment: $3,
+      }
       scores = []
       page_number = 1
       text.split(/\f/).map do |page_text|
-        page_text.split(/^Rank Name Nation/)[1..-1].each_with_index do |t, i|
+        page_text.split(/^Rank/)[1..-1].each_with_index do |t, i|
           result_pdf =  "#{score_url}\#page=#{i+1}"
-          score = parse_skater(t)
+          score = parse_score(t, additional_entries: additional_entries)
           scores << score.merge(result_pdf: result_pdf)
         end
       end

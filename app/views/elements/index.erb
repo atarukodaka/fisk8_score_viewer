@@ -40,6 +40,7 @@
     <th>Competition</th>
     <th>Category</th>
     <th>Segment</th>
+    <th>Date</th>    
     <th>Number</th>
     <th>Info</th>
     <th>Element</th>
@@ -58,6 +59,7 @@
     <td><%= score.competition_name %></td>
     <td><%= score.category %></td>
     <td><%= score.segment %></td>
+    <td><%= score.starting_time.try(:strftime, "%Y-%m-%d") %></td>
     <td><%= element.number %></td>
     <td><%= element.info %></td>
     <td><%= element.element %></td>

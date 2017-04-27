@@ -6,11 +6,14 @@ module Fisk8Viewer
     
     def initialize(parsed_hash)
       @data = parsed_hash  # .with_indifferent_access
-      @data[:competition_type] = competition_type(@data[:name])
 
       ## dates
       @data[:start_date] = @data[:time_schedule].map {|e| e[:time]}.min
       @data[:end_date] = @data[:time_schedule].map {|e| e[:time]}.max
+
+      ## type, short_name
+      @data[:competition_type] = competition_type
+      @data[:short_name] = short_name
 
       ## season
       if @data[:start_date].present?
@@ -45,8 +48,8 @@ module Fisk8Viewer
     end
     
     ################
-    def competition_type(name)
-      case name
+    def competition_type
+      case @data[:name]
       when /^ISU GP/, /^ISU Grand Prix/
         :gp
       when /Olympic/
@@ -67,6 +70,33 @@ module Fisk8Viewer
       else
         :unknown
       end
+    end
+    def short_name
+      year = @data[:start_date].year
+      city = @data[:city]
+      country = @data[:country]
+      
+      @_short_name =
+        case @data[:competition_type]
+        when :olympic
+          "ISU OLYMPIC #{city} #{year}"
+        when :gp
+          "ISU GP #{country} #{year}"
+        when :world
+          "ISU WORLD #{year}"
+        when :fc
+          "ISU 4CC #{year}"
+        when :europe
+          "ISU EURO #{year}"
+        when :team
+          "ISU TEAM #{year}"
+        when :jworld
+          "ISU WORLD J #{year}"
+        when :jgp
+          "ISU WORLD J #{year}"
+        else
+          @data[:name]
+        end
     end
 
     ################

@@ -24,7 +24,7 @@ ScoreViewer::App.controllers :components do
                 :number, :component, :factor, :judges, :value]
       records = components.map do |c|
         [c.score.skater_name, c.score.competition_name,
-         c.score.category, c.score.segment, c.score.starting_time.strftime("%Y-%m-%d"),
+         c.score.category, c.score.segment, c.score.starting_time.try(:strftime, "%Y-%m-%d"),
          c.number, c.component, c.factor, c.judges, c.value]
       end
       output_csv(header, records, filename: "components.csv")

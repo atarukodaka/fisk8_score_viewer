@@ -1,4 +1,3 @@
-require 'fisk8viewer/competition_parsers'
 require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_summary_adaptor'
 
@@ -37,7 +36,7 @@ module Fisk8Viewer
       data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
 
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
-              :competition_type, :abbr, :season,]
+              :competition_type, :short_name, :season,]
       competition = Competition.create(data.slice(*keys))
 
       ## for each categories
@@ -52,12 +51,14 @@ module Fisk8Viewer
           keys = [:category, :rank, :skater_name, :points]
           cr = competition.category_results.create(result_hash.slice(*keys))
 
-          skater = Skater.find_or_create_by(name: result_hash[:skater_name])
-          skater.update(result_hash.slice(*[:nation, :category]))
+          skater = Skater.find_or_create_by(name: result_hash[:skater_name]) do |skater|
+            skater.update(result_hash.slice(*[:nation, :category]))
+            logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"
+          end
           skater.category_results << cr
           cr.skater = skater; cr.save
         end
-        
+
         ## for segments
         data.segments(category).each do |segment|
           logger.debug "  - update scores on segment [#{category}/#{segment}]"
@@ -77,7 +78,7 @@ module Fisk8Viewer
     end
     ################################################################
     def update_score(score_hash, score: Score.create) 
-      logger.debug "  ..#{score_hash[:rank]}:#{score_hash[:skater_name]} (#{score_hash[:nation]})"
+      logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
       keys = [:skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
       score.update(score_hash.slice(*keys))
@@ -97,9 +98,9 @@ module Fisk8Viewer
       score[:components_summary] = score_hash[:components].map {|c| c[:value]}.join('/')
 
       ## skater
-      sk_keys = [:nation, :category]
       skater = Skater.find_or_create_by(name: score.skater_name) do |skater|
-        skater.update(score_hash.slice(*sk_keys))
+        skater.update(score_hash.slice(*[:nation, :category]))
+        logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"
       end
       skater.scores << score
       score.skater = skater
@@ -117,7 +118,7 @@ module Fisk8Viewer
         Skater.where(category: category).each do |skater|
           isu_number = isu_number_hash[skater.name]
           next if isu_number.blank? || skater[:isu_number].present?
-          
+
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")
 

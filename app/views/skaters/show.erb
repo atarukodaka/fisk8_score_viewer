@@ -59,17 +59,23 @@
     <td><%= result.rank %></td>
     <td><%= result.points %></td>
     
-    <% sp_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%SHORT%").first %>
+    <% if sp_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%SHORT%").first %>
     <td><%= sp_elem.rank %></td>
     <td><%= sp_elem.tss %></td>
+    <% else %>
+    <td></td><td></td>
+    <% end %>
 
-    <% fs_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%FREE%").first %>
+    <% if fs_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%FREE%").first %>
     <td><%= fs_elem.rank %></td>
     <td><%= fs_elem.tss %></td>
+    <% else %>
+    <td></td><td></td>
+    <% end %>
   </tr>
   <% end %>
 </table>
 
-<h2>Skater's Scores</h2>
+<h2>Scores</h2>
 
 <%= partial '/scores/list', locals: {scores: skater.scores, paginate: true} %>

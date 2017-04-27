@@ -19,9 +19,8 @@ ScoreViewer::App.controllers :scores do
     case content_type
     when :csv
       csv_keys = [:id, :skater_name, :nation, :competition_name, :category, :segment,
-                  :date, :rank, :starting_number, :tss, :tes, :pcs, :deductions]
-      csv_records = scores.slice(*csv_keys)
-      #csv_records = scores.map {|r| csv_keys.map {|k| r[k]}}
+                  :starting_time, :rank, :starting_number, :tss, :tes, :pcs, :deductions]
+      csv_records = scores.map {|r| csv_keys.map {|k| r[k]}}
       output_csv(csv_keys, csv_records, filename: "scores.csv")
     else
       render :"scores/index", locals: {scores: scores}

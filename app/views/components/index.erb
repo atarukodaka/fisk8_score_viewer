@@ -39,7 +39,7 @@
     <td><%= score.competition_name %></td>
     <td><%= score.category %></td>
     <td><%= score.segment %></td>
-    <td><%= score.starting_time.strftime("%Y-%m-%d") %></td>
+    <td><%= score.starting_time.try(:strftime, "%Y-%m-%d") %></td>
     <td><%= component.number %></td>
     <td><%= component.component %></td>
     <td><%= component.factor %></td>

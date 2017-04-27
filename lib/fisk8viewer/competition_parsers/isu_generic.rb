@@ -94,7 +94,7 @@ module Fisk8Viewer
           
           hash = {
             rank: tds[0].text.to_i,
-            skater_name: tds[1].text,
+            skater_name: tds[1].text.gsub(/  */, ' '),
             nation: tds[2].text,
             points: tds[3].text.to_f
           }

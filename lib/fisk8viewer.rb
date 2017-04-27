@@ -4,6 +4,7 @@ end
 
 ################
 ## require relevant libs
+
 require 'fisk8viewer/utils'
 require 'fisk8viewer/logger'
 
