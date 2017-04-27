@@ -7,6 +7,23 @@
 #
 #  on that case you need to register the parser into Fisk8Viewer::CompetitionSummaryParser.registered. see fisk8viewer/competition_summary_parser.rb and fisk8viewer/competition_summary_parser/isu_generic.rb
 
+##2010-11
+- http://www.isuresults.com/results/gpusa2010/
+- http://www.isuresults.com/results/gpcan2010/
+- http://www.isuresults.com/results/gpchn2010/
+- http://www.isuresults.com/results/gpfra2010/
+- http://www.isuresults.com/results/gprus2010/
+- http://www.isuresults.com/results/gpjpn2010/
+- http://www.isuresults.com/results/gpf1011/
+-
+  url: http://www.isuresults.com/results/ec2011/
+  parser: :isu_generic_mdy
+- http://www.isuresults.com/results/fc2011/
+- url: http://www.isuresults.com/results/wjc2011/
+- http://www.isuresults.com/results/wc2011/
+- http://www.isuresults.com/results/wtt2011/
+
+
 ##2011-12
 - http://www.isuresults.com/results/gpusa2011/
 - http://www.isuresults.com/results/gpcan2011/
@@ -115,3 +132,26 @@
   parser: :wtt_2017
 - http://www.isuresults.com/results/fc2012/
 - http://www.isuresults.com/results/season1516/ec2016/
+
+
+##2010-11
+-
+  url: http://www.isuresults.com/results/gpusa2010/
+  parser: :isu_generic_mdy
+-
+  url: http://www.isuresults.com/results/gpcan2010/
+  parser: :isu_generic_mdy
+- http://www.isuresults.com/results/gpchn2010/
+-
+  url: http://www.isuresults.com/results/gpfra2010/
+  parser: :isu_generic_mdy
+- http://www.isuresults.com/results/gprus2010/
+- http://www.isuresults.com/results/gpjpn2010/
+- http://www.isuresults.com/results/gpf1011/
+-
+  url: http://www.isuresults.com/results/ec2011/
+  parser: :isu_generic_mdy
+- http://www.isuresults.com/results/fc2011/
+- http://www.isuresults.com/results/wjc2011/
+- http://www.isuresults.com/results/wc2011/
+

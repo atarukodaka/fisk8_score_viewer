@@ -9,7 +9,7 @@ module Fisk8Viewer
       text.split(/\n/).each do |line|
         case mode
         when :skater
-          name_re = %q[[[:alpha:]\- \/\']+]
+          name_re = %q[[[:alpha:]\.\- \/\']+]
           if line =~ /^(\d+) (#{name_re}) ([A-Z]+) (\d+) ([\d\.]+) ([\d\.]+) ([\d\.]+) ([\d\.\-]+)/
             hash = {
               rank: $1.to_i, skater_name: $2, nation: $3, starting_number: $4.to_i,
