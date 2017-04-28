@@ -4,7 +4,11 @@ module Fisk8Viewer
   module CompetitionParser
     class ISU_Generic < Base
       def parse_datetime(str)
-        tm = Time.zone.parse(str)
+        begin
+          tm = Time.zone.parse(str)
+        rescue ArgumentError
+          raise "invalid date format. use :isu_generic_mdy as parser"
+        end
       end
       def parse_city_country(page)
         str = page.search("td.caption3").first.text

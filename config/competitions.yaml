@@ -58,7 +58,9 @@
 - http://www.isuresults.com/results/gpjpn2012/
 - http://www.isuresults.com/results/gpf1213/
 - http://www.isuresults.com/results/fc2013/
-- http://www.isuresults.com/results/ec2013/
+-
+  url: http://www.isuresults.com/results/ec2013/
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/wjc2013/
 - http://www.isuresults.com/results/wc2013/
 
