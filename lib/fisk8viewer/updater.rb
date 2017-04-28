@@ -50,7 +50,7 @@ module Fisk8Viewer
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
           cr = competition.category_results.create(result_hash.slice(*keys))
-
+          
           skater = Skater.find_or_create_by(name: result_hash[:skater_name]) do |skater|
             skater.update(result_hash.slice(*[:nation, :category]))
             logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"

@@ -25,7 +25,7 @@
   </tr>
   <tr>
     <th>Date</th>
-    <td><%= (t = score.starting_time ) ? t.strftime("%y-%m-%d") : "" %></td>
+    <td><%=score.starting_time.try(:strftime, "%Y-%m-%d")  %></td>
   </tr>
   <tr>
     <th>TSS</th>

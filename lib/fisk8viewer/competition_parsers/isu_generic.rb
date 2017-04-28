@@ -95,10 +95,10 @@ module Fisk8Viewer
             rank: tds[0].text.to_i,
             skater_name: tds[1].text.gsub(/  */, ' '),
             nation: tds[2].text,
+            category: category,
             points: tds[3].text.to_f
           }
-          if tds.size == 6
-            hash[:category] = category
+          if tds.size >= 6
             hash[:sp_ranking] = tds[4].text.to_i
             hash[:fs_ranking] = tds[5].text.to_i
           elsif tds.size == 5

@@ -11,5 +11,9 @@ module ScoreViewer
     get :index do
       redirect url_for(:scores, :list)
     end
+
+    get :about do
+      render :about
+    end
   end
 end
