@@ -3,8 +3,6 @@ require 'spec_helper'
 describe 'validate' do
   before {
     logger = Logger.new(STDOUT)
-    logger.extend(Padrino::Logger::Extensions)
-    Padrino.logger = logger
     ActiveRecord::Base.establish_connection(ActiveRecord::Base.configurations[:production])
   }
   after {
@@ -15,8 +13,8 @@ describe 'validate' do
       logger.debug(" #{skater.name}")
       expect(skater.name).not_to eq('')
       expect(skater.nation).to match /^[A-Z][A-Z][A-Z]$/
-      expect(skater.category).to match /^[\w\s]+$/
-#      expect(skater.scores.count).not_to eq(0)
+      expect(skater.category).to match /^[a-zA-Z\s]+$/
+      expect(skater.scores.count).not_to eq(0) if ENV['skater_empty_scores']
     end
   }
   it {
@@ -27,7 +25,7 @@ describe 'validate' do
       expect(competition.city).not_to eq('')
       expect(competition.country).to match /^[A-Z][A-Z][A-Z]$/
       competition.scores.each do |score|
-        logger.debug("  [#{score.category}/#{score.segment}]#{score.rank}:#{score.skater_name}")
+        #logger.debug("  [#{score.category}/#{score.segment}]#{score.rank}:#{score.skater_name}")
         [:skater_name, :competition_name, :competition_id, :category, :segment,
          :starting_time, :tss, :tes, :pcs, :deductions, :result_pdf,].each do |key|
           expect(score[key]).not_to eq('')
