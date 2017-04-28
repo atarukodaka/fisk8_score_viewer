@@ -47,6 +47,40 @@ task :parse_score => :update_env do
   puts ar.inspect
 end
 
+task :validate => :update_env do
+  ## skater
+  Skater.all.each do |skater|
+    [:name, :nation, :category].each do |key|
+      logger.warn "  !! #{key.to_s.upcase} EMPTY: #{skater.name}/#{skater.nation}#{skater.category}" if skater[key].blank?
+    end
+
+    # has scores?
+    logger.warn "  !! HAS NO SCORES: #{skater.name}" if skater.scores.count == 0
+  end
+
+  ## competition, scores
+  Competition.all.each do |competition|
+    logger.debug "competition: #{competition.name}"
+    competition.scores.each do |score|
+      logger.debug " score: #{score.category}/#{score.segment}: #{score.rank}: #{score.skater_name}"
+      ## result
+      [:skater_name, :competition_name, :competition_id, :category, :segment,
+       :starting_time, :tss, :tes, :pcs, :deductions, :result_pdf,].each do |key|
+        logger.warn "  !! #{key.to_s.upcase} EMPTY" if score[key].blank?
+      end
+      ## technicals
+      score.technicals.each_with_index do |element, i|
+        logger.warn "   !! ELEMENT EMPTY: #{i+1}" if element.element.blank?
+        logger.warn "   !! ELEMENT MISSING: #{i+1}" if element.number != i + 1
+        logger.warn "   !! VALUE INVALID: #{i+1}" if element.value.blank?
+      end
+      ## components
+    end
+  end
+
+  
+end
+
 task :cleanup => :update_env do
   updater = Fisk8Viewer::Updater.new
   updater.cleanup

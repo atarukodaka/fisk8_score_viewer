@@ -1,3 +1,5 @@
+require 'fisk8viewer/utils'
+
 module Fisk8Viewer
   class ScoreParser
     include Utils
@@ -20,7 +22,8 @@ module Fisk8Viewer
           end
         when :tes
           element_re = '[\w\+\!<\*]+'
-          if line =~ /^(\d+) (#{element_re}) ([<\!\*]*) *([\d\.]+) (x?) *([\d\.\-]+) ([\d\- ]+) ([\d\.\-]+)$/
+          #binding.pry if additional_entries[:category] == "MEN"
+          if line =~ /^(\d+) (#{element_re}) ([<\!\*e]*) *([\d\.]+) ([Xx]?) *([\d\.\-]+) ([\d\- ]+) ([\d\.\-]+)$/
             score[:technicals] << {
               number: $1.to_i, element: $2, info: $3, base_value: $4.to_f,
               credit: $5, goe: $6.to_f, judges: $7, value: $8.to_f,
@@ -63,4 +66,11 @@ module Fisk8Viewer
       return scores
     end  # def parser
   end
+end
+
+################################################################
+if $0 == __FILE__
+  txt = "data0205.txt"
+  parser = Fisk8Viewer::ScoreParser.new
+  parser.parse_score(File.read(txt))
 end
