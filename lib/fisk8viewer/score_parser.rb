@@ -12,11 +12,12 @@ module Fisk8Viewer
         case mode
         when :skater
           name_re = %q[[[:alpha:]\.\- \/\']+]
-          if line =~ /^(\d+) (#{name_re}) ([A-Z]+) (\d+) ([\d\.]+) ([\d\.]+) ([\d\.]+) ([\d\.\-]+)/
+          if line =~ /^(\d+) (#{name_re}) *([A-Z][A-Z][A-Z]) (\d+) ([\d\.]+) ([\d\.]+) ([\d\.]+) ([\d\.\-]+)/
             hash = {
               rank: $1.to_i, skater_name: $2, nation: $3, starting_number: $4.to_i,
               tss: $5.to_f, tes: $6.to_f, pcs: $7.to_f, deductions: $8.to_f,
             }
+            hash[:skater_name].sub!(/ *$/, '')
             score.merge!(hash)
             mode = :tes
           end

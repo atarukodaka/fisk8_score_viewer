@@ -41,9 +41,8 @@ task :parse_score => :update_env do
   pdf_url = ENV["url"]
   score_parser = Fisk8Viewer::ScoreParser.new
   include Fisk8Viewer::Utils
-  
-  score_text = convert_pdf(pdf_url, dir: "pdf")
-  ar = score_parser.parse(score_text)
+
+  ar = score_parser.parse(pdf_url)
   binding.pry
   puts ar.inspect
 end

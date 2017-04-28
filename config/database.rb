@@ -1,29 +1,4 @@
-##
-# You can use other adapters like:
-#
-#   ActiveRecord::Base.configurations[:development] = {
-#     :adapter   => 'mysql2',
-#     :encoding  => 'utf8',
-#     :reconnect => true,
-#     :database  => 'your_database',
-#     :pool      => 5,
-#     :username  => 'root',
-#     :password  => '',
-#     :host      => 'localhost',
-#     :socket    => '/tmp/mysql.sock'
-#   }
-#
-=begin
-ActiveRecord::Base.configurations[:development] = {
-  :adapter   => 'postgresql',
-  :database  => 'score_viewer_development',
-  :username  => 'root',
-  :password  => '',
-  :host      => 'localhost',
-  :port      => 5432
 
-}
-=end
 ActiveRecord::Base.configurations[:test] = {
   adapter: 'sqlite3',
   database: Padrino.root('db', 'score_viewer_development.db'),
@@ -32,7 +7,7 @@ ActiveRecord::Base.configurations[:test] = {
 ActiveRecord::Base.configurations[:development] = {
   adapter: 'sqlite3',
   database: Padrino.root('db', 'score_viewer_development.db'),
-  timeout: 10000
+  timeout: 10000,
 }
 
 if database_url = ENV['DATABASE_URL'].presence  ## for heroku deploy using postgres
@@ -50,7 +25,7 @@ else
   ActiveRecord::Base.configurations[:production] = {
     adapter: 'sqlite3',
     database: Padrino.root('db', 'score_viewer_production.db'),
-    timeout: 10000
+    timeout: 10000,
   }
 end
 

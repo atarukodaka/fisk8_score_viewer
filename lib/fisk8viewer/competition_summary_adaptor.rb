@@ -11,6 +11,8 @@ module Fisk8Viewer
       @data[:start_date] = @data[:time_schedule].map {|e| e[:time]}.min
       @data[:end_date] = @data[:time_schedule].map {|e| e[:time]}.max
 
+      # add year name unless it contains any year info
+      @data[:name] += " #{@data[:start_date].year}" unless @data[:name] =~ /[0-9][0-9][0-9][0-9]/
       ## type, short_name
       @data[:competition_type] = competition_type
       @data[:short_name] = short_name
@@ -57,7 +59,7 @@ module Fisk8Viewer
       when /^ISU World Figure/, /^ISU World Championships/
         :world
       when /^ISU Four Continents/
-        :fc
+        :fcc
       when /^ISU European/
         :europe
       when /^ISU World Team/

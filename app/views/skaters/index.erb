@@ -3,6 +3,15 @@
 
 <% form_tag(url_for(:skaters, :list), method: 'post') do %>
 
+<div class="form-group row">
+  <div class="col-sm-2">
+    <%= label_tag(:Skater) %>
+  </div>
+  <div class="col-sm-10">
+    <%= text_field_tag(:name, :class=>"form-control", type: "text", value: params[:name]) %>
+  </div>
+</div>
+
 <!-- Category -->
 <%= partial :select_form, locals: {tag: :category, options: Skater.select(:category).distinct.map(&:category)} %>
 

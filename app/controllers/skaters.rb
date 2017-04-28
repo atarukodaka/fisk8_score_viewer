@@ -1,6 +1,6 @@
 ScoreViewer::App.controllers :skaters do
 
-  settings.filter_keys[:skaters] =  [:category, :nation]
+  settings.filter_keys[:skaters] =  [:name, :category, :nation]
   
   ## show
   get :id, with: :id do
@@ -23,10 +23,13 @@ ScoreViewer::App.controllers :skaters do
   get :index do
     redirect url_for(:skaters, :list)
   end
-  get :list, map: "/skaters/list/*", provides: [:csv, :html] do
+  get :list, map: "/skaters/list/*", provides: [:html, :cvs] do
     splat_to_params(params)
-    skaters = filter(Skater.order(:category).order(:name), :skaters)
-    #binding.pry
+    #skaters = filter(Skater.order(:category).order(:name), :skaters)
+    skaters = Skater.order(:category).order(:name)
+    skaters.where(category: params[:category]) if params[:category].present?
+    skaters.where(nation: params[:nation]) if params[:nation].present?
+    skaters = skaters.where("name like(?)", "%#{params[:name]}%") if params[:name].present?
 
     case content_type
     when :csv
