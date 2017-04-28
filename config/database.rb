@@ -32,6 +32,7 @@ ActiveRecord::Base.configurations[:test] = {
 ActiveRecord::Base.configurations[:development] = {
   adapter: 'sqlite3',
   database: Padrino.root('db', 'score_viewer_development.db'),
+  timeout: 10000
 }
 
 if database_url = ENV['DATABASE_URL'].presence  ## for heroku deploy using postgres
@@ -49,6 +50,7 @@ else
   ActiveRecord::Base.configurations[:production] = {
     adapter: 'sqlite3',
     database: Padrino.root('db', 'score_viewer_production.db'),
+    timeout: 10000
   }
 end
 
