@@ -2,7 +2,8 @@
 ## TODO
 
 - ParserSummaryAdaptor まわりをどうにかする
-- 
+- SQL: joins().merge() でキャッシュを使う
+- 表記ゆれ対策
 
 ## v1.0.0-pre3
 - accept_categories=MEN,LADIES rake update で MEN と LADIES だけ更新
