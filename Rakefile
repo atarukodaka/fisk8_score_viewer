@@ -57,7 +57,7 @@ task :unify_skater_name => :update_env do
   Skater.group(:isu_number).count.select {|k, v| v > 1 }.each do |isu_number, cnt|
     puts "#{isu_number}:"
     Skater.where(isu_number: isu_number).each do |skater|
-      puts "  - #{skater.name}"
+      puts "  - #{skater.name} (#{skater.scores.count}) %s" % [(skater.isu_bio) ? "(*)" : ""]
     end
   end
 end
