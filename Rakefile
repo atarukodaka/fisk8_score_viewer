@@ -55,8 +55,10 @@ end
 
 task :unify_skater_name => :update_env do
   Skater.group(:isu_number).count.select {|k, v| v > 1 }.each do |isu_number, cnt|
-    skater = Skater.where(isu_number: isu_number).first
-    logger.warn "#{skater.name} (#{isu_number}) has #{cnt} entries"
+    puts "#{isu_number}:"
+    Skater.where(isu_number: isu_number).each do |skater|
+      puts "  - #{skater.name}"
+    end
   end
 end
 
