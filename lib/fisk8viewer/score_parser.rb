@@ -3,7 +3,7 @@ require 'fisk8viewer/utils'
 module Fisk8Viewer
   class ScoreParser
     include Utils
-    
+
     def parse_score(text, additional_entries: {})
       mode = :skater
       score = { technicals: [], components: [],}.merge(additional_entries)
@@ -17,7 +17,8 @@ module Fisk8Viewer
               rank: $1.to_i, skater_name: $2, nation: $3, starting_number: $4.to_i,
               tss: $5.to_f, tes: $6.to_f, pcs: $7.to_f, deductions: $8.to_f,
             }
-            hash[:skater_name].sub!(/ *$/, '')
+            hash[:skater_name] = normalize_skater_name(hash[:skater_name].sub(/ *$/, ''))
+            #hash[:skater_name].sub!(/ *$/, '')
             score.merge!(hash)
             mode = :tes
           end

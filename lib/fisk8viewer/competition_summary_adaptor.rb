@@ -88,9 +88,9 @@ module Fisk8Viewer
           else
             "ISU GP #{country} #{year}"
           end
-          when :world
+        when :world
           "ISU WORLD #{year}"
-        when :fc
+        when :fcc
           "ISU 4CC #{year}"
         when :europe
           "ISU EURO #{year}"

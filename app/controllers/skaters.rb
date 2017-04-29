@@ -11,6 +11,7 @@ ScoreViewer::App.controllers :skaters do
       render :record_not_found
     end
   end
+
   get :name, with: :name do
     if skater = Skater.find_by(name: params[:name])
       render :"skaters/show", locals: {skater: skater}
@@ -19,6 +20,13 @@ ScoreViewer::App.controllers :skaters do
     end
   end
 
+  get :isu_number, with: :isu_number do
+    if skater = Skater.find_by(isu_number: params[:isu_number])
+      render :"skaters/show", locals: {skater: skater}
+    else
+      render :record_not_found
+    end
+  end
   ## list
   get :index do
     redirect url_for(:skaters, :list)

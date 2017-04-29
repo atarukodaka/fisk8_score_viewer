@@ -19,6 +19,18 @@ module Fisk8Viewer
       end
       Pdftotext.text(filename)
     end
-    module_function :convert_pdf
+
+    def normalize_skater_name(skater_name)
+      skater_name.split(%r[ */ *]).map do |name|
+        if name =~ /^([A-Z][A-Z][[:alpha:]]*) +(.*)$/
+          last_name, first_name = $1, $2
+          "#{first_name} #{last_name}"
+        else
+          name
+        end
+      end.join(" / ")
+    end
+
+    module_function :convert_pdf, :normalize_skater_name
   end  ## module
 end

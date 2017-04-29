@@ -76,7 +76,7 @@
 - http://www.isuresults.com/results/ec2014/
 - http://www.isuresults.com/results/wjc2014/
 - http://www.isuresults.com/results/wc2014/
-- http://www.isuresults.com/results/owg2014/
+#- http://www.isuresults.com/results/owg2014/
 
 ##2014-15
 - http://www.isuresults.com/results/gpusa2014/
@@ -124,7 +124,6 @@
 ## for development
 - http://www.isuresults.com/results/wtt2013/
 - http://www.isuresults.com/results/season1617/gpf1617/
-- http://www.isuresults.com/results/season1617/jgpcze2016/
 - http://www.isuresults.com/results/season1617/wjc2017/
 - http://www.isuresults.com/results/wtt2012/
 - http://www.isuresults.com/results/season1617/wc2017/
@@ -141,3 +140,5 @@
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
   parser: :wtt_2017
 - http://www.isuresults.com/results/wtt2012/
+- http://www.isuresults.com/results/season1617/fc2017/
+- http://www.isuresults.com/results/owg2014/

@@ -3,6 +3,7 @@ require 'fisk8viewer/competition_parsers/base'
 module Fisk8Viewer
   module CompetitionParser
     class ISU_Generic < Base
+      include Utils
       def parse_datetime(str)
         begin
           tm = Time.zone.parse(str)
@@ -94,10 +95,14 @@ module Fisk8Viewer
         rows.each do |row|
           tds = row.xpath("td")
           next if tds.blank?
-          
+
+          href = tds[1].xpath("a").first.attributes["href"].value
+          href =~ /([0-9]+)\.htm$/
+          isu_number = $1.to_i
           hash = {
             rank: tds[0].text.to_i,
-            skater_name: tds[1].text.gsub(/  */, ' '),
+            skater_name: normalize_skater_name(tds[1].text.gsub(/  */, ' ')),
+            isu_number: isu_number,
             nation: tds[2].text,
             category: category,
             points: tds[3].text.to_f

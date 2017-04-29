@@ -15,7 +15,8 @@
   <% scores_limitted.each do |score| %>
   <tr>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>
-    <td><%= link_to(score.skater_name, url_for(:skaters, :name, name: score.skater_name)) %></td -->
+    <% url = (score.skater.isu_number) ? url_for(:skaters, :isu_number, isu_number: score.skater.isu_number) : url_for(:skaters, :name, name: score.skater_name) %>
+    <td><%= link_to(score.skater_name, url) %>
     <td><%= score.nation %></td>
     <td><%= link_to(score.competition_name, url_for(:competitions, :id, id: score.competition_id)) %></td>
     <td><%= link_to(score.category, url_for(:competitions, :id, id: score.competition_id, category: score.category)) %></td>
