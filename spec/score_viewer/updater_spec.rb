@@ -33,7 +33,7 @@ describe 'skater', type: :skater do
   subject(:skater) {
     Skater.create(name: 'Yuzuru HANYU', category: 'MEN', nation: 'JPN')
     updater = Fisk8Viewer::Updater.new
-    updater.update_skaters
+    updater.update_skater_bio
     skater = Skater.find_by(name: 'Yuzuru HANYU')
   }
   its(:category) { should eq('MEN') }

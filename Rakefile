@@ -20,22 +20,22 @@ task :server do
   system 'bundle exec padrino start -h 0.0.0.0'
 end
 
-task update: [:update_competitions, :update_skaters] do
+task update: :update_competitions do
 end
 
 task :update_competitions => :update_env do
   number = (ENV["number"] || 0).to_i
 
-  accept_categories = (e = ENV['accept_category']) ? [e.to_sym] : nil
+  accept_categories = (e = ENV['accept_categories']) ? e.split(/,/).map(&:to_sym) : nil
   updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
   items = updater.load_config(Padrino.root("config", "competitions.yaml"))
   items = items.reverse.first(number) if number > 0
   updater.update_competitions(items)
 end
 
-task :update_skaters => :update_env do  
+task :update_skater_bio => :update_env do  
   updater = Fisk8Viewer::Updater.new
-  updater.update_skaters
+  updater.update_skater_bio
 end
 
 task :parse_score => :update_env do

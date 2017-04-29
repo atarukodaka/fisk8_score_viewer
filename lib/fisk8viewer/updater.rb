@@ -124,7 +124,7 @@ module Fisk8Viewer
       score.save
     end
     ################
-    def update_skaters
+    def update_skater_bio
       logger.debug("update skaters")
       parser = SkaterParser.new
       keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
