@@ -1,13 +1,19 @@
+require 'fisk8viewer/logger'
+require 'fisk8viewer/utils'
 require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_summary_adaptor'
 
 module Fisk8Viewer
   class Updater
     include Logger
+    include Utils
     DEFAULT_PARSER_TYPE = :isu_generic
-    ACCEPT_CATEGORIES = [:MEN, :LADIES, :PAIRS, :"ICE DANCE",
-                         :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
-    
+
+    def initialize(accept_categories: nil)
+      @accept_categories = accept_categories ||
+        [:MEN, :LADIES, :PAIRS, :"ICE DANCE",
+         :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
+    end
     def load_config(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
         if item.is_a? String
@@ -26,7 +32,7 @@ module Fisk8Viewer
         update_competition(item[:url], parser: parser_klass.new)
       end
     end
-    def update_competition(url, parser: Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new)
+    def update_competition(url, parser: Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new, accept_categories: nil)
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
@@ -42,7 +48,8 @@ module Fisk8Viewer
       ## for each categories
       score_parser = Fisk8Viewer::ScoreParser.new
       data.categories.each do |category|
-        next if ACCEPT_CATEGORIES.include?(category.to_sym).blank?
+        next unless @accept_categories.include?(category.to_sym)
+        
         result_url = data.result_url(category)
         
         logger.debug " = update category result of '#{category}'"
@@ -52,9 +59,11 @@ module Fisk8Viewer
           cr = competition.category_results.create(result_hash.slice(*keys))
           
           #skater = Skater.find_or_create_by(isu_number: result_hash[:isu_number]) do |skater|
+          result_hash[:skater_name] = unify_skater_name(result_hash[:skater_name])
           skater = Skater.find_or_create_by(name: result_hash[:skater_name]) do |skater|
+            #skater.name = result_hash[:skater_name]
             skater.update(result_hash.slice(*[:isu_number, :nation, :category]))
-            logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"
+            logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
           end
           if skater.isu_number.blank?
             skater.isu_number = result_hash[:isu_number]
@@ -83,9 +92,10 @@ module Fisk8Viewer
     end
     ################################################################
     def update_score(score_hash, score: Score.create) 
-      logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
       keys = [:skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
+      score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
+      logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
       score.update(score_hash.slice(*keys))
 
       ## technicals

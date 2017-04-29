@@ -25,8 +25,9 @@ end
 
 task :update_competitions => :update_env do
   number = (ENV["number"] || 0).to_i
-  
-  updater = Fisk8Viewer::Updater.new
+
+  accept_categories = (e = ENV['accept_category']) ? [e.to_sym] : nil
+  updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
   items = updater.load_config(Padrino.root("config", "competitions.yaml"))
   items = items.reverse.first(number) if number > 0
   updater.update_competitions(items)

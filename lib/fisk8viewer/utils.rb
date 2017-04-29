@@ -30,6 +30,11 @@ module Fisk8Viewer
         end
       end.join(" / ")
     end
+
+    def unify_skater_name(skater_name)
+      @unify_skater_names ||= YAML.load_file(Padrino.root('config', 'unify_skater_name.yaml'))
+      (un = @unify_skater_names[skater_name]) ? un : skater_name
+    end
     module_function :convert_pdf, :normalize_skater_name
   end  ## module
 end
