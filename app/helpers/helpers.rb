@@ -45,6 +45,10 @@ module ScoreViewer
         icon_url = "http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"
         link_to(image_tag(icon_url), url, target: "_blank")
       end
+      def link_to_skater(skater)
+        url = (skater.isu_number.blank?) ? url_for(:skaters, :name, name: skater.name) : url_for(:skaters, :isu_number, isu_number: skater.isu_number)
+        link_to(skater.name, url)
+      end
 
       def paginate(records)
         per_page = settings.config[:list][:per_page] || 20

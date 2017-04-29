@@ -5,8 +5,11 @@ describe 'competition' do
   before do
     cmp = Competition.create(name: "ISU World Figure", competition_type: "world", season: "2016-17")
     cmp.category_results.create(category: "MEN")
-    cmp.scores.create(skater_name: "Foo BAR", category: "MEN", segment: "SHORT PROGRAM")
+    score = cmp.scores.create(skater_name: "Foo BAR", category: "MEN", segment: "SHORT PROGRAM")
+    score.skater = Skater.create(name: score.skater_name)
+    score.save
   end
+  
   after do
     Competition.all.map(&:destroy)
   end

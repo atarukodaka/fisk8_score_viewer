@@ -12,15 +12,14 @@
   <% scores.each do |score| %>
   <tr>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>
-    <% url = (score.skater.isu_number) ? url_for(:skaters, :isu_number, isu_number: score.skater.isu_number) : url_for(:skaters, :name, name: score.skater_name) %>
-    <td><%= link_to(score.skater_name, url) %>
+    <td><%= link_to_skater(score.skater) %>
     <td><%= score.nation %></td>
     <td><%= link_to(score.competition_name, url_for(:competitions, :id, id: score.competition_id)) %></td>
     <td><%= link_to(score.category, url_for(:competitions, :id, id: score.competition_id, category: score.category)) %></td>
 
     <td><%= link_to(score.segment, url_for(:competitions, :id, id: score.competition_id, category: score.category, segment: score.segment)) %></td>
     <td><%= link_to_result_pdf(score.result_pdf) %></td>
-    <td><%= (t = score.starting_time) ? t.strftime("%Y-%m-%d") : ''%></td>
+    <td><%= score.starting_time.try(:strftime, "%Y-%m-%d") %></td>
     <td><%= score.rank %></td>
     <td><%= score.starting_number %></td>
     <td><%= score.tss %></td>

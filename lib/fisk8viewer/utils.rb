@@ -19,7 +19,7 @@ module Fisk8Viewer
       end
       Pdftotext.text(filename)
     end
-
+    
     def normalize_skater_name(skater_name)
       skater_name.split(%r[ */ *]).map do |name|
         if name =~ /^([A-Z][A-Z][[:alpha:]]*) +(.*)$/
