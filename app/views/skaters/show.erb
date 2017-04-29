@@ -21,7 +21,7 @@
   </tr>
   <tr>
     <th>ISU Number</th>
-    <td><%= link_to(skater.isu_number, skater.isu_bio, target: '_blank') %></td>
+    <td><%= link_to(skater.isu_number, skater.isu_bio, target: '_blank') %><span class="glyphicon glyphicon-link"></span></td>
   </tr>
   <tr>
     <th>Club</th>
@@ -51,7 +51,7 @@
     <th>FS Rank</th>    
     <th>TSS</th>    
   </tr>
-  <% ar = CategoryResult.where(skater_name: skater.name).select(:competition_id, :rank, :points) %>
+  <% ar = skater.category_results.select(:competition_id, :rank, :points) %>
   <% ar.sort {|a, b| b.competition.start_date <=> a.competition.start_date }.each do |result| %>
   <tr>
     <td><%= link_to(result.competition.name, url_for(:competitions, :id, id: result.competition.id)) %></td>
@@ -59,14 +59,14 @@
     <td><%= result.rank %></td>
     <td><%= result.points %></td>
     
-    <% if sp_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%SHORT%").first %>
+    <% if sp_elem = result.competition.scores.where(skater_id: skater.id).where("segment like(?)", "%SHORT%").first %>
     <td><%= sp_elem.rank %></td>
     <td><%= sp_elem.tss %></td>
     <% else %>
     <td></td><td></td>
     <% end %>
 
-    <% if fs_elem = result.competition.scores.where(skater_name: params[:name]).where("segment like(?)", "%FREE%").first %>
+    <% if fs_elem = result.competition.scores.where(skater_id: skater.id).where("segment like(?)", "%FREE%").first %>
     <td><%= fs_elem.rank %></td>
     <td><%= fs_elem.tss %></td>
     <% else %>
@@ -78,5 +78,5 @@
 
 <h2>Scores</h2>
 
-<!-- %= partial '/scores/list', locals: {scores: skater.scores, paginate: false} % -->
-<%= partial '/scores/list', locals: {scores: Score.joins(:skater).merge(Skater.where(isu_number: skater.isu_number)), paginate: false} %>
+<%= partial '/scores/list', locals: {scores: skater.scores, paginate: false} %>
+<!-- %= partial '/scores/list', locals: {scores: Score.joins(:skater).merge(Skater.where(isu_number: skater.isu_number)), paginate: false} % -->
