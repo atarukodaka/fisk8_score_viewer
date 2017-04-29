@@ -21,8 +21,9 @@ module Fisk8Viewer
       page.search("table//a").map do |link|
         link[:href] =~ /(\d+)\.htm/
         isu_number = $1.to_i
-
-        [link.text, isu_number]
+        skater_name = link.text
+        
+        [skater_name, {isu_number: isu_number, category: category}]
       end.to_h
     end
 
