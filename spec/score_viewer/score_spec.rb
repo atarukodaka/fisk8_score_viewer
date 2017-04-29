@@ -4,7 +4,7 @@ describe 'score' do
   before do
     competition = Competition.create(name: "ISU World Figure", competition_type: "world", season: "2016-17")
     score = competition.scores.create(skater_name: "Skater NAME", category: "MEN", segment: "SHORT PROGRAM", nation: "JPN", rank: 1)
-    score.skater = Skater.create
+    score.skater = Skater.create(name: score.skater_name)
     score.save
   end
   after do
