@@ -53,6 +53,13 @@ task :cleanup => :update_env do
   updater.cleanup
 end
 
+task :unify_skater_name => :update_env do
+  Skater.group(:isu_number).count.select {|k, v| v > 1 }.each do |isu_number, cnt|
+    skater = Skater.where(isu_number: isu_number).first
+    logger.warn "#{skater.name} (#{isu_number}) has #{cnt} entries"
+  end
+end
+
 task :update_env => :environment do
   ActiveRecord::Base.logger = Logger.new('log/sql.log')
 end
