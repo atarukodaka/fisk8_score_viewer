@@ -35,6 +35,10 @@ module Fisk8Viewer
       @unify_skater_names ||= YAML.load_file(Padrino.root('config', 'unify_skater_name.yaml'))
       (un = @unify_skater_names[skater_name]) ? un : skater_name
     end
+    def isu_bio_url(isu_number)
+      "http://www.isuresults.com/bios/isufs%08d.htm" % [isu_number]
+    end
+      
     module_function :convert_pdf, :normalize_skater_name
   end  ## module
 end

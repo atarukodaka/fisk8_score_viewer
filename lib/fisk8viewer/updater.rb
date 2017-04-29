@@ -63,6 +63,7 @@ module Fisk8Viewer
           skater = Skater.find_or_create_by(name: result_hash[:skater_name]) do |skater|
             #skater.name = result_hash[:skater_name]
             skater.update(result_hash.slice(*[:isu_number, :nation, :category]))
+            skater.update(isu_bio: isu_bio_url(result_hash[:isu_number]))
             logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
           end
           if skater.isu_number.blank?
@@ -128,10 +129,7 @@ module Fisk8Viewer
       parser = SkaterParser.new
       keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
 
-      isu_number_hash = {}
-      [:MEN, :LADIES, :PAIRS, :"ICE DANCE"].each do |category|
-        isu_number_hash.merge!(parser.scrape_isu_numbers(category))
-      end
+      isu_number_hash =parser.scrape_isu_numbers
 
       Skater.order(:category).each do |skater|
         hash = isu_number_hash[skater.name]
