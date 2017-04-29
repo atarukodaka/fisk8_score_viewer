@@ -29,9 +29,8 @@
 <% end %>
 
 
-<% limit = settings.config[:list][:limit] || 20 %>
-<% page = (params[:page].presence || 1).to_i %>
-<% elements_limitted = elements.limit(limit).offset((page-1)*limit) %>
+<% size = elements.count %>
+<% elements = paginate(elements) %>
 
 <table class="table table-striped table-hover table-condensed">
   <tr>
@@ -51,7 +50,7 @@
     <th>Score</th>
   </tr>
 </td>
-  <% elements_limitted.each do |element| %>
+  <% elements.each do |element| %>
   <% score = element.score %>
   <tr>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>
@@ -72,5 +71,5 @@
   <% end %>
 </table>
 
-<%= partial 'pagination', locals: {records: elements, controller: :elements, page: page} %>
+<%= partial 'pagination', locals: {controller: :elements, size: size} %>
 

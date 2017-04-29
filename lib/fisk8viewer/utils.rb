@@ -30,7 +30,6 @@ module Fisk8Viewer
         end
       end.join(" / ")
     end
-
     module_function :convert_pdf, :normalize_skater_name
   end  ## module
 end

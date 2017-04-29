@@ -35,8 +35,8 @@ ScoreViewer::App.controllers :skaters do
     splat_to_params(params)
     #skaters = filter(Skater.order(:category).order(:name), :skaters)
     skaters = Skater.order(:category).order(:name)
-    skaters.where(category: params[:category]) if params[:category].present?
-    skaters.where(nation: params[:nation]) if params[:nation].present?
+    skaters = skaters.where(category: params[:category]) if params[:category].present?
+    skaters = skaters.where(nation: params[:nation]) if params[:nation].present?
     skaters = skaters.where("name like(?)", "%#{params[:name]}%") if params[:name].present?
 
     case content_type

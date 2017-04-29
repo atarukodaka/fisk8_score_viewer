@@ -20,9 +20,11 @@
 <%= partial :select_form, locals: {tag: :nation, options: nations} %>
 <%= partial :select_form, locals: {tag: :format, options: [:csv, :html]} %>
 <%= partial :submit_form %>
-
 <% end %>
 
+
+<% size = skaters.count %>
+<% skaters = paginate(skaters) %>
 
 <table class="table table-striped table-hover table-condensed">
   <%= partial "table_headers", locals: {table_headers:
@@ -46,3 +48,5 @@
   </tr>
   <% end %>
 </table>
+
+<%= partial "pagination", locals: {controller: :skaters, size: size} %>

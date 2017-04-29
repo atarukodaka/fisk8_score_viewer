@@ -45,6 +45,12 @@ module ScoreViewer
         icon_url = "http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"
         link_to(image_tag(icon_url), url, target: "_blank")
       end
+
+      def paginate(records)
+        per_page = settings.config[:list][:per_page] || 20
+        page = (params[:page].presence || 1).to_i
+        records.limit(per_page).offset((page-1)*per_page)
+      end
     end  ## module
     helpers Helper
   end ## class

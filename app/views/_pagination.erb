@@ -1,4 +1,4 @@
-<!-- locals: controller, page, size  -->
+<!-- locals: controller, size  -->
 
 <% per_page = (settings.config[:list][:per_page]|| 20).to_i %>
 <% page = (params[:page].presence || 1).to_i %>
@@ -8,9 +8,9 @@
 <% half = (max_display/2).ceil %>
 <% start = 1 %>
 
-<% 1.upto(size-max_display).each {|i| start = i; break if i + half >= page || i + max_display -1 >= max_pages; };  ed = start + max_display - 1%>
+<% 1.upto(size-max_display).each {|i| start = i; break if i + half >= page || i + max_display -1 >= max_pages; };  ed = [max_pages, start + max_display - 1].min%>
 
-<%= "half: #{half}, start: #{start}, ed: #{ed}, page: #{page}" %>
+<!-- %= "half: #{half}, start: #{start}, ed: #{ed}, page: #{page}, max_pages: #{max_pages}" % -->
 
 <ul class="pagination">
 

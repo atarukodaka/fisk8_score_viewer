@@ -1,10 +1,8 @@
 <!-- locals: scores, paginate(optinonal) -->
 
 <% if locals[:paginate] %>
-  <% per_page = settings.config[:list][:per_page] || 20  %>
-  <% page = (params[:page].presence || 1).to_i %>
-  <% paginator = {controller: :scores, page: page, size: scores.count} %>
-  <% scores = scores.limit(per_page).offset((page-1)*per_page) %>
+  <% paginator_locals = {controller: :scores, size: scores.count} %>
+  <% scores = paginate(scores) %>
 <% end %>
 
 <table class="table table-striped table-hover table-condensed">
@@ -36,5 +34,5 @@
 </table>
 
 <% if locals[:paginate] %>
-  <%= partial 'pagination', locals: paginator %>
+  <%= partial 'pagination', locals: paginator_locals %>
 <% end %>
