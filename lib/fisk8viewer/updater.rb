@@ -56,6 +56,10 @@ module Fisk8Viewer
             skater.update(result_hash.slice(*[:isu_number, :nation, :category]))
             logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"
           end
+          if skater.isu_number.blank?
+            skater.isu_number = result_hash[:isu_number]
+            skater.save
+          end
           skater.category_results << cr
           cr.skater = skater; cr.save
         end
@@ -119,7 +123,7 @@ module Fisk8Viewer
         
         Skater.where(category: category).each do |skater|
           isu_number = isu_number_hash[skater.name]
-          next if isu_number.blank? || skater[:isu_number].present?
+          next if isu_number.blank?   # || skater[:isu_number].present?
 
           skater_hash = parser.parse_skater(isu_number, category)
           logger.debug("  update skater: #{skater.name} (#{isu_number})")

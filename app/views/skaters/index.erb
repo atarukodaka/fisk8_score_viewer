@@ -37,7 +37,7 @@
     <td><%= link_to(skater.nation, url_for(:skaters, :list, "nation:#{skater.nation}")) %></td>
     <td><%= link_to(skater.category, url_for(:skaters, :list, "category:#{skater.category}")) %></td>
     <td><%= link_to(skater.isu_number, url_for(:skaters, :isu_number, isu_number: skater.isu_number.to_i)) %></td>
-    <td><%= link_to("ISU", skater.isu_bio) %></td>
+    <td><%= (skater.isu_bio) ? link_to("ISU", skater.isu_bio) : '' %></td>
     <td><%= skater.birthday %></td>    
     <td><%= skater.height %></td>        
     <td><%= skater.club %></td>        

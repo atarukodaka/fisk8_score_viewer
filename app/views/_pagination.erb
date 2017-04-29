@@ -1,14 +1,38 @@
-<!-- locals: records, controller, page  -->
+<!-- locals: controller, page, size  -->
 
 <% per_page = (settings.config[:list][:per_page]|| 20).to_i %>
 <% page = (params[:page].presence || 1).to_i %>
-<% max_pages = ((records.count - 1) / per_page).to_i + 1 %>
+<% max_pages = ((size - 1) / per_page).to_i + 1 %>
+
+<% max_display = 10 %>
+<% half = (max_display/2).ceil %>
+<% start = 1 %>
+
+<% 1.upto(size-max_display).each {|i| start = i; break if i + half >= page || i + max_display -1 >= max_pages; };  ed = start + max_display - 1%>
+
+<%= "half: #{half}, start: #{start}, ed: #{ed}, page: #{page}" %>
 
 <ul class="pagination">
-  <% 1.upto(max_pages).each do |i| %>
+
+<% if start != 1 %>
+<li class="page-item">
+  <%= link_to(1, url_for(controller, :list, params_to_query(params.merge(page: 1), controller))) %>
+</li>
+<li class="disabled"><a>...</a></li>
+<% end %>
+
+  <% (start).upto(ed).each do |i| %>
     <% active = (i == page) ? "active" : "" %>
     <li class="page-item <%= active %>">
       <%= link_to(i, url_for(controller, :list, params_to_query(params.merge(page: i), controller))) %>
     </li>
   <% end %>
+
+<% if ed  != max_pages %>
+<li class="disabled"><a>...</a></li>
+<li class="page-item">
+  <%= link_to(max_pages, url_for(controller, :list, params_to_query(params.merge(page: max_pages), controller))) %>
+</li>
+<% end %>
+  
 </ul>
