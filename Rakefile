@@ -54,11 +54,35 @@ task :cleanup => :update_env do
 end
 
 task :unify_skater_name => :update_env do
-  Skater.group(:isu_number).count.select {|k, v| v > 1 }.each do |isu_number, cnt|
-    puts "#{isu_number}:"
-    Skater.where(isu_number: isu_number).each do |skater|
-      puts "  - #{skater.name} (#{skater.scores.count}) %s" % [(skater.isu_bio) ? "(*)" : ""]
+  parser = Fisk8Viewer::SkaterParser.new
+  out_hash = {}
+  isu_hash = parser.scrape_isu_numbers()
+  Skater.group(:isu_number).count.select {|k, v| v > 1 }.map do |isu_number, cnt|
+    logger.debug "#{isu_number}:"
+    altered_skaters = []
+    registered_skater =nil
+    Skater.where(isu_number: isu_number).map do |skater|
+      logger.debug "  - #{skater.name} (#{skater.scores.count}) %s" % [(isu_hash[skater.name]) ? "(*)" : ""]
+      
+      if isu_hash[skater.name]
+        registered_skater = skater
+      else
+        altered_skaters << skater
+      end
     end
+    altered_skaters.map do |alt_skater|
+      out_hash[alt_skater] = registered_skater
+    end
+  end
+  puts "*** Add below into '#{Padrino.root('config', 'unify_skater_name.yaml')}'"
+  out_hash.each do |alt_skater, registered_skater|
+    puts "'#{alt_skater.name}': '#{registered_skater.name}'"
+    alt_skater.scores.each do |score|
+      score.skater = registered_skater
+      score.skater_name = registered_skater.name
+      score.save
+    end
+    alt_skater.destroy
   end
 end
 

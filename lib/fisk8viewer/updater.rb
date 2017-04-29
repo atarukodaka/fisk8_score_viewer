@@ -123,7 +123,6 @@ module Fisk8Viewer
       score.skater = skater
       score.save
     end
-    ################
     def update_skater_bio
       logger.debug("update skaters")
       parser = SkaterParser.new
