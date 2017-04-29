@@ -26,17 +26,18 @@
 
 <table class="table table-striped table-hover table-condensed">
   <%= partial "table_headers", locals: {table_headers:
-      [:ID, :Skater, :Nation, :Category, :ISU_Number, :Birthday, :Height,
+      [:ID, :Skater, :Nation, :Category, :ISU_Number, :ISU_Bio, :Birthday, :Height,
       :Club, :Coach, :Choreographer]} %>
 
   <% skaters.each do |skater| %>
   <% next if skater.name.blank? %>
   <tr>
     <td><%= skater.id %></td>
-    <td><%= link_to(skater.name, url_for(:skaters, :isu_number, isu_number: skater.isu_number)) %></td>
+    <td><%= link_to(skater.name, url_for(:skaters, :name, name: skater.name)) %></td>
     <td><%= link_to(skater.nation, url_for(:skaters, :list, "nation:#{skater.nation}")) %></td>
     <td><%= link_to(skater.category, url_for(:skaters, :list, "category:#{skater.category}")) %></td>
-    <td><%= link_to(skater.isu_number, skater.isu_bio) %></td>
+    <td><%= link_to(skater.isu_number, url_for(:skaters, :isu_number, isu_number: skater.isu_number.to_i)) %></td>
+    <td><%= link_to("ISU", skater.isu_bio) %></td>
     <td><%= skater.birthday %></td>    
     <td><%= skater.height %></td>        
     <td><%= skater.club %></td>        
