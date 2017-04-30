@@ -74,8 +74,7 @@ module Fisk8Viewer
             segment: row.xpath("td[4]").text.upcase,
           }
         end
-        data[:time_schedule] = time_schedule
-        data
+        time_schedule
       end
       ################
       def parse_competition_summary(url)
