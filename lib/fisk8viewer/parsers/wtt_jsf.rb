@@ -1,10 +1,10 @@
-require 'fisk8viewer/competition_parsers/base'
 
 module Fisk8Viewer
-  module CompetitionParser
-    class WTT_JSF < Base
-      def parse_summary(url)
-        page = @agent.get(url)
+  module Parsers
+    class WTT_JSF < Parser
+      include Scraper
+      def parse_competition_summary(url)
+        page = get_url(url)
         data = {}
 
         data[:name] = page.title
@@ -45,12 +45,12 @@ module Fisk8Viewer
       end
 
       ## register
-      Fisk8Viewer::CompetitionParsers.register(:wtt_jsf, self)
+      Fisk8Viewer::Parsers.register(:wtt_jsf, self)
     end ## class
 
     ################
     class WTT_2017 < WTT_JSF
-      def parse_summary(url)
+      def parse_competition_summary(url)
         data = super(url)
         data[:name] = "ISU World Team Trophy 2017"
         data[:city] = "Tokyo"
@@ -104,9 +104,8 @@ module Fisk8Viewer
         data
       end
       ## register
-      Fisk8Viewer::CompetitionParsers.register(:wtt_2017, self)
+      Fisk8Viewer::Parsers.register(:wtt_2017, self)
     end ## class
-  
   end
 end
 

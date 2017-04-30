@@ -1,9 +1,11 @@
-require 'fisk8viewer/competition_parsers/base'
+require 'fisk8viewer/utils'
 
 module Fisk8Viewer
-  module CompetitionParser
-    class ISU_Generic < Base
+  class Parser
+    module CompetitionSummaryParser
+      include Scraper
       include Utils
+
       def parse_datetime(str)
         begin
           tm = Time.zone.parse(str)
@@ -17,10 +19,12 @@ module Fisk8Viewer
         city, country = $1, $2
         [city.sub(/ *$/, ''), country]
       end
-      def parse_summary(url)
-        page = @agent.get(url)
+      
+      def parse_competition_summary(url)
+        @agent ||= Mechanize.new
+        page = get_url(url)
         data = {}
-
+        
         data[:name] = page.title
         data[:site_url] = url
         data[:city], data[:country] = parse_city_country(page)
@@ -66,7 +70,7 @@ module Fisk8Viewer
           end
           tm_str = row.xpath("td[2]").text
           tm = parse_datetime("#{dt_str} #{tm_str}")
-
+          
           time_schedule << {
             time: tm,
             category: row.xpath("td[3]").text.upcase,
@@ -77,66 +81,6 @@ module Fisk8Viewer
         data
       end
       ################
-      def parse_category_result(url)
-        data = []
-        begin
-          page = @agent.get(url)
-          page.encoding = 'iso-8859-1'  # for umlaut support
-        rescue Mechanize::ResponseCodeError => e
-          case e.response_code
-          when "404"
-            return data
-          end
-        end
-        category = page.xpath("//table/tr/td")[2].text.upcase
-        fpl = page.xpath("//th[contains(text(), 'FPl.')]")
-        return {} if fpl.blank?
-        rows = fpl.first.xpath("../../tr")
-        rows.each do |row|
-          tds = row.xpath("td")
-          next if tds.blank?
-
-          href = tds[1].xpath("a").first.attributes["href"].value
-          href =~ /([0-9]+)\.htm$/
-          isu_number = $1.to_i
-          hash = {
-            rank: tds[0].text.to_i,
-            skater_name: normalize_skater_name(tds[1].text.gsub(/  */, ' ')),
-            isu_number: isu_number,
-            nation: tds[2].text,
-            category: category,
-            points: tds[3].text.to_f
-          }
-          if tds.size >= 6
-            hash[:sp_ranking] = tds[4].text.to_i
-            hash[:fs_ranking] = tds[5].text.to_i
-          elsif tds.size == 5
-            hash[:sp_ranking] = tds[4].text.to_i
-          end
-          data << hash
-        end
-        return data
-      end
-
-      ## register
-      Fisk8Viewer::CompetitionParsers.register(:isu_generic, self)
-    end  ## class
-  end
-end
-
-
-################################################################
-
-module Fisk8Viewer
-  module CompetitionParser
-    class ISU_Generic_mdy < ISU_Generic
-      def parse_datetime(str)
-        dt_str, tm_str = str.split(/ /)
-        m, d, y = dt_str.split(/[,\/]/)
-        dt_str = "%s/%s/%s" % [d, m, y]
-        Time.zone.parse("#{dt_str} #{tm_str}")
-      end
-      Fisk8Viewer::CompetitionParsers.register(:isu_generic_mdy, self)
     end
-  end
+  end  ## module
 end

@@ -2,6 +2,7 @@ require 'fisk8viewer/logger'
 require 'fisk8viewer/utils'
 require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_summary_adaptor'
+require 'fisk8viewer/parser'
 
 module Fisk8Viewer
   class Updater
@@ -38,25 +39,30 @@ module Fisk8Viewer
     def update_competitions(items)
       items.each do |item|
         logger.debug " '#{item[:url]}' with parser type: #{item[:parser]}"
-        parser_klass = Fisk8Viewer::CompetitionParsers.registered[item[:parser]] || raise
+        parser_klass = Fisk8Viewer::Parsers.registered[item[:parser]] || raise
         update_competition(item[:url], parser: parser_klass.new)
+#        parser_klass = Fisk8Viewer::CompetitionParsers.registered[item[:parser]
+#        update_competition(item[:url], parser: parser_klass.new)
       end
     end
     def update_competition(url, parser: nil)
-      parser ||= Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new
+#      parser ||= Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new
+      parser ||= Fisk8Viewer::Parsers.registered[DEFAULT_PARSER_TYPE].new
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
         logger.debug "   alread exists"
         return
       end
-      data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
+#      data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
+      data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_competition_summary(url))
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :short_name, :season,]
       competition = Competition.create(data.slice(*keys))
 
       ## for each categories
-      score_parser = Fisk8Viewer::ScoreParser.new
+#      score_parser = Fisk8Viewer::ScoreParser.new
+      score_parser = parser
       data.categories.each do |category|
         next unless @accept_categories.include?(category.to_sym)
         
@@ -85,7 +91,8 @@ module Fisk8Viewer
           }
           score_url = data.score_url(category, segment)
           ## parse score and update
-          score_parser.parse(score_url).each do |score_hash|
+#          score_parser.parse(score_url).each do |score_hash|
+          parser.parse_score(score_url).each do |score_hash|
             update_score(score_hash, score: competition.scores.create(additional_hash))
           end
         end

@@ -6,13 +6,16 @@ module Fisk8Viewer
     
     def initialize(parsed_hash)
       @data = parsed_hash  # .with_indifferent_access
+      @data[:result_summary] ||= []
+      @data[:time_schedule] ||= []      
 
       ## dates
       @data[:start_date] = @data[:time_schedule].map {|e| e[:time]}.min
       @data[:end_date] = @data[:time_schedule].map {|e| e[:time]}.max
-
+        
       # add year name unless it contains any year info
-      @data[:name] += " #{@data[:start_date].year}" unless @data[:name] =~ /[0-9][0-9][0-9][0-9]/
+      @data[:name] = @data[:name].to_s + " #{@data[:start_date].try(:year)}" unless @data[:name] =~ /[0-9][0-9][0-9][0-9]/
+      
       ## type, short_name
       @data[:competition_type] = competition_type
       @data[:short_name] = short_name
@@ -74,7 +77,7 @@ module Fisk8Viewer
       end
     end
     def short_name
-      year = @data[:start_date].year
+      year = @data[:start_date].try(:year)
       city = @data[:city]
       country = @data[:country]
       
