@@ -7,22 +7,32 @@ module Fisk8Viewer
   class Updater
     include Logger
     include Utils
+    
     DEFAULT_PARSER_TYPE = :isu_generic
-
+    ACCEPT_CATEGORIES =
+      [:MEN, :LADIES, :PAIRS, :"ICE DANCE",
+       :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
+    
     def initialize(accept_categories: nil)
-      @accept_categories = accept_categories ||
-        [:MEN, :LADIES, :PAIRS, :"ICE DANCE",
-         :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
+      @accept_categories = accept_categories ||ACCEPT_CATEGORIES
     end
     def load_config(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
-        if item.is_a? String
+        case item
+        when String
           {url: item, parser: DEFAULT_PARSER_TYPE}
-        elsif item.is_a? Hash
+        when Hash
           {url: item["url"], parser: item["parser"]}
         else
           raise
         end
+      end
+    end
+    def find_or_create_skater(skater_name, hash)
+      Skater.find_or_create_by(name: unify_skater_name(skater_name)) do |skater|
+        skater.attributes = hash.slice(*[:isu_number, :nation, :category])
+        skater.isu_bio = isu_bio_url(hash[:isu_number]) if hash[:isu_number]
+        logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
       end
     end
     def update_competitions(items)
@@ -32,7 +42,8 @@ module Fisk8Viewer
         update_competition(item[:url], parser: parser_klass.new)
       end
     end
-    def update_competition(url, parser: Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new, accept_categories: nil)
+    def update_competition(url, parser: nil)
+      parser ||= Fisk8Viewer::CompetitionParsers.registered[DEFAULT_PARSER_TYPE].new
       logger.debug " - update competition: #{url}"
 
       if competition = Competition.find_by(site_url: url)
@@ -40,7 +51,6 @@ module Fisk8Viewer
         return
       end
       data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
-
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :short_name, :season,]
       competition = Competition.create(data.slice(*keys))
@@ -57,21 +67,10 @@ module Fisk8Viewer
         results.each do |result_hash|
           keys = [:category, :rank, :skater_name, :points]
           cr = competition.category_results.create(result_hash.slice(*keys))
-          
-          #skater = Skater.find_or_create_by(isu_number: result_hash[:isu_number]) do |skater|
-          result_hash[:skater_name] = unify_skater_name(result_hash[:skater_name])
-          skater = Skater.find_or_create_by(name: result_hash[:skater_name]) do |skater|
-            #skater.name = result_hash[:skater_name]
-            skater.update(result_hash.slice(*[:isu_number, :nation, :category]))
-            skater.update(isu_bio: isu_bio_url(result_hash[:isu_number]))
-            logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
-          end
-          if skater.isu_number.blank?
-            skater.isu_number = result_hash[:isu_number]
-            skater.save
-          end
+
+          skater = find_or_create_skater(result_hash[:skater_name], result_hash)
           skater.category_results << cr
-          cr.skater = skater; cr.save
+          cr.update(skater: skater)
         end
 
         ## for segments
@@ -84,7 +83,8 @@ module Fisk8Viewer
             category: category,
             segment: segment,
           }
-          score_url = data.score_url(category, segment)    
+          score_url = data.score_url(category, segment)
+          ## parse score and update
           score_parser.parse(score_url).each do |score_hash|
             update_score(score_hash, score: competition.scores.create(additional_hash))
           end
@@ -97,32 +97,29 @@ module Fisk8Viewer
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
       score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
       logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
-      score.update(score_hash.slice(*keys))
+      score.attributes = score_hash.slice(*keys)
 
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
       score_hash[:technicals].each do |element|
         score.technicals.create(element.slice(*tech_keys))
       end
-      score[:technicals_summary] = score_hash[:technicals].map {|e| e[:element]}.join('/')
+      score.technicals_summary = score_hash[:technicals].map {|e| e[:element]}.join('/')
       
       ## components
       comp_keys = [:component, :number, :factor, :judges, :value]
       score_hash[:components].each do |comp|
         score.components.create(comp.slice(*comp_keys))
       end
-      score[:components_summary] = score_hash[:components].map {|c| c[:value]}.join('/')
+      score.components_summary = score_hash[:components].map {|c| c[:value]}.join('/')
 
       ## skater
-      skater = Skater.find_or_create_by(name: score.skater_name) do |skater|
-        skater.update(score_hash.slice(*[:nation, :category]))
-        logger.debug "   skater '#{skater.name}' (#{skater.nation}) [#{skater.category}] created"
-      end
-      
+      skater = find_or_create_skater(score.skater_name, score_hash)
       skater.scores << score
       score.skater = skater
       score.save
     end
+    ################################################################
     def update_skater_bio
       logger.debug("update skaters")
       parser = SkaterParser.new
@@ -138,25 +135,6 @@ module Fisk8Viewer
         logger.debug("  update skater: #{skater.name} (#{hash[:isu_number]})")
         
         skater.update(skater_hash.slice(*keys))
-        skater.save
-      end
-    end
-
-    def cleanup
-      ## skater
-      Skater.all.each do |skater|
-        if skater.scores.count == 0
-          logger.debug " #{skater.name} deleted as no scores registered"
-          skater.destroy
-        end
-      end
-
-      ## competition
-      Competition.all.each do |competition|
-        if competition.scores.count == 0
-          logger.debug " #{competition.name} deleted as no scores registered"
-          competition.destroy
-        end
       end
     end
   end  ## class
