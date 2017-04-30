@@ -8,7 +8,7 @@ require 'rake/clean'
 require 'yaml'
 require 'pry-byebug'
 
-require 'fisk8viewer'
+require 'fisk8viewer/updater'
 
 PadrinoTasks.use(:database)
 PadrinoTasks.use(:activerecord)
@@ -48,15 +48,10 @@ task :parse_score => :update_env do
   puts ar.inspect
 end
 
-task :cleanup => :update_env do
-  updater = Fisk8Viewer::Updater.new
-  updater.cleanup
-end
-
 task :unify_skater_name => :update_env do
-  ## check and correct 'HYOUKI-YURE' (name differency). e.g. Yuria, Juria
+  ## check and correct name differency btw sources. e.g. Yuria or Juria
   ##
-  parser = Fisk8Viewer::SkaterParser.new
+  parser = Fisk8Viewer::ISU_Bio.new
   altered_hash = {}
   isu_hash = parser.scrape_isu_numbers()
   Skater.group(:isu_number).count.select {|k, v| v > 1 }.map do |isu_number, cnt|
@@ -107,8 +102,6 @@ end
 task :update_env => :environment do
   ActiveRecord::Base.logger = Logger.new('log/sql.log')
 end
-
-
 
 task :test => :spec do
 end

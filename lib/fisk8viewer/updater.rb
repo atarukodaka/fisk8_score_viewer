@@ -1,8 +1,8 @@
 require 'fisk8viewer/logger'
 require 'fisk8viewer/utils'
-require 'fisk8viewer/competition_parser'
 require 'fisk8viewer/competition_summary_adaptor'
 require 'fisk8viewer/parser'
+require 'fisk8viewer/isu_bio'
 
 module Fisk8Viewer
   class Updater

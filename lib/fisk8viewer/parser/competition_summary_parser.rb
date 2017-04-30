@@ -19,15 +19,7 @@ module Fisk8Viewer
         city, country = $1, $2
         [city.sub(/ *$/, ''), country]
       end
-      
-      def parse_competition_summary(url)
-        @agent ||= Mechanize.new
-        page = get_url(url)
-        data = {}
-        
-        data[:name] = page.title
-        data[:site_url] = url
-        data[:city], data[:country] = parse_city_country(page)
+      def parse_summary_table(page, url: "")
         ## summary table
         category_elem = page.xpath("//*[text()='Category']").first
         #rows = category_elem.xpath("../../tr")
@@ -47,6 +39,9 @@ module Fisk8Viewer
           
           result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(url, elem.text): ""
           score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(url, elem.text): ""
+          #result_url = row.xpath("td[4]/a/@href").presence
+          #score_url = row.xpath("td[5]/a/@href").presence
+
           summary << {
             category: category, 
             segment: segment,
@@ -54,8 +49,10 @@ module Fisk8Viewer
             score_url: score_url.to_s,
           }
         end
-        data[:result_summary] = summary
+        summary
+      end
 
+      def parse_time_schedule(page)
         ## time schdule
         Time.zone = "UTC"
         date_elem = page/"//*[text()='Date']"
@@ -78,6 +75,20 @@ module Fisk8Viewer
           }
         end
         data[:time_schedule] = time_schedule
+        data
+      end
+      ################
+      def parse_competition_summary(url)
+        @agent ||= Mechanize.new
+        page = get_url(url)
+        data = {}
+        
+        data[:name] = page.title
+        data[:site_url] = url
+        data[:city], data[:country] = parse_city_country(page)
+
+        data[:result_summary] = parse_summary_table(page, url: url)
+        data[:time_schedule] = parse_time_schedule(page)
         data
       end
       ################
