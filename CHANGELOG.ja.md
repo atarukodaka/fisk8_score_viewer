@@ -3,8 +3,6 @@
 - rake unify で config/unify_skater_name.yaml を上書きする
 
 
-## v1.0.0-pre4
-
 ## v1.0.0-pre3
 - accept_categories=MEN,LADIES rake update で MEN と LADIES だけ更新
 - update_skaters() -> update_skater_bio()

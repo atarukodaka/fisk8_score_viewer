@@ -1,5 +1,5 @@
-require 'open-uri'
 require 'pdftotext'
+require 'open-uri'
 require 'mechanize'
 
 module Fisk8Viewer
@@ -7,6 +7,11 @@ module Fisk8Viewer
    
     def logger
       @logger ||= ::Logger.new(STDERR, date_time_format: '%Y-%m-%d %H:%M')
+    end
+
+    def get_url(url)
+      @agent ||= Mechanize.new
+      @agent.get(url)
     end
 
     def convert_pdf(url, dir: "./")
@@ -36,19 +41,8 @@ module Fisk8Viewer
       end.join(" / ")
     end
 
-    def unify_skater_name(skater_name)
-      #return skater_name
-      @unify_skater_names ||= YAML.load_file(Padrino.root('config', 'unify_skater_name.yaml'))
-      (un = @unify_skater_names[skater_name]) ? un : skater_name
-    end
-
     def isu_bio_url(isu_number)
       "http://www.isuresults.com/bios/isufs%08d.htm" % [isu_number.to_i]
     end
-    def get_url(url)
-      @agent ||= Mechanize.new
-      @agent.get(url)
-    end
-    module_function :convert_pdf, :normalize_skater_name
   end  ## module
 end
