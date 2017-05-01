@@ -31,5 +31,5 @@ module Fisk8Viewer
 end
 
 require 'fisk8viewer/parsers/isu_generic'
-require 'fisk8viewer/parsers/mdy'
+require 'fisk8viewer/parsers/isu_generic_mdy'
 require 'fisk8viewer/parsers/wtt_2017'
