@@ -5,7 +5,7 @@ module Fisk8Viewer
     attr_reader :data
     
     def initialize(parsed_hash)
-      @data = parsed_hash  # .with_indifferent_access
+      @data = parsed_hash
       @data[:result_summary] ||= []
       @data[:time_schedule] ||= []      
 
@@ -40,13 +40,13 @@ module Fisk8Viewer
       @_segments[category] ||= data[:result_summary].select {|h| h[:category] == category && h[:segment].present?}.map {|h| h[:segment]}.uniq
     end
     def result_url(category)
-      @_result_url[category] ||= (hash = _select(:result_summary, category, "")) ? hash[:result_url] : ""
+      @_result_url[category] ||= (hash = find_row(:result_summary, category, "")) ? hash[:result_url] : ""
     end
     def score_url(category, segment)
-      @_score_url[category][segment] ||= (hash = _select(:result_summary, category, segment)) ? hash[:score_url] : ""      
+      @_score_url[category][segment] ||= (hash = find_row(:result_summary, category, segment)) ? hash[:score_url] : ""      
     end
     def starting_time(category, segment)
-      @_starting_time[category][segment] ||= (hash = _select(:time_schedule, category, segment)) ? hash[:time] : ""      
+      @_starting_time[category][segment] ||= (hash = find_row(:time_schedule, category, segment)) ? hash[:time] : ""      
     end
     def method_missing(name, *args)
       @data.send(name, *args)
@@ -109,8 +109,8 @@ module Fisk8Viewer
     end
 
     ################
-
-    def _select(key, category, segment)
+    private
+    def find_row(key, category, segment)
       data[key].select {|h|
         h[:category] == category && h[:segment] == segment
       }.first

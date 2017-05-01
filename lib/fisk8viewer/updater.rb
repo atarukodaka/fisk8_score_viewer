@@ -1,12 +1,11 @@
-require 'fisk8viewer/logger'
 require 'fisk8viewer/utils'
 require 'fisk8viewer/competition_summary'
+require 'fisk8viewer/parsers'
 require 'fisk8viewer/parser'
 require 'fisk8viewer/isu_bio'
 
 module Fisk8Viewer
   class Updater
-    include Logger
     include Utils
 
     DEFAULT_PARSER = :isu_generic
@@ -26,7 +25,7 @@ module Fisk8Viewer
         when Hash
           {url: item["url"], parser: item["parser"]}
         else
-          raise
+          raise "invalid format ('#{yaml_filename}'): has to be String or Hash"
         end
       end
     end
@@ -37,8 +36,8 @@ module Fisk8Viewer
     end
     def update_competition(url, parser_type: :isu_generic)
       parser_klass =Fisk8Viewer::Parsers.registered[parser_type]
-
-      raise "no such parser class: '#{parser_type}'" if parser_klass.nil?
+      raise "no such parser: '#{parser_type}'" unless defined?(parser_klass)
+      
       parser = parser_klass.new
       logger.debug " - update competition: #{url} with #{parser_type}"
       
@@ -46,27 +45,27 @@ module Fisk8Viewer
         logger.debug "   alread exists"
         return
       end
-      data = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
+      summary = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :short_name, :season,]
-      competition = Competition.create(data.slice(*keys))
+      competition = Competition.create(summary.slice(*keys))
 
       ## for each categories
-      data.categories.each do |category|
+      summary.categories.each do |category|
         next unless @accept_categories.include?(category.to_sym)
         
-        result_url = data.result_url(category)
+        result_url = summary.result_url(category)
         update_category_result(result_url, competition: competition, parser: parser)
 
         ## for segments
-        data.segments(category).each do |segment|
+        summary.segments(category).each do |segment|
           logger.debug "  - update scores on segment [#{category}/#{segment}]"
           
-          score_url = data.score_url(category, segment)
+          score_url = summary.score_url(category, segment)
           ## parse score and update
           parser.parse_score(score_url).each do |score_hash|
             score = update_score(score_hash, competition: competition)
-            score.update(starting_time: data.starting_time(category, segment))
+            score.update(starting_time: summary.starting_time(category, segment))
           end
         end
       end

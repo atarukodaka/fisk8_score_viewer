@@ -5,6 +5,10 @@ require 'mechanize'
 module Fisk8Viewer
   module Utils
    
+    def logger
+      @logger ||= ::Logger.new(STDERR, date_time_format: '%Y-%m-%d %H:%M')
+    end
+
     def convert_pdf(url, dir: "./")
       return "" if url.blank?
 

@@ -26,18 +26,18 @@ end
 describe 'skater', type: :skater do
   before {
     Skater.all.map(&:destroy)
+    Skater.create(name: 'Yuzuru HANYU', category: 'MEN', nation: 'JPN')
+    updater = Fisk8Viewer::Updater.new
+    updater.update_skater_bio
   }
   after {
     Skater.all.map(&:destroy)
   }
   subject(:skater) {
-    Skater.create(name: 'Yuzuru HANYU', category: 'MEN', nation: 'JPN')
-    updater = Fisk8Viewer::Updater.new
-    updater.update_skater_bio
     skater = Skater.find_by(name: 'Yuzuru HANYU')
   }
   its(:category) { should eq('MEN') }
   its(:nation) { should eq('JPN') }  
   its(:isu_number) { should eq(10967) }  
-  its(:height) { should eq('171') }  
+  its(:height) { should eq('171') }
 end

@@ -23,7 +23,7 @@ describe 'competition summary' do
   subject (:parsed){
     url = 'http://www.isuresults.com/results/season1617/gpjpn2016/'
     parser = Fisk8Viewer::Parser::CompetitionSummaryParser.new
-    Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse(url))
+    Fisk8Viewer::CompetitionSummary.new(parser.parse(url))
   }
   its(:categories) { should eq(["ICE DANCE", "LADIES", "MEN", "PAIRS"]) }
   it { expect(parsed.segments('MEN')).to eq(['SHORT PROGRAM', 'FREE SKATING']) }

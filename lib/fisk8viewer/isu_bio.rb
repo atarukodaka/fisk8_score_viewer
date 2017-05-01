@@ -1,11 +1,8 @@
 require 'mechanize'
-require 'pry-byebug'
-require 'fisk8viewer'
 
 module Fisk8Viewer
   class ISU_Bio
   #  class SkaterParser
-    include Fisk8Viewer::Logger
     include Fisk8Viewer::Utils
 
     URLS = {
@@ -15,12 +12,12 @@ module Fisk8Viewer
       :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
     }
     def scrape_isu_numbers
-      agent = Mechanize.new
+      @agent ||= Mechanize.new
 
       hash = {}
       URLS.each do |category, url|
         logger.debug("scrape #{category} on #{url}")
-        page = agent.get(url)
+        page = @agent.get(url)
         page.search("table//a").map do |link|
           link[:href] =~ /(\d+)\.htm/
           isu_number = $1.to_i
@@ -33,12 +30,11 @@ module Fisk8Viewer
     end
 
     def scrape_skater(isu_number, category)
-      #url = "http://www.isuresults.com/bios/isufs%08d.htm" % [isu_number]
-      url = isu_bio_url(url)
+      url = isu_bio_url(isu_number)
       @agent ||= Mechanize.new
 
       begin
-        page = agent.get(url)
+        page = @agent.get(url)
       rescue Mechanize::ResponseCodeError => e
         logger.warn("  #{url} not found")
         return {}
@@ -62,9 +58,4 @@ module Fisk8Viewer
       skater.merge(scraped_info)
     end
   end  ## class
-end
-################################################################
-if $0 == __FILE__
-  parser = Fisk8Viewer::SkaterParser.new
-  parser.scrape_isu_bio(:MEN)
 end
