@@ -40,7 +40,7 @@ module Fisk8Viewer
     end
 
     def isu_bio_url(isu_number)
-      "http://www.isuresults.com/bios/isufs%08d.htm" % [isu_number]
+      "http://www.isuresults.com/bios/isufs%08d.htm" % [isu_number.to_i]
     end
     def get_url(url)
       @agent ||= Mechanize.new

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'score' do
   subject (:score){
     filename = "pdf/wtt2013_Pairs_SP_P_Scores.pdf"
-    parser = Fisk8Viewer::ScoreParser.new
+    parser = Fisk8Viewer::Parser::ScoreParser.new
     url = "http://www.isuresults.com/results/season1617/gpjpn2016/gpjpn2016_Men_SP_Scores.pdf"
     hash = parser.parse(url)
     score = hash.select {|elem| elem[:rank] == 1}.first
@@ -22,8 +22,8 @@ end
 describe 'competition summary' do
   subject (:parsed){
     url = 'http://www.isuresults.com/results/season1617/gpjpn2016/'
-    parser = Fisk8Viewer::CompetitionParser::ISU_Generic.new
-    Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_summary(url))
+    parser = Fisk8Viewer::Parser::CompetitionSummaryParser.new
+    Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse(url))
   }
   its(:categories) { should eq(["ICE DANCE", "LADIES", "MEN", "PAIRS"]) }
   it { expect(parsed.segments('MEN')).to eq(['SHORT PROGRAM', 'FREE SKATING']) }
@@ -35,8 +35,8 @@ end
 describe 'competition category result' do
   subject (:result) {
     url = 'http://www.isuresults.com/results/season1617/gpjpn2016/CAT001RS.HTM'
-    parser = Fisk8Viewer::CompetitionParser::ISU_Generic.new
-    Hashie::Mash.new(parser.parse_category_result(url).select {|e| e[:rank] == 1 }.first)
+    parser = Fisk8Viewer::Parser::CategoryResultParser.new
+    Hashie::Mash.new(parser.parse(url).select {|e| e[:rank] == 1 }.first)
   }
   its(:skater_name) { should eq('Yuzuru HANYU') }
   its(:nation) { should eq('JPN') }

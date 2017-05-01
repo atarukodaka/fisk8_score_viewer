@@ -143,7 +143,7 @@
 -
   url: http://www.isuresults.com/results/wjc2012/
   parser: :mdy
-- http://www.isuresults.com/results/season1516/wc2016/
 -
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
   parser: :wtt_2017
+- http://www.isuresults.com/results/season1516/wc2016/

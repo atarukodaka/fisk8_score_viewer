@@ -15,41 +15,52 @@ module Fisk8Viewer
       def get_category(page)
         page.xpath("//table/tr/td")[2].text.upcase
       end
+
+      def parse_isu_number(row)
+        href = row.xpath("td[2]/a/@href").text
+        href =~ /([0-9]+)\.htm$/
+        $1.to_i
+      end
+      def parse_skater_name(row)
+        normalize_skater_name(row.xpath("td[2]").text)
+      end
+      def parse_nation(row)
+        row.xpath("td[3]").text =~ /([A-Z][A-Z][A-Z])/
+        $1
+      end
+      def parse_rankings(row)
+        size = row.xpath("td").size
+        if size >= 6
+          [row.xpath("td[5]").text.to_i, row.xpath("td[6]").text.to_i]
+        elsif size == 5
+          [row.xpath("td[5]").text.to_i, nil]
+        else
+          [nil, nil]
+        end
+      end
+      def parse_row(row)
+        return {} if row.xpath("td").blank?
+
+        hash = {
+          rank: row.xpath("td[1]").text.to_i,
+          skater_name: parse_skater_name(row),
+          isu_number: parse_isu_number(row),
+          nation: parse_nation(row),
+          points: row.xpath("td[4]").text.to_f
+        }
+        hash[:sp_ranking], hash[:fs_ranking] = parse_rankings(row)
+        hash
+      end
+      
       def parse(url)
         data = []
         page = get_url(url)
         page.encoding = 'iso-8859-1'  # for umlaut support
         category = get_category(page)
-        
+
         rows = get_rows(page)
         rows[1..-1].each do |row|
-          tds = row.xpath("td")
-          next if tds.blank?
-          
-          href = row.xpath("td[2]/a/@href").text
-          href =~ /([0-9]+)\.htm$/
-          isu_number = $1.to_i
-
-          # skater_name
-          skater_name = normalize_skater_name(row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/  */, ' '))
-          # nation
-          tds[2].text =~ /([A-Z][A-Z][A-Z])/
-          nation = $1
-          hash = {
-            rank: tds[0].text.to_i,
-            skater_name: skater_name,
-            isu_number: isu_number,
-            nation: nation,
-            category: category,
-            points: row.xpath("td[4]").text.to_f
-          }
-          if tds.size >= 6
-            hash[:sp_ranking] = tds[4].text.to_i
-            hash[:fs_ranking] = tds[5].text.to_i
-          elsif tds.size == 5
-            hash[:sp_ranking] = tds[4].text.to_i
-          end
-          data << hash
+          data << parse_row(row).merge(category: category)
         end
         return data
       end

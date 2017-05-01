@@ -125,7 +125,7 @@ module Fisk8Viewer
     ################################################################
     def update_skater_bio
       logger.debug("update skaters")
-      parser = SkaterParser.new
+      parser = Fisk8Viewer::ISU_Bio.new
       keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
 
       isu_number_hash =parser.scrape_isu_numbers
@@ -134,7 +134,7 @@ module Fisk8Viewer
         hash = isu_number_hash[skater.name]
         next if hash.blank?
         
-        skater_hash = parser.parse_skater(hash[:isu_number], hash[:category])
+        skater_hash = parser.scrape_skater(hash[:isu_number], hash[:category])
         logger.debug("  update skater: #{skater.name} (#{hash[:isu_number]})")
         
         skater.update(skater_hash.slice(*keys))
