@@ -22,7 +22,6 @@ module Fisk8Viewer
     end
     
     def normalize_skater_name(skater_name)
-      skater_name.gsub!(/\u00a0/, ' ')
       skater_name.split(%r[ */ *]).map do |name|
         if name =~ /^([A-Z][A-Z][[:alpha:]]*) +(.*)$/ || name =~ /^(Mc[[:alpha:]]*) +(.*)$/
           last_name, first_name = $1, $2

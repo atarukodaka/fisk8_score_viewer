@@ -40,16 +40,17 @@ module Fisk8Viewer
       end
       def parse_row(row)
         return {} if row.xpath("td").blank?
+        sp_ranking, fs_ranking = parse_rankings(row)
 
-        hash = {
+        {
           rank: row.xpath("td[1]").text.to_i,
           skater_name: parse_skater_name(row),
           isu_number: parse_isu_number(row),
           nation: parse_nation(row),
-          points: row.xpath("td[4]").text.to_f
+          points: row.xpath("td[4]").text.to_f,
+          sp_ranking: sp_ranking,
+          fs_ranking: fs_ranking,          
         }
-        hash[:sp_ranking], hash[:fs_ranking] = parse_rankings(row)
-        hash
       end
       
       def parse(url)
@@ -59,10 +60,9 @@ module Fisk8Viewer
         category = get_category(page)
 
         rows = get_rows(page)
-        rows[1..-1].each do |row|
-          data << parse_row(row).merge(category: category)
+        rows[1..-1].map do |row|
+          parse_row(row).merge(category: category)
         end
-        return data
       end
     end  # module
   end

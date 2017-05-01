@@ -7,6 +7,7 @@ module Fisk8Viewer
 
       def parse_datetime(str)
         begin
+          Time.zone ||= "UTC"
           tm = Time.zone.parse(str)
         rescue ArgumentError
           raise "invalid date format"
@@ -19,33 +20,29 @@ module Fisk8Viewer
         [city.sub(/ *$/, ''), country]
       end
       def parse_summary_table(page, url: "")
-        ## summary table
         category_elem = page.xpath("//*[text()='Category']").first
-        #rows = category_elem.xpath("../../tr")
         rows = category_elem.ancestors.xpath("table").first.xpath("tr")
 
         category = ""
         summary = []
-        rows.map do |row|
-          next [] if row.xpath("td").blank?
-
+        
+        rows.each do |row|
+          next if row.xpath("td").blank?
+          
           if c = row.xpath("td[1]").text.presence
             category = c.upcase
           end
-          segment = (elem = row.xpath("td[2]")) ? elem.text.upcase : ""
-
+          segment = row.xpath("td[2]").text.upcase
           next if category.blank? && segment.blank?
           
-          result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(@url, elem.text): ""
-          score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(@url, elem.text): ""
-          #result_url = row.xpath("td[4]/a/@href").presence
-          #score_url = row.xpath("td[5]/a/@href").presence
+          result_url = row.xpath("td[4]/a/@href").text
+          score_url = row.xpath("td[5]/a/@href").text
 
           summary << {
-            category: category, 
+            category: category,
             segment: segment,
-            result_url: result_url.to_s,
-            score_url: score_url.to_s,
+            result_url: (result_url.present?) ? URI.join(@url, result_url).to_s: "",
+            score_url: (score_url.present?) ? URI.join(@url, score_url).to_s : "",
           }
         end
         summary
@@ -53,9 +50,8 @@ module Fisk8Viewer
 
       def parse_time_schedule(page)
         ## time schdule
-        Time.zone = "UTC"
-        date_elem = page/"//*[text()='Date']"
-        rows = date_elem/"../../tr"
+        date_elem = page.xpath("//*[text()='Date']").first
+        rows = date_elem.xpath("../../tr")
         dt_str = ""
         time_schedule = []
         rows.each do |row|
@@ -66,6 +62,7 @@ module Fisk8Viewer
           end
           tm_str = row.xpath("td[2]").text
           tm = parse_datetime("#{dt_str} #{tm_str}")
+          next if tm.nil?
           
           time_schedule << {
             time: tm,

@@ -42,7 +42,7 @@ module Fisk8Viewer
       parser = parser_klass.new
       logger.debug " - update competition: #{url} with #{parser_type}"
       
-      if competition = Competition.find_by(site_url: url)
+      if Competition.find_by(site_url: url)
         logger.debug "   alread exists"
         return
       end
@@ -75,16 +75,15 @@ module Fisk8Viewer
     ################################################################
     def update_category_result(url, competition: nil, parser: nil)
       return [] if url.blank?
-      raise if competition.nil?
+      raise if competition.nil? || parser.nil?
       logger.debug " = update category result"
       competition ||= Competition.new
-      keys = [:category, :rank, :skater_name, :points]
-      #parser = Fisk8Viewer::Parser::CategoryResultParser.new
-      results = parser.parse_category_result(url)
-      results.map do |result_hash|
+
+      parser.parse_category_result(url).map do |result_hash|
+        keys = [:category, :rank, :skater_name, :points]
         cr = competition.category_results.create(result_hash.slice(*keys))
 
-        skater = find_or_create_skater(result_hash[:skater_name], result_hash)
+        skater = find_or_create_skater(result_hash[:skater_name], result_hash.slice(*[:isu_number, :nation, :category]))
         skater.category_results << cr
         cr.update(skater: skater)
         cr
@@ -94,12 +93,12 @@ module Fisk8Viewer
     ################################################################
     def update_score(score_hash, competition: nil)
       raies if competition.nil?
-      keys = [:competition_name, :category, :segment,
-              :skater_name, :rank, :starting_number, :nation,
-              :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
+
       score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
       logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
-      score = competition.scores.create(score_hash.slice(*keys))
+      score_keys = [:competition_name, :category, :segment, :skater_name, :rank, :starting_number, :nation,
+              :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
+      score = competition.scores.create(score_hash.slice(*score_keys))
 
       ## technicals
       tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
@@ -116,7 +115,8 @@ module Fisk8Viewer
       score.components_summary = score_hash[:components].map {|c| c[:value]}.join('/')
 
       ## skater
-      skater = find_or_create_skater(score.skater_name, score_hash)
+      skater = find_or_create_skater(score.skater_name, category: score_hash[:category], nation: score_hash[:nation])
+
       skater.scores << score
       score.skater = skater
       score.save
@@ -140,11 +140,16 @@ module Fisk8Viewer
         skater.update(skater_hash.slice(*keys))
       end
     end
-    private
-    def find_or_create_skater(skater_name, hash)
+    ################################################################
+    def find_or_create_skater(skater_name, isu_number: nil, nation: nil, category: nil)
       Skater.find_or_create_by(name: unify_skater_name(skater_name)) do |skater|
-        skater.attributes = hash.slice(*[:isu_number, :nation, :category])
-        skater.isu_bio = isu_bio_url(hash[:isu_number]) if hash[:isu_number]
+        skater.attributes = {
+          isu_number: isu_number,
+          nation: nation,
+          category: category,
+        }
+        skater.isu_bio = isu_bio_url(isu_number) if isu_number
+        skater.save
         logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
       end
     end

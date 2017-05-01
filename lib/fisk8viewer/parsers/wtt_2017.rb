@@ -46,7 +46,7 @@ module Fisk8Viewer
           summary
         end
         def parse_time_schedule(page)
-          Time.zone = "UTC"
+          Time.zone ||= "UTC"
           [
            {
              time: Time.zone.parse("2017/04/20 15:15:00"),
@@ -102,7 +102,7 @@ module Fisk8Viewer
           text.sub(/ \- Entry/, '').upcase
         end
         def parse_skater_name(row)
-          normalize_skater_name(row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/  */, ' '))
+          normalize_skater_name(row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/\u00a0/, ' ').gsub(/  */, ' '))
         end
       end
       ## register
