@@ -1,6 +1,6 @@
 require 'fisk8viewer/logger'
 require 'fisk8viewer/utils'
-require 'fisk8viewer/competition_summary_adaptor'
+require 'fisk8viewer/competition_summary'
 require 'fisk8viewer/parser'
 require 'fisk8viewer/isu_bio'
 
@@ -46,7 +46,7 @@ module Fisk8Viewer
         logger.debug "   alread exists"
         return
       end
-      data = Fisk8Viewer::CompetitionSummaryAdaptor.new(parser.parse_competition_summary(url))
+      data = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
               :competition_type, :short_name, :season,]
       competition = Competition.create(data.slice(*keys))
