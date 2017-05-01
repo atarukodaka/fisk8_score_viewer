@@ -109,7 +109,7 @@ module Fisk8Viewer
     end
 
     ################
-    private
+
     def _select(key, category, segment)
       data[key].select {|h|
         h[:category] == category && h[:segment] == segment

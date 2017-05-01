@@ -2,15 +2,14 @@ require 'fisk8viewer/utils'
 
 module Fisk8Viewer
   class Parser
-    module CompetitionSummaryParser
-      include Scraper
+    class CompetitionSummaryParser
       include Utils
 
       def parse_datetime(str)
         begin
           tm = Time.zone.parse(str)
         rescue ArgumentError
-          raise "invalid date format. use :isu_generic_mdy as parser"
+          raise "invalid date format"
         end
       end
       def parse_city_country(page)
@@ -28,7 +27,7 @@ module Fisk8Viewer
         category = ""
         summary = []
         rows.map do |row|
-          next if row.xpath("td").blank?
+          next [] if row.xpath("td").blank?
 
           if c = row.xpath("td[1]").text.presence
             category = c.upcase
@@ -37,8 +36,8 @@ module Fisk8Viewer
 
           next if category.blank? && segment.blank?
           
-          result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(url, elem.text): ""
-          score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(url, elem.text): ""
+          result_url = (elem = row.xpath("td[4]/a/@href").presence) ? URI.join(@url, elem.text): ""
+          score_url = (elem = row.xpath("td[5]/a/@href").presence) ? URI.join(@url, elem.text): ""
           #result_url = row.xpath("td[4]/a/@href").presence
           #score_url = row.xpath("td[5]/a/@href").presence
 
@@ -76,19 +75,23 @@ module Fisk8Viewer
         end
         time_schedule
       end
+      def parse_name(page)
+        page.title
+      end
       ################
-      def parse_competition_summary(url)
-        @agent ||= Mechanize.new
+      def parse(url)
+        @url = url
         page = get_url(url)
-        data = {}
+        city, country = parse_city_country(page)
         
-        data[:name] = page.title
-        data[:site_url] = url
-        data[:city], data[:country] = parse_city_country(page)
-
-        data[:result_summary] = parse_summary_table(page, url: url)
-        data[:time_schedule] = parse_time_schedule(page)
-        data
+        data = {
+          name: parse_name(page),
+          site_url: url,
+          city: city,
+          country: country,
+          result_summary: parse_summary_table(page),
+          time_schedule: parse_time_schedule(page),
+        }
       end
       ################
     end

@@ -2,7 +2,7 @@ require 'fisk8viewer/utils'
 
 module Fisk8Viewer
   class Parser
-    module ScoreParser
+    class ScoreParser
       include Fisk8Viewer::Utils
       
       def parse_each_score(text, additional_entries: {})
@@ -51,7 +51,7 @@ module Fisk8Viewer
         score
       end
 
-      def parse_score(score_url)
+      def parse(score_url)
         text = convert_pdf(score_url, dir: "pdf")
         text = text.force_encoding('UTF-8').gsub(/  +/, ' ').gsub(/^ */, '').gsub(/\n\n+/, "\n").chomp
 
