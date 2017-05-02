@@ -52,8 +52,17 @@ task :unify_skater_name => :update_env do
   ## check and correct name differency btw sources. e.g. Yuria or Juria
   ##
   parser = Fisk8Viewer::ISU_Bio.new
-  altered_hash = {}
-  isu_hash = parser.scrape_isu_numbers()
+  altered_names = {}
+  isu_names = parser.scrape_isu_numbers()
+
+  Skater.order(:name).each do |skater|
+    isu_name = isu_names.select {|k, v| v[:isu_number] == skater.isu_number}.keys.first
+    if isu_name.present? && isu_name != skater.name
+      altered_names[skater.name] = isu_name
+      logger.debug(" '#{skater.name}' should be registed as '#{isu_name}'")
+    end
+  end
+=begin
   Skater.group(:isu_number).count.select {|k, v| v > 1 }.map do |isu_number, cnt|
     logger.debug "#{isu_number}:"
     altered_skaters = []
@@ -71,31 +80,21 @@ task :unify_skater_name => :update_env do
       altered_hash[alt_skater] = registered_skater
     end
   end
-
-  ## update records of altered-skater
-  puts "unify the altered-named skaters/scores ? "
+=end
   
-  if STDIN.gets.to_s =~ /[Yy]/
-    altered_hash.each do |alt_skater, registered_skater|
-      puts "'#{alt_skater.name}': '#{registered_skater.name}'"
-      alt_skater.scores.each do |score|
-        score.skater = registered_skater
-        score.skater_name = registered_skater.name
-        score.save
-        registered_skater.scores << score
-      end
-      alt_skater.category_results.each do |cr|
-        cr.skater = registered_skater
-        cr.save
-        registered_skater.category_results << cr
-      end
-      registered_skater.save
-      alt_skater.destroy
+  ## update records of altered-skater
+  if !altered_names.empty?
+    unify_filename = Padrino.root('config', 'unify_skater_name.yaml')
+    puts "*** Add below into '#{unify_filename}' ? [y/n]"
+    if STDIN.gets.to_s =~ /[Yy]/
+      FileUtils.copy(unify_filename, "#{unify_filename}-bak")  # take backup
+      File.open(unify_filename, "a") do |f|
+        altered_names.each do |altered_name, isu_name|
+          f.puts %Q["#{altered_name}": "#{isu_name}"]
+        end
+        logger.debug(" done.")
+      end  # file
     end
-  end
-  puts "*** Add below into '#{Padrino.root('config', 'unify_skater_name.yaml')}'"
-  altered_hash.each do |alt_skater, registered_skater|
-    puts %Q["#{alt_skater.name}": "#{registered_skater.name}"]
   end
 end
 

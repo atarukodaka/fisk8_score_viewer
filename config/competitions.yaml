@@ -10,20 +10,20 @@
 ##2010-11
 -
   url: http://www.isuresults.com/results/gpusa2010/
-  parser: :mdy
+  parser: :isu_generic_mdy
 -
   url: http://www.isuresults.com/results/gpcan2010/
-  parser: :mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/gpchn2010/
 -
   url: http://www.isuresults.com/results/gpfra2010/
-  parser: :mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/gprus2010/
 - http://www.isuresults.com/results/gpjpn2010/
 - http://www.isuresults.com/results/gpf1011/
 -
   url: http://www.isuresults.com/results/ec2011/
-  parser: :mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/fc2011/
 - http://www.isuresults.com/results/wjc2011/
 - http://www.isuresults.com/results/wc2011/
@@ -39,13 +39,13 @@
 - http://www.isuresults.com/results/gpf1112/
 -
   url: http://www.isuresults.com/results/ec2012/
-  parser: :mdy
+  parser: :isu_generic_mdy
 -
   url: http://www.isuresults.com/results/fc2012/
-  parser: :mdy
+  parser: :isu_generic_mdy
 -
   url: http://www.isuresults.com/results/wjc2012/
-  parser: :mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/wc2012/
 - http://www.isuresults.com/results/wtt2012/
 
@@ -60,7 +60,7 @@
 - http://www.isuresults.com/results/fc2013/
 -
   url: http://www.isuresults.com/results/ec2013/
-  parser: :mdy
+  parser: :isu_generic_mdy
 - http://www.isuresults.com/results/wjc2013/
 - http://www.isuresults.com/results/wc2013/
 
@@ -137,13 +137,12 @@
 - http://www.isuresults.com/results/owg2014/
 - http://www.isuresults.com/results/season1617/wc2017/
 
-- http://www.isuresults.com/results/season1617/gpcan2016/
-- http://www.isuresults.com/results/season1516/wc2016/
 - http://www.isuresults.com/results/season1516/wc2016/
 -
   url: http://www.isuresults.com/results/wjc2012/
-  parser: :mdy
+  parser: :isu_generic_mdy
 -
   url: http://www.jsfresults.com/intl/2016-2017/wtt/
   parser: :wtt_2017
+- http://www.isuresults.com/results/season1617/gpcan2016/
 - http://www.isuresults.com/results/season1516/wc2016/

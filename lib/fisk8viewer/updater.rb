@@ -36,7 +36,7 @@ module Fisk8Viewer
     end
     def update_competition(url, parser_type: :isu_generic)
       parser_klass =Fisk8Viewer::Parsers.registered[parser_type]
-      raise "no such parser: '#{parser_type}'" unless defined?(parser_klass)
+      raise "no such parser: '#{parser_type}'" if parser_klass.nil?
       
       parser = parser_klass.new
       logger.debug " - update competition: #{url} with #{parser_type}"

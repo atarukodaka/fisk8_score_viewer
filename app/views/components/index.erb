@@ -10,10 +10,9 @@
   </div>
 </div>
 
-<%= partial :select_form, locals: {tag: :skater_name, options: Score.pluck(:skater_name).uniq.sort } %>
-<%= partial :select_form, locals: {tag: :category, options: Score.pluck(:category).uniq.sort} %>
-<%= partial :select_form, locals: {tag: :segment, options: Score.pluck(:segment).uniq.sort } %>
-<%= partial :select_form, locals: {tag: :nation, options: Score.pluck(:nation).uniq.sort} %>
+<% [:skater_name, :category, :segment, :nation].each do |key| %>
+  <%= partial :select_form, locals: {tag: key, options: Score.pluck(key).uniq.sort} %>
+<% end %>
 <%= partial :select_form, locals: {tag: :competition_name,
     options: Competition.order("start_date DESC").map(&:name)} %>
 <%= partial :select_form, locals: {tag: :format, options: ['html', 'csv']} %>
@@ -21,7 +20,7 @@
 <%= partial :submit_form %>
 <% end %>
 
-<% size = components.count %>
+<% size = components.count %>  <!-- for pagination -->
 <% components = paginate(components) %>
 
 <table class="table table-striped table-hover table-condensed">

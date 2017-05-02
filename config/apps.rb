@@ -43,3 +43,5 @@ end
 
 Padrino.mount("ScoreViewer::Admin", :app_file => Padrino.root('admin/app.rb')).to("/admin")
 Padrino.mount('ScoreViewer::App', :app_file => Padrino.root('app/app.rb')).to('/')
+
+

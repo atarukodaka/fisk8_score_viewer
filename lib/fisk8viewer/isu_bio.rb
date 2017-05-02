@@ -8,8 +8,8 @@ module Fisk8Viewer
     URLS = {
       MEN: "http://www.isuresults.com/bios/fsbiosmen.htm",
       LADIES: "http://www.isuresults.com/bios/fsbiosladies.htm",
-#      PAIRS: "http://www.isuresults.com/bios/fsbiospairs.htm",
-#      :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
+      PAIRS: "http://www.isuresults.com/bios/fsbiospairs.htm",
+      :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
     }  # scraper doesnt work for PAIRS, ICE DANCE
     def scrape_isu_numbers
       @agent ||= Mechanize.new
