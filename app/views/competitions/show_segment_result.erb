@@ -38,7 +38,7 @@
   <% scores.each do |score| %>
   <tr>
     <td><%= score.rank %></td>
-    <td><%= link_to(score.skater_name, url_for(:skaters, :name, name: score.skater_name)) %></td>
+    <td><%= link_to_skater(score.skater) %></td>
     <td><%= score.nation %></td>
     <td><%= score.starting_number %></td>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>

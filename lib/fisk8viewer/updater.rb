@@ -62,7 +62,7 @@ module Fisk8Viewer
           logger.debug "  - update scores on segment [#{category}/#{segment}]"
           
           score_url = summary.score_url(category, segment)
-          ## parse score and update
+          #update_scores(score_url, competition: competition, parser: parser)
           parser.parse_score(score_url).each do |score_hash|
             score = update_score(score_hash, competition: competition)
             score.update(starting_time: summary.starting_time(category, segment))
@@ -90,6 +90,9 @@ module Fisk8Viewer
     end
 
     ################################################################
+    def update_scores(score_url, competition: nil, parser: nil)
+      raise if competition.nil? || parser.nil?
+    end
     def update_score(score_hash, competition: nil)
       raies if competition.nil?
 
@@ -125,8 +128,6 @@ module Fisk8Viewer
     def update_skater_bio
       logger.debug("update skaters")
       parser = Fisk8Viewer::ISU_Bio.new
-      keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
-
       isu_number_hash =parser.scrape_isu_numbers
 
       Skater.order(:category).each do |skater|
@@ -136,6 +137,7 @@ module Fisk8Viewer
         skater_hash = parser.scrape_skater(hash[:isu_number], hash[:category])
         logger.debug("  update skater: #{skater.name} (#{hash[:isu_number]})")
         
+        keys = [:isu_number, :isu_bio, :coach, :choreographer, :birthday, :hobbies, :height, :club]
         skater.update(skater_hash.slice(*keys))
       end
     end
@@ -153,7 +155,6 @@ module Fisk8Viewer
           category: category,
         }
         skater.isu_bio = isu_bio_url(isu_number) if isu_number
-        skater.save
         logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
       end
     end

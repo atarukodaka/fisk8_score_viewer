@@ -1,6 +1,10 @@
 
 ## TODO
 - rake unify で config/unify_skater_name.yaml を上書きする
+- set :filter_keys でいいのか？
+- partial table_headers
+
+## v1.0.0-pre4
 
 
 ## v1.0.0-pre3

@@ -1,3 +1,5 @@
-<div>
-  <%= "Record Not Found: #{(defined? message) ? message : ''}" %>
+<h2>Record Not Found</h2>
+
+<div class="alert alert-warning">
+  <%= (defined? message) ? message : '' %>
 </div>

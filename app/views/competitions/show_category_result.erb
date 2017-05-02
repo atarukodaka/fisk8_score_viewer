@@ -18,7 +18,7 @@
   <tr>
     <td><%= (rec.rank == 0) ? 'FNR/WD' : rec.rank %></td>
     <% begin %>
-    <td><%= link_to(rec.skater_name, url_for(:skaters, :name, name: rec.skater_name)) %></td>
+    <td><%= link_to_skater(rec.skater) %></td>
     <% rescue %>
     <% end %>
        
