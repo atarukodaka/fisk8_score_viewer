@@ -27,26 +27,33 @@ module Fisk8Viewer
         @data[:season] = "%04d-%02d" % [year, (year+1) % 100]
       end
 
-      @_categories = nil; @_segments = {}; @_result_url = {}
+=begin
+      @_categories = nil; @_segments = {};
+      @_result_url = Hash.new { |h,k| h[k] = {} }
       @_score_url = Hash.new { |h,k| h[k] = {} }
       @_starting_time = Hash.new { |h,k| h[k] = {} }      
+=end
     end
     
     ################
     def categories
-      @_categories ||= data[:result_summary].map {|h| h[:category]}.sort.uniq
+      data[:result_summary].map {|h| h[:category]}.sort.uniq
     end
     def segments(category)
-      @_segments[category] ||= data[:result_summary].select {|h| h[:category] == category && h[:segment].present?}.map {|h| h[:segment]}.uniq
+      data[:result_summary].select {|h| h[:category] == category && h[:segment].present?}.map {|h| h[:segment]}.uniq
     end
-    def result_url(category)
-      @_result_url[category] ||= (hash = find_row(:result_summary, category, "")) ? hash[:result_url] : ""
+    def result_url(category, segment=nil)
+      if segment.nil?
+        find_row(:result_summary, category, "")[:result_url]
+      else
+        find_row(:result_summary, category, segment)[:result_url]
+      end
     end
     def score_url(category, segment)
-      @_score_url[category][segment] ||= (hash = find_row(:result_summary, category, segment)) ? hash[:score_url] : ""      
+      find_row(:result_summary, category, segment)[:score_url]
     end
     def starting_time(category, segment)
-      @_starting_time[category][segment] ||= (hash = find_row(:time_schedule, category, segment)) ? hash[:time] : ""      
+      find_row(:time_schedule, category, segment)[:time]
     end
     def method_missing(name, *args)
       @data.send(name, *args)

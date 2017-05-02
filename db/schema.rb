@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 5) do
+ActiveRecord::Schema.define(version: 6) do
 
   create_table "accounts", force: :cascade do |t|
     t.string   "name"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.string  "category"
     t.integer "rank"
     t.string  "skater_name"
+    t.integer "isu_number"
     t.float   "points"
     t.integer "competition_id"
     t.integer "skater_id"
@@ -74,6 +75,21 @@ ActiveRecord::Schema.define(version: 5) do
     t.datetime "updated_at"
     t.integer  "competition_id"
     t.integer  "skater_id"
+  end
+
+  create_table "segment_results", force: :cascade do |t|
+    t.string  "category"
+    t.string  "segment"
+    t.integer "rank"
+    t.string  "skater_name"
+    t.integer "isu_number"
+    t.integer "starting_number"
+    t.float   "tss"
+    t.float   "tes"
+    t.float   "pcs"
+    t.float   "deductions"
+    t.integer "competition_id"
+    t.integer "skater_id"
   end
 
   create_table "skaters", force: :cascade do |t|

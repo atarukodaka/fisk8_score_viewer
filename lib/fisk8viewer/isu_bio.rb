@@ -10,7 +10,27 @@ module Fisk8Viewer
       LADIES: "http://www.isuresults.com/bios/fsbiosladies.htm",
       PAIRS: "http://www.isuresults.com/bios/fsbiospairs.htm",
       :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
-    }  # scraper doesnt work for PAIRS, ICE DANCE
+    }
+    def parse_isu_summary(categories = nil)
+      categories ||= URLS.keys
+      @agent ||= Mechanize.new
+      nation = ""
+      records = []
+      categories.each do |category|
+        url = URLS[category]
+        logger.debug("scrape #{category} on #{url}")
+        page = @agent.get(url)
+        page.xpath("//table[1]/tr").each do |row|
+          ntn = row.xpath("td[1]").text
+          nation = ntn if ntn.present?
+          name = row.xpath("td[3]").text
+          row.xpath("td[3]/a/@href").text =~ /(\d+)\.htm$/
+          isu_number = $1.to_i
+          records << {isu_number: isu_number, nation: nation, name: name, category: category}
+        end
+      end
+      records
+    end
     def scrape_isu_numbers
       @agent ||= Mechanize.new
 

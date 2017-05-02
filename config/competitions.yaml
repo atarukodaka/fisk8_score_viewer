@@ -122,6 +122,13 @@
 #- http://www.figureskatingresults.fi/results/1617/CSFIN2016/
 
 ## for development
+-
+  url: http://www.isuresults.com/results/wjc2012/
+  parser: :isu_generic_mdy
+-
+  url: http://www.jsfresults.com/intl/2016-2017/wtt/
+  parser: :wtt_2017
+
 - http://www.isuresults.com/results/wtt2013/
 - http://www.isuresults.com/results/season1617/gpf1617/
 - http://www.isuresults.com/results/season1617/wjc2017/
@@ -138,11 +145,6 @@
 - http://www.isuresults.com/results/season1617/wc2017/
 
 - http://www.isuresults.com/results/season1516/wc2016/
--
-  url: http://www.isuresults.com/results/wjc2012/
-  parser: :isu_generic_mdy
--
-  url: http://www.jsfresults.com/intl/2016-2017/wtt/
-  parser: :wtt_2017
+- http://www.isuresults.com/results/season1617/fc2017/
 - http://www.isuresults.com/results/season1617/gpcan2016/
 - http://www.isuresults.com/results/season1516/wc2016/

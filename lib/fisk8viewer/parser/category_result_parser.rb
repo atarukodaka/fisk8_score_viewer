@@ -1,4 +1,3 @@
-
 require 'fisk8viewer/utils'
 
 module Fisk8Viewer

@@ -33,9 +33,10 @@ task :update_competitions => :update_env do
   updater.update_competitions(items)
 end
 
-task :update_skater_bio => :update_env do  
-  updater = Fisk8Viewer::Updater.new
-  updater.update_skater_bio
+task :update_skaters => :update_env do  
+  accept_categories = (e = ENV['accept_categories']) ? e.split(/,/).map(&:to_sym) : nil
+  updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
+  updater.update_skaters
 end
 
 task :parse_score => :update_env do

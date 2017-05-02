@@ -13,3 +13,4 @@ vendor/
 tmp/
 pdf/
 log/
+*-bak

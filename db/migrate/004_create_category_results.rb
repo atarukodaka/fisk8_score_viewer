@@ -5,6 +5,7 @@ class CreateCategoryResults < ActiveRecord::Migration
 
       t.integer :rank
       t.string :skater_name
+      t.integer :isu_number
       t.float :points
 
       t.belongs_to :competition
