@@ -8,7 +8,7 @@ ScoreViewer::App.controllers :skaters do
     if skater = Skater.find_by(id: params[:id])
       render :"skaters/show", locals: {skater: skater}
     else
-      render :record_not_found
+      render :record_not_found, locals: {message: "no such id: #{params[:id]} in Skater"}
     end
   end
 
@@ -16,7 +16,7 @@ ScoreViewer::App.controllers :skaters do
     if skater = Skater.find_by(name: params[:name])
       render :"skaters/show", locals: {skater: skater}
     else
-      render :record_not_found
+      render :record_not_found, locals: {message: "no such name: #{params[:name]} in Skater"}
     end
   end
 
@@ -24,7 +24,7 @@ ScoreViewer::App.controllers :skaters do
     if skater = Skater.find_by(isu_number: params[:isu_number])
       render :"skaters/show", locals: {skater: skater}
     else
-      render :record_not_found
+      render :record_not_found, locals: {message: "no such isu_number: #{params[:isu_number]} in Skater"}
     end
   end
   ## list
@@ -34,10 +34,7 @@ ScoreViewer::App.controllers :skaters do
   get :list, map: "/skaters/list/*", provides: [:html, :cvs] do
     splat_to_params(params)
     #skaters = filter(Skater.order(:category).order(:name), :skaters)
-    skaters = Skater.order(:category).order(:name)
-    skaters = skaters.where(category: params[:category]) if params[:category].present?
-    skaters = skaters.where(nation: params[:nation]) if params[:nation].present?
-    skaters = skaters.where("name like(?)", "%#{params[:name]}%") if params[:name].present?
+    skaters = filter_by_keys(Skater.order(:category).order(:name), [:category, :nation, {key: :name, match: :partial}])
 
     case content_type
     when :csv

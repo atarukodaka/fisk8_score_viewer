@@ -3,6 +3,7 @@
 - rake unify で config/unify_skater_name.yaml を上書きする
 - set :filter_keys でいいのか？
 - partial table_headers
+- ペア、アイスダンスで '/' を含むと splat_to_params が機能しない
 
 ## v1.0.0-pre4
 

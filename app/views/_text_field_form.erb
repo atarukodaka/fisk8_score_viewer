@@ -1,0 +1,11 @@
+<!-- locals: tag, label(optional) -->
+
+<div class="form-group row">
+  <div class="col-sm-2">
+    <%= label_tag(defined?(label) ? label : tag) %>
+  </div>
+  <div class="col-sm-10">
+    <%= text_field_tag(tag, :class=>"form-control", type: "text", value: params[tag]) %>
+  </div>
+</div>
+

@@ -1,8 +1,7 @@
 ScoreViewer::App.controllers :scores do
-  ## show
-
   settings.filter_keys[:scores] = [:skater_name, :category, :segment, :nation, :competition_name,]
   
+  ## show
   get :id, with: :id do
     if score = Score.find_by(id: params[:id])
       render :"scores/show", locals: {score: score}
@@ -14,8 +13,9 @@ ScoreViewer::App.controllers :scores do
   ## list
   get :list, map: "/scores/list/*", provides: [:html, :csv] do
     splat_to_params(params)
-    scores = filter(Score.order("starting_time DESC"), :scores)
-
+    #scores = filter(Score.order("starting_time DESC"), :scores)
+    scores = filter_by_keys(Score.order("starting_time DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
+    
     case content_type
     when :csv
       csv_keys = [:id, :skater_name, :nation, :competition_name, :category, :segment,

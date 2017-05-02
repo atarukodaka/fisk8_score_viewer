@@ -7,14 +7,14 @@ ScoreViewer::App.controllers :competitions do
     if competition = Competition.find_by(id: params[:id])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
     else
-      render :record_not_found, locals: {message: "id: #{params[:id].to_i} in Competition"}
+      render :record_not_found, locals: {message: "no such id: #{params[:id].to_i} in Competition"}
     end
   end
   get :name, with: :name do
     if competition = Competition.find_by(name: params[:name])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
     else
-      render :record_not_found
+      render :record_not_found, locals: {message: "no such name: #{params[:name]} in Competition"}
     end
   end
 
@@ -44,7 +44,7 @@ ScoreViewer::App.controllers :competitions do
   get :list, map: "/competitions/list/*", provides: [:html, :csv] do
     splat_to_params(params)
     rel = Competition.order("start_date DESC")
-    render :"competitions/index", locals: {competitions: filter(rel, :competitions)}
+    render :"competitions/index", locals: {competitions: filter_by_keys(rel, [:competition_type, :season])}
   end
 
   post :list do

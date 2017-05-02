@@ -1,17 +1,36 @@
 
 module ScoreViewer
   class App
-    module Helper
+    module FilterHelper
       ## filter
+=begin
       def filter(rel, controller)
-        #keys = filter_keys[controller]
         keys = settings.filter_keys[controller]
         keys.each do |filter|
           rel = rel.where(filter =>params[filter]) if params[filter].present?
         end
         return rel
       end
-      
+=end      
+      def filter_by_keys(rel, keys)
+        keys.each do |key|
+          case key
+          when Symbol
+            rel = rel.where(key =>params[key]) if params[key].present?
+          when Hash
+            k = key[:key]
+            next if params[k].blank?
+            if key[:match] == :partial
+              rel = rel.where("#{k.to_s} like (?)", "%#{params[k]}%")
+            else
+              rel = rel.where(k =>params[k])
+            end
+          end
+        end
+        return rel
+      end
+    end
+    module ParamsHelper
       ## params, query
       def splat_to_params(params)
         return if params[:splat].blank?
@@ -30,7 +49,8 @@ module ScoreViewer
         query += ".#{params[:format]}" if params[:format].present?
         return query
       end
-      
+    end
+    module CSV_Helper
       ## utilities
       def output_csv(header, records, filename: "attachement.csv")
         require 'csv'
@@ -39,7 +59,9 @@ module ScoreViewer
 
         [header.to_csv, records.map {|r| r.to_csv}].flatten.join('')
       end
-
+    end
+    ################
+    module LinkToHelper
       def link_to_result_pdf(url)
         return "-" if url.nil?
         icon_url = "http://wwwimages.adobe.com/content/dam/acom/en/legal/images/badges/Adobe_PDF_file_icon_24x24.png"
@@ -49,13 +71,15 @@ module ScoreViewer
         url = (skater.isu_number.blank?) ? url_for(:skaters, :name, name: skater.name) : url_for(:skaters, :isu_number, isu_number: skater.isu_number)
         link_to(skater.name, url)
       end
-
+    end
+    ################
+    module PaginateHelper
       def paginate(records)
         per_page = settings.config[:list][:per_page] || 20
         page = (params[:page].presence || 1).to_i
         records.limit(per_page).offset((page-1)*per_page)
       end
     end  ## module
-    helpers Helper
+    helpers FilterHelper, ParamsHelper, CSV_Helper, LinkToHelper, PaginateHelper
   end ## class
 end

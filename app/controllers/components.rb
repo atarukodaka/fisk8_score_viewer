@@ -9,11 +9,7 @@ ScoreViewer::App.controllers :components do
   get :list, map: "/components/list/*", provides: [:html, :csv] do
     splat_to_params(params)
 
-    # first, filter by score
-    scores = filter(Score.order("starting_time DESC"), :scores)
-
-    # next, filter by component number
-    #components = Component.where(score_id: scores.select(:id))
+    scores = filter_by_keys(Score.order("starting_time DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
     components = Component.joins(:score).merge(scores).order("starting_time DESC")
     number = params[:component_number].to_i
     components = components.where(number: number) if number >= 1
