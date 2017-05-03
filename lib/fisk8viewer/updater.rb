@@ -179,9 +179,9 @@ module Fisk8Viewer
     end
     def update_skaters
       parser = Fisk8Viewer::ISU_Bio.new
-      records = parser.parse_isu_summary(@accept_categories)
+      records = parser.parse_isu_bio_summary(@accept_categories)
       records.each do |hash|
-        find_or_create_skater(hash.slice(*[:isu_number, :name, :nation, :category]))
+        find_or_create_skater(hash[:isu_number], hash[:name], category: hash[:category], nation: hash[:nation])
       end
     end
 

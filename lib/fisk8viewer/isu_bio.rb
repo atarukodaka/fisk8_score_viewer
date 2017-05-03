@@ -11,7 +11,7 @@ module Fisk8Viewer
       PAIRS: "http://www.isuresults.com/bios/fsbiospairs.htm",
       :"ICE DANCE" => "http://www.isuresults.com/bios/fsbiosicedancing.htm",
     }
-    def parse_isu_summary(categories = nil)
+    def parse_isu_bio_summary(categories = nil)
       categories ||= URLS.keys
       @agent ||= Mechanize.new
       nation = ""

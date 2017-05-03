@@ -1,3 +1,7 @@
+<!-- locals: competitions -->
+
+<% paginator_locals = {controller: :competitions, size: competitions.count} %>
+<% competitions = paginate(competitions) %>
 
 
 <h2>Competition List</h2>
@@ -29,3 +33,5 @@
   </tr>
   <% end %>
 </table>
+
+<%= partial 'pagination', locals: paginator_locals %>

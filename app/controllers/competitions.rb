@@ -11,7 +11,8 @@ ScoreViewer::App.controllers :competitions do
     end
   end
   get :name, with: :name do
-    if competition = Competition.find_by(name: params[:name])
+    if competition = Competition.find_by(name: params[:name]) ||
+        Competition.find_by(short_name: params[:name])
       render :"competitions/show", locals: {competition: competition, scores: competition.scores}
     else
       render :record_not_found, locals: {message: "no such name: #{params[:name]} in Competition"}
