@@ -91,27 +91,27 @@ module Fisk8Viewer
       @_short_name =
         case @data[:competition_type]
         when :olympic
-          "ISU OLYMPIC #{year}"
+          "ISU_OLYMPIC_#{year}"
         when :gp
           if @data[:name] =~ /Final/
-            "ISU GPF #{year}"
+            "ISU_GPF_#{year}"
           else
-            "ISU GP #{country} #{year}"
+            "ISU_GP_#{country} #{year}"
           end
         when :world
-          "ISU WORLD #{year}"
+          "ISU_WORLD_#{year}"
         when :fcc
-          "ISU 4CC #{year}"
+          "ISU_4CC_#{year}"
         when :europe
-          "ISU EURO #{year}"
+          "ISU_EURO_#{year}"
         when :team
-          "ISU TEAM #{year}"
+          "ISU_TEAM_#{year}"
         when :jworld
-          "ISU WORLD J #{year}"
+          "ISU_WORLD_J_#{year}"
         when :jgp
-          "ISU WORLD J #{year}"
+          "ISU_WORLD_J_#{year}"
         else
-          @data[:name]
+          @data[:name].gsub(/Figure Skating */, '').gsub(/\s/, '_')
         end
     end
 

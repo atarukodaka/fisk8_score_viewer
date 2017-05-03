@@ -5,6 +5,10 @@
     <td><%= link_to(competition.name, url_for(:competitions, :id, competition.id)) %></td>
   </tr>
   <tr>
+    <th>Short Name</th>
+    <td><%= competition.short_name %></td>
+  </tr>
+  <tr>
     <th>City / Country</th>
     <td><%= "#{competition.city} / #{competition.country}" %></td>
   </tr>
