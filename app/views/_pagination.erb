@@ -1,6 +1,6 @@
-<!-- locals: controller, size  -->
+<!-- locals: controller, size, per_page(optional)  -->
 
-<% per_page = (settings.config[:list][:per_page]|| 20).to_i %>
+<% per_page = ((per_page.present?) ? per_page : (settings.config[:list][:per_page] || 20)).to_i %>
 <% page = (params[:page].presence || 1).to_i %>
 <% max_pages = ((size - 1) / per_page).to_i + 1 %>
 

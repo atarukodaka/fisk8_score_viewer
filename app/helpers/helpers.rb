@@ -74,8 +74,8 @@ module ScoreViewer
     end
     ################
     module PaginateHelper
-      def paginate(records)
-        per_page = settings.config[:list][:per_page] || 20
+      def paginate(records, per_page: nil)
+        per_page ||= settings.config[:list][:per_page] || 20
         page = (params[:page].presence || 1).to_i
         records.limit(per_page).offset((page-1)*per_page)
       end
