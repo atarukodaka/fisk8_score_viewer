@@ -59,7 +59,7 @@ module Fisk8Viewer
 
         ## for segments
         summary.segments(category).each do |segment|
-          logger.debug "  - update segment result [#{category}/#{segment}]"
+          #logger.debug "  - update segment result [#{category}/#{segment}]"
           #segment_result_url = summary.result_url(category, segment)
           #update_segment_result(segment_result_url, competition: competition, parser: parser)
           
@@ -84,10 +84,11 @@ module Fisk8Viewer
       competition ||= Competition.new
       
       parser.parse_category_result(url).map do |result_hash|
-        keys = [:category, :rank, :skater_name, :points, :isu_number, :sp_ranking, :fs_ranking]
+        keys = [:category, :rank, :skater_name, :nation, :points, :isu_number, :sp_ranking, :fs_ranking]
         skater = Skater.find_by(isu_number: result_hash[:isu_number]) ||
-          Skater.find_by(name: result_hash[:skater_name]) || raise
-        #        skater = find_or_create_skater(result_hash[:isu_number], result_hash.slice(*[:skater_name, :nation, :category]))
+          Skater.find_by(name: result_hash[:skater_name]) || raise("no such skater #{result_hash[:isu_number]}/#{result_hash[:skater_name]}")
+          #Skater.create(name: result_hash[:skater_name], result_hash.slice(*[:isu_number, :nation, :category]))
+        #skater = find_or_create_skater(result_hash[:isu_number], result_hash.slice(*[:skater_name, :nation, :category]))
         result_hash[:skater_name] = skater.name
         cr = competition.category_results.create(result_hash.slice(*keys))
         skater.category_results << cr
@@ -154,14 +155,21 @@ module Fisk8Viewer
       score
     end
     ################################################################
+    def find_or_create_skater(isu_number:, name:, nation:, category:)
+      Skater.find_by(isu_number: isu_number) || Skater.find_by(name: name) || Skater.create do |skater|
+        skater.isu_number = isu_number
+        skater.name = name
+        skater.nation = nation
+        skater.category = category
+        skater.isu_bio = isu_bio_url(isu_number) if isu_number
+        logger.debug(" '%s' (%s) [%s] in %s created" % [name, isu_number, nation, category])
+      end
+    end
     def update_skaters
       parser = Fisk8Viewer::ISU_Bio.new
       records = parser.parse_isu_summary(@accept_categories)
       records.each do |hash|
-        skater = Skater.find_or_create_by(isu_number: hash[:isu_number]) do |skater|
-          logger.debug([:isu_number, :name, :nation, :category].map {|k| hash[k]}.join(', '))
-          skater.update(hash.slice(*[:name, :nation, :category]))
-        end
+        find_or_create_skater(hash.slice(*[:isu_number, :name, :nation, :category]))
       end
     end
 =begin
@@ -187,7 +195,7 @@ module Fisk8Viewer
       @unify_skater_names ||= YAML.load_file(Padrino.root('config', 'unify_skater_name.yaml'))
       (un = @unify_skater_names[skater_name]) ? un : skater_name
     end
-
+=begin
     def find_or_create_skater(skater_name, isu_number: nil, nation: nil, category: nil)
       Skater.find_or_create_by(name: unify_skater_name(skater_name)) do |skater|
         skater.attributes = {
@@ -199,6 +207,7 @@ module Fisk8Viewer
         logger.debug "   skater '#{skater.name}'[#{skater.isu_number}] (#{skater.nation}) [#{skater.category}] created"
       end
     end
+=end
   end  ## class
 end
 

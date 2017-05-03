@@ -1,6 +1,6 @@
 require 'fisk8viewer/parser/competition_summary_parser'
 require 'fisk8viewer/parser/category_result_parser'
-require 'fisk8viewer/parser/segment_result_parser'
+#require 'fisk8viewer/parser/segment_result_parser'
 require 'fisk8viewer/parser/score_parser'
 
 module Fisk8Viewer
@@ -11,9 +11,11 @@ module Fisk8Viewer
     def parse_category_result(url)
       self.class.const_get(:CategoryResultParser).new.parse(url)
     end
+=begin
     def parse_segment_result(url)
       self.class.const_get(:SegmentResultParser).new.parse(url)
     end
+=end
     def parse_score(url)
       self.class.const_get(:ScoreParser).new.parse(url)
     end
