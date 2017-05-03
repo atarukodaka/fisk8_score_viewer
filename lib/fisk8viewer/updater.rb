@@ -14,10 +14,16 @@ module Fisk8Viewer
        :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",]
     
     def initialize(accept_categories: nil)
-      @accept_categories = accept_categories ||ACCEPT_CATEGORIES
+      @accept_categories =
+        case accept_categories
+        when String
+          accept_categories.split(/ *, */).map(&:upcase).map(&:to_sym)
+        else
+          accept_categories
+        end.presence ||ACCEPT_CATEGORIES
     end
     
-    def load_config(yaml_filename)
+    def load_competition_list(yaml_filename)
       YAML.load_file(yaml_filename).map do |item|
         case item
         when String
@@ -43,7 +49,7 @@ module Fisk8Viewer
       
       if Competition.find_by(site_url: url)
         logger.debug "   alread exists"
-        #return
+        return if ENV['RACK_ENV'] == "production"
       end
       summary = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
@@ -87,11 +93,7 @@ module Fisk8Viewer
         keys = [:category, :rank, :skater_name, :nation, :points, :isu_number, :sp_ranking, :fs_ranking]
         param = {name: result_hash[:skater_name]}.merge(result_hash.slice(*[:isu_number, :nation, :category]))
           
-        skater = find_or_create_skater(param)
-        #skater = Skater.find_by(isu_number: result_hash[:isu_number]) ||
-        #Skater.find_by(name: result_hash[:skater_name]) || raise("no such skater #{result_hash[:isu_number]}/#{result_hash[:skater_name]}")
-          #Skater.create(name: result_hash[:skater_name], result_hash.slice(*[:isu_number, :nation, :category]))
-        #skater = find_or_create_skater(result_hash[:isu_number], result_hash.slice(*[:skater_name, :nation, :category]))
+        skater = find_or_create_skater(result_hash[:isu_number], result_hash[:skater_name], category: result_hash[:category], nation: result_hash[:nation])
         result_hash[:skater_name] = skater.name
         cr = competition.category_results.create(result_hash.slice(*keys))
         skater.category_results << cr
@@ -128,7 +130,8 @@ module Fisk8Viewer
       
       ## skater
       ranking_key = (segment =~ /SHORT/) ? :sp_ranking : :fs_ranking      
-      skater = competition.category_results.where(category: category, ranking_key => score_hash[:rank]).first.try(:skater) || raise
+      skater = competition.category_results.where(category: category, ranking_key => score_hash[:rank]).first.try(:skater) ||
+        find_or_create_skater(nil, score_hash[:skater_name], category: category, nation: score_hash[:nation])
       score_hash[:skater_name] = skater.name
       
       #score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
@@ -161,7 +164,8 @@ module Fisk8Viewer
       score
     end
     ################################################################
-    def find_or_create_skater(isu_number:, name:, nation:, category:)
+    #def find_or_create_skater(isu_number: nil, name: nil, nation: nil, category: nil)
+    def find_or_create_skater(isu_number, name, nation: nil, category: nil)
       skater = Skater.find_by(isu_number: isu_number) || Skater.find_by(name: name) || Skater.create do
         logger.debug(" '%s' (%s) [%s] in %s created" % [name, isu_number, nation, category])
       end

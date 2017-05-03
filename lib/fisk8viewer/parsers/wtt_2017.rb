@@ -102,7 +102,7 @@ module Fisk8Viewer
           text.sub(/ \- Entry/, '').upcase
         end
         def parse_skater_name(row)
-          normalize_skater_name(row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/\u00a0/, ' ').gsub(/  */, ' '))
+          row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/\u00a0/, ' ').gsub(/  */, ' ')
         end
       end
       ## register

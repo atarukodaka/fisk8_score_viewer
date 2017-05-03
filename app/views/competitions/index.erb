@@ -18,7 +18,7 @@
     <td><%= competition.id %></td>
     <td><%= link_to(competition.name, url_for(:competitions, :id, id: competition.id)) %></td>
     <td><%= competition.short_name %></td>
-    <td><%= link_to("ISU HP", competition.site_url) %></td>
+    <td><%= link_to("ISU HP", competition.site_url, target: "_blank") %></td>
     <td><%= competition.city %></td>
     <td><%= competition.country %></td>
     <td><%= link_to(competition.competition_type, url_for(:competitions, :list, "competition_type:#{competition.competition_type}")) %></td>    
