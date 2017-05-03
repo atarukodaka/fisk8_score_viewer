@@ -35,6 +35,7 @@ ScoreViewer::App.controllers :skaters do
     splat_to_params(params)
     #skaters = filter(Skater.order(:category).order(:name), :skaters)
     skaters = filter_by_keys(Skater.order(:category).order(:name), [:category, :nation, {key: :name, match: :partial}])
+    skaters = skaters.where(id: Score.select(:skater_id).group(:skater_id).having("count(skater_id)>?", 0))
 
     case content_type
     when :csv

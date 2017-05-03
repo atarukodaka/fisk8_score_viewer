@@ -48,8 +48,8 @@ module Fisk8Viewer
           isu_number: parse_isu_number(row),
           nation: parse_nation(row),
           points: row.xpath("td[4]").text.to_f,
-          sp_ranking: sp_ranking,
-          fs_ranking: fs_ranking,          
+          sp_ranking: sp_ranking.to_i,
+          fs_ranking: fs_ranking.to_i,
         }
       end
       

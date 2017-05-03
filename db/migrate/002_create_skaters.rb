@@ -8,7 +8,7 @@ class CreateSkaters < ActiveRecord::Migration
       t.integer :isu_number
       t.string :isu_bio
 
-      ## optional keys
+      ## bio optional keys
       t.date :birthday
       t.string :coach
       t.string :choreographer
@@ -16,7 +16,8 @@ class CreateSkaters < ActiveRecord::Migration
 
       t.string :height
       t.string :club
-
+      t.datetime :bio_updated_at
+      
       t.timestamps
     end
   end
