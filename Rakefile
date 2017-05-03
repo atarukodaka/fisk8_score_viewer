@@ -33,11 +33,6 @@ task :update_competitions => :update_env do
   updater.update_competitions(items)
 end
 
-task :update_skaters => :update_env do  
-  accept_categories = (e = ENV['accept_categories']) ? e.split(/,/).map(&:to_sym) : nil
-  updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
-  updater.update_skaters
-end
 
 task :parse_score => :update_env do
   pdf_url = ENV["url"]
@@ -48,6 +43,19 @@ task :parse_score => :update_env do
   binding.pry
   puts ar.inspect
 end
+
+task :update_skaters => :update_env do  
+  accept_categories = (e = ENV['accept_categories']) ? e.split(/,/).map(&:to_sym) : nil
+  updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
+  updater.update_skaters
+end
+
+task :update_isu_bio_details => :update_env do  
+  accept_categories = (e = ENV['accept_categories']) ? e.split(/,/).map(&:to_sym) : nil
+  updater = Fisk8Viewer::Updater.new(accept_categories: accept_categories)
+  updater.update_isu_bio_details
+end
+
 
 task :unify_skater_name => :update_env do
   ## check and correct name differency btw sources. e.g. Yuria or Juria

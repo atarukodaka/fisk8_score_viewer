@@ -26,9 +26,9 @@ end
 describe 'skater', type: :skater do
   before {
     Skater.all.map(&:destroy)
-    Skater.create(name: 'Yuzuru HANYU', category: 'MEN', nation: 'JPN')
+    skater = Skater.create(name: 'Yuzuru HANYU', category: 'MEN', nation: 'JPN', isu_number: 10967)
     updater = Fisk8Viewer::Updater.new
-    updater.update_skater_bio
+    updater.update_isu_bio_details(skater)
   }
   after {
     Skater.all.map(&:destroy)

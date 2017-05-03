@@ -2,10 +2,13 @@ require 'spec_helper'
 
 describe 'component' do
   before do
-    skater = Skater.create(name: "AAA")
-    score = Score.create(skater_id: skater.id, skater_name: "AAA")
+    skater = Skater.create(name: "GoodSKATER")
+    score = Score.create
+    score.skater_name = skater.name
+    score.skater = skater
     score.components.create(component: "Skating Skill", number: 1, value: 10.0)
     score.components.create(component: "Transition", number: 2, value: 9.0)
+    score.save
   end
 
   after do
@@ -21,9 +24,9 @@ describe 'component' do
   end
 
   describe 'component/skater_name/number' do
-    subject { get '/components/list/skater_name:AAA' }
+    subject { get '/components/list/skater_name:GoodSKATER' }
     its(:body) {
-      should include("AAA")
+      should include("GoodSKATER")
       should include("10.0")
       should include("9.0")
     }

@@ -4,11 +4,12 @@ class CreateSkaters < ActiveRecord::Migration
       t.string :name
       t.string :nation
       t.string :category
-      t.date :birthday
 
       t.integer :isu_number
       t.string :isu_bio
 
+      ## optional keys
+      t.date :birthday
       t.string :coach
       t.string :choreographer
       t.string :hobbies

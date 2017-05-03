@@ -21,7 +21,8 @@ module Fisk8Viewer
         $1.to_i
       end
       def parse_skater_name(row)
-        normalize_skater_name(row.xpath("td[2]").text)
+        #normalize_skater_name(row.xpath("td[2]").text)
+        row.xpath("td[2]").text
       end
       def parse_nation(row)
         row.xpath("td[3]").text =~ /([A-Z][A-Z][A-Z])/

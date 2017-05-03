@@ -31,6 +31,7 @@ module Fisk8Viewer
       end
       records
     end
+
 =begin    
     def scrape_isu_numbers
       @agent ||= Mechanize.new
@@ -49,8 +50,8 @@ module Fisk8Viewer
       end
       hash
     end
-
-    def scrape_skater(isu_number, category)
+=end
+    def parse_isu_bio_details(isu_number, category)
       url = isu_bio_url(isu_number)
       @agent ||= Mechanize.new
 
@@ -78,6 +79,5 @@ module Fisk8Viewer
       }.to_h
       skater.merge(scraped_info)
     end
-=end
   end  ## class
 end
