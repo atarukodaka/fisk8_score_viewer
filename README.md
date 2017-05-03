@@ -8,6 +8,21 @@ Score viewer of figureskating competitions. you can register/see:
 
 ## Install
 
+### prepare
+install postgresql if u dont haveit.
+
+```sh
+% sudo yum -y install postgresql-devel
+```
+
+pdftotext
+
+```sh
+% sudo yum -y install poppler-utils
+```
+
+### fisk8viewer
+
 ```sh
 % bundle install
 % bundle exec rake db:migrate

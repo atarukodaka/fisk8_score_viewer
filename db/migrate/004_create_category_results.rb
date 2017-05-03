@@ -8,6 +8,9 @@ class CreateCategoryResults < ActiveRecord::Migration
       t.integer :isu_number
       t.float :points
 
+      t.integer :sp_ranking
+      t.integer :fs_ranking
+      
       t.belongs_to :competition
       t.references :skater
     end

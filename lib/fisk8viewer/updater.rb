@@ -60,18 +60,18 @@ module Fisk8Viewer
         ## for segments
         summary.segments(category).each do |segment|
           logger.debug "  - update segment result [#{category}/#{segment}]"
-          segment_result_url = summary.result_url(category, segment)
-          update_segment_result(segment_result_url, competition: competition, parser: parser)
+          #segment_result_url = summary.result_url(category, segment)
+          #update_segment_result(segment_result_url, competition: competition, parser: parser)
           
           logger.debug "  - update scores on segment [#{category}/#{segment}]"
-=begin
+
           score_url = summary.score_url(category, segment)
           #update_scores(score_url, competition: competition, parser: parser)
           parser.parse_score(score_url).each do |score_hash|
-            score = update_score(score_hash, competition: competition)
+            score = update_score(score_hash, competition: competition, category: category, segment: segment)
             score.update(starting_time: summary.starting_time(category, segment))
           end
-=end
+
         end
       end
       competition
@@ -82,19 +82,20 @@ module Fisk8Viewer
       raise if competition.nil? || parser.nil?
       logger.debug " = update category result"
       competition ||= Competition.new
-
+      
       parser.parse_category_result(url).map do |result_hash|
-        keys = [:category, :rank, :skater_name, :points, :isu_number]
+        keys = [:category, :rank, :skater_name, :points, :isu_number, :sp_ranking, :fs_ranking]
+        skater = Skater.find_by(isu_number: result_hash[:isu_number]) ||
+          Skater.find_by(name: result_hash[:skater_name]) || raise
+        #        skater = find_or_create_skater(result_hash[:isu_number], result_hash.slice(*[:skater_name, :nation, :category]))
+        result_hash[:skater_name] = skater.name
         cr = competition.category_results.create(result_hash.slice(*keys))
-
-        skater = Skater.find_by(isu_number: result_hash[:isu_number]) || raise
-#        skater = find_or_create_skater(result_hash[:isu_number], result_hash.slice(*[:skater_name, :nation, :category]))
         skater.category_results << cr
         cr.update(skater: skater)
         cr
       end
     end
-
+=begin
     ################################################################
     def update_segment_result(url, competition: nil, parser: nil)
       return [] if url.blank?
@@ -113,15 +114,20 @@ module Fisk8Viewer
         sr
       end
     end
-
+=end
     ################################################################
     def update_scores(score_url, competition: nil, parser: nil)
       raise if competition.nil? || parser.nil?
     end
-    def update_score(score_hash, competition: nil)
+    def update_score(score_hash, competition: nil, category: nil, segment: nil)
       raies if competition.nil?
+      
+      ## skater
+      ranking_key = (segment =~ /SHORT/) ? :sp_ranking : :fs_ranking      
+      skater = competition.category_results.where(category: category, ranking_key => score_hash[:rank]).first.try(:skater) || raise
+      score_hash[:skater_name] = skater.name
 
-      score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
+      #score_hash[:skater_name] = unify_skater_name(score_hash[:skater_name])
       logger.debug "  ..#{score_hash[:rank]}: #{score_hash[:skater_name]} (#{score_hash[:nation]})"
       score_keys = [:competition_name, :category, :segment, :skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
@@ -141,9 +147,7 @@ module Fisk8Viewer
       end
       score.components_summary = score_hash[:components].map {|c| c[:value]}.join('/')
 
-      ## skater
-      skater = find_or_create_skater(score.skater_name, category: score_hash[:category], nation: score_hash[:nation])
-
+      ##
       skater.scores << score
       score.skater = skater
       score.save

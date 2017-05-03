@@ -6,6 +6,8 @@
 - ペア、アイスダンスで '/' を含むと splat_to_params が機能しない
 
 ## v1.0.0-pre4
+- skater_nameで引かずに isu_number で引くように
+- SegmentResultを新設
 
 
 ## v1.0.0-pre3

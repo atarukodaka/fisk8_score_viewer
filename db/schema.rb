@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(version: 6) do
     t.string  "skater_name"
     t.integer "isu_number"
     t.float   "points"
+    t.integer "sp_ranking"
+    t.integer "fs_ranking"
     t.integer "competition_id"
     t.integer "skater_id"
   end
