@@ -5,10 +5,11 @@
 - partial table_headers
 - ペア、アイスダンスで '/' を含むと splat_to_params が機能しない
 
+## v1.0.0-pre5
+
 ## v1.0.0-pre4
 - skater\_name で引かずに isu_number で引くように
 - upate_score() では rank から category_results を見て skater を取得する
-
 
 ## v1.0.0-pre3
 - accept_categories=MEN,LADIES rake update で MEN と LADIES だけ更新

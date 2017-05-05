@@ -1,6 +1,6 @@
 module Fisk8Viewer
   module Parsers
-    @registered = {} # Hash.new { |h,k| h[k] = {} }
+    @registered = {}
     
     class << self
       attr_reader :registered

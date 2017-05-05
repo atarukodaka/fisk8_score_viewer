@@ -18,7 +18,8 @@ module Fisk8Viewer
       records = []
       categories.each do |category|
         url = URLS[category]
-        logger.debug("scrape #{category} on #{url}")
+        next if url.blank?
+        logger.debug("parse #{category} on #{url}")
         page = @agent.get(url)
         page.xpath("//table[1]/tr").each do |row|
           ntn = row.xpath("td[1]").text
@@ -32,25 +33,6 @@ module Fisk8Viewer
       records
     end
 
-=begin    
-    def scrape_isu_numbers
-      @agent ||= Mechanize.new
-
-      hash = {}
-      URLS.each do |category, url|
-        logger.debug("scrape #{category} on #{url}")
-        page = @agent.get(url)
-        page.search("table//a").map do |link|
-          link[:href] =~ /(\d+)\.htm/
-          isu_number = $1.to_i
-          skater_name = link.text
-          
-          hash[skater_name] = {isu_number: isu_number, category: category}
-        end
-      end
-      hash
-    end
-=end
     def parse_isu_bio_details(isu_number, category)
       url = isu_bio_url(isu_number)
       @agent ||= Mechanize.new
@@ -67,7 +49,7 @@ module Fisk8Viewer
         isu_bio:  url,
         category: category.to_s,
       }
-      scraped_info = {
+      parsed_info = {
         name: :cname, nation: :nation, birthday: :dob,
         height: :height, hobbies: :hobbies,
         club: :club_name, howmtown: :htometown,
@@ -77,7 +59,7 @@ module Fisk8Viewer
       }.map {|k, v|
         [k, page.search("#FormView1_person_#{v.to_s}Label").text]
       }.to_h
-      skater.merge(scraped_info)
+      skater.merge(parsed_info)
     end
   end  ## class
 end
