@@ -11,10 +11,10 @@
     <th>Points</th>
     <th><%= (params[:category] =~ /DANCE/) ? 'SD' : 'SP' %></th>
     <th>Tss</th>
-    <th><%= (params[:category] =~ /DANCE/) ? 'FD' : 'FP' %></th>
+    <th><%= (params[:category] =~ /DANCE/) ? 'FD' : 'FS' %></th>
     <th>Tss</th>
   </tr>
-  <% results.sort_by {|rec| (0 == (rank = rec[:rank])) ? Fixnum : rank }.each do |rec| %>
+  <% results.sort_by {|rec| (0 == (rank = rec[:rank])) ? 10_000 + rec.short_ranking : rank }.each do |rec| %>
   <tr>
     <td><%= (rec.rank == 0) ? 'FNR/WD' : rec.rank %></td>
     <% begin %>
