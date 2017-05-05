@@ -47,18 +47,17 @@ module Fisk8Viewer
           require 'benchmark'
           Benchmark.bm 10 do |r|
             r.report "competition" do
-              transact_competition(item[:url], parser_type: item[:parser])
+              update_competition(item[:url], parser_type: item[:parser])
             end
           end
         else
-          transact_competition(item[:url], parser_type: item[:parser])
+          update_competition(item[:url], parser_type: item[:parser])
         end
       end
     end
     def transact_competition(url, parser_type: :isu_generic)
-      ActiveRecord::Base::transaction do
+
         update_competition(url, parser_type: parser_type)
-      end
     end
     def update_competition(url, parser_type: :isu_generic)
       parser_klass =Fisk8Viewer::Parsers.registered[parser_type]
@@ -72,32 +71,37 @@ module Fisk8Viewer
       if (competitions = Competition.where(site_url: url)).present?
         if @force
           puts "   destroy existing competitions (%d)" % [competitions.count]
-          competitions.map(&:destroy)
+          ActiveRecord::Base::transaction do
+            competitions.map(&:destroy)
+          end
         else
           puts " !!  alread exists"
           return
         end
       end
-      summary = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
-      keys = [:name, :city, :country, :site_url, :start_date, :end_date,
-              :competition_type, :short_name, :season,]
-      competition = Competition.create(summary.slice(*keys))
+      ActiveRecord::Base::transaction do
+        summary = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
+        keys = [:name, :city, :country, :site_url, :start_date, :end_date,
+                :competition_type, :short_name, :season,]
+        
+        competition = Competition.create(summary.slice(*keys))
 
-      ## for each categories
-      summary.categories.each do |category|
-        next unless @accept_categories.include?(category.to_sym)
-        result_url = summary.result_url(category)
-        puts " = [%s]" % [category]
-        update_category_result(result_url, competition: competition, parser: parser)
+        ## for each categories
+        summary.categories.each do |category|
+          next unless @accept_categories.include?(category.to_sym)
+          result_url = summary.result_url(category)
+          puts " = [%s]" % [category]
+          update_category_result(result_url, competition: competition, parser: parser)
 
-        ## for segments
-        summary.segments(category).each do |segment|
-          puts "  - [#{category}/#{segment}]"
+          ## for segments
+          summary.segments(category).each do |segment|
+            puts "  - [#{category}/#{segment}]"
 
-          score_url = summary.score_url(category, segment)
-          parser.parse_score(score_url).each do |score_hash|
-            score = update_score(score_hash, competition: competition, category: category, segment: segment) do |score|
-              score.update(starting_time: summary.starting_time(category, segment))
+            score_url = summary.score_url(category, segment)
+            parser.parse_score(score_url).each do |score_hash|
+              score = update_score(score_hash, competition: competition, category: category, segment: segment) do |score|
+                score.update(starting_time: summary.starting_time(category, segment))
+              end
             end
           end
         end
@@ -131,7 +135,6 @@ module Fisk8Viewer
       score_keys = [:skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
 
-      #      score = competition.scores.create # (score_hash.slice(*score_keys))
       score = competition.scores.create(score_hash.slice(*score_keys)) do |sc|
         sc.competition_name = competition.name
         sc.category = category
