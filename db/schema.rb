@@ -33,20 +33,20 @@ ActiveRecord::Schema.define(version: 5) do
     t.integer "free_ranking"
     t.integer "competition_id"
     t.integer "skater_id"
+    t.index ["competition_id"], name: "index_category_results_on_competition_id"
+    t.index ["skater_id"], name: "index_category_results_on_skater_id"
   end
 
   create_table "competitions", force: :cascade do |t|
-    t.string   "name"
-    t.string   "city"
-    t.string   "country"
-    t.date     "start_date"
-    t.date     "end_date"
-    t.string   "site_url"
-    t.string   "competition_type"
-    t.string   "season"
-    t.string   "short_name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string "name"
+    t.string "city"
+    t.string "country"
+    t.date   "start_date"
+    t.date   "end_date"
+    t.string "site_url"
+    t.string "competition_type"
+    t.string "season"
+    t.string "short_name"
   end
 
   create_table "components", force: :cascade do |t|
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.string  "judges"
     t.float   "value"
     t.integer "score_id"
+    t.index ["score_id"], name: "index_components_on_score_id"
   end
 
   create_table "scores", force: :cascade do |t|
@@ -74,10 +75,10 @@ ActiveRecord::Schema.define(version: 5) do
     t.float    "deductions"
     t.string   "technicals_summary"
     t.string   "components_summary"
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "competition_id"
     t.integer  "skater_id"
+    t.index ["competition_id"], name: "index_scores_on_competition_id"
+    t.index ["skater_id"], name: "index_scores_on_skater_id"
   end
 
   create_table "skaters", force: :cascade do |t|
@@ -93,8 +94,6 @@ ActiveRecord::Schema.define(version: 5) do
     t.string   "height"
     t.string   "club"
     t.datetime "bio_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "technicals", force: :cascade do |t|
@@ -107,6 +106,7 @@ ActiveRecord::Schema.define(version: 5) do
     t.string  "judges"
     t.float   "value"
     t.integer "score_id"
+    t.index ["score_id"], name: "index_technicals_on_score_id"
   end
 
 end

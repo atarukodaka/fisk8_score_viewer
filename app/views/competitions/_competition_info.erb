@@ -49,8 +49,10 @@
         <%= link_to(seg.segment, url_for(:competitions, :id, id: competition.id, category: res.category, segment: seg.segment)) %>,  
       <% end %>      
     </td>
-    <% 1.upto(3) do |i| %>
-    <td><%= link_to_skater(competition.category_results.where(category: res.category, rank: i).first.try(:skater)) %></td>
+    <% competition.category_results.where(category: res.category).where("rank >= 1 and rank <= ?", 3).each_with_index do |res, i| %>
+    <td>
+      <%= res.skater_name %>
+    </td>
     <% end %>
   </tr>
   <% end %>

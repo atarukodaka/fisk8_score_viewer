@@ -5,7 +5,7 @@ ScoreViewer::App.controllers :competitions do
   ## show
   get :id, with: :id do
     if competition = Competition.find_by(id: params[:id])
-      render :"competitions/show", locals: {competition: competition, scores: competition.scores}
+      render :"competitions/show", locals: {competition: competition.includes(:category_result), scores: competition.scores.includes(:skater)}
     else
       render :record_not_found, locals: {message: "no such id: #{params[:id].to_i} in Competition"}
     end

@@ -1,4 +1,4 @@
-class CreateCompetitions < ActiveRecord::Migration
+class CreateCompetitions < ActiveRecord::Migration[5.0]
   def change
     create_table :competitions do |t|
       t.string :name
@@ -12,7 +12,7 @@ class CreateCompetitions < ActiveRecord::Migration
       t.string :season
       t.string :short_name
       
-      t.timestamps
+      #t.timestamps
     end
   end
 end

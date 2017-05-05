@@ -1,4 +1,4 @@
-class CreateScores < ActiveRecord::Migration
+class CreateScores < ActiveRecord::Migration[5.0]
   def change
     create_table :scores do |t|
       t.string :skater_name
@@ -19,7 +19,7 @@ class CreateScores < ActiveRecord::Migration
       t.string :technicals_summary
       t.string :components_summary
 
-      t.timestamps
+      #t.timestamps
       t.belongs_to :competition
       t.references :skater
     end

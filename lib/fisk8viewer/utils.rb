@@ -23,9 +23,11 @@ module Fisk8Viewer
 
       ## convert pdf to text
       filename = File.join(dir, URI.parse(url).path.split('/').last)
-      open(url) do |f|
-        File.open(filename, "w") do |out|
-          out.puts f.read
+      if ! File.exists?(filename)
+        open(url) do |f|
+          File.open(filename, "w") do |out|
+            out.puts f.read
+          end
         end
       end
       Pdftotext.text(filename)

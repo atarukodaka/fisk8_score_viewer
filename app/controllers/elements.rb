@@ -8,7 +8,7 @@ ScoreViewer::App.controllers :elements do
   get :list, map: "/elements/list/*", provides: [:html, :csv] do
     splat_to_params(params)
     scores = filter_by_keys(Score.order("starting_time DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
-    elements = Technical.joins(:score).merge(scores)
+    elements = Technical.joins(:score).merge(scores).includes(:score)
     if params[:element]
       elements = 
         if params[:partial_match]

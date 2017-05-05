@@ -24,9 +24,11 @@ task :update => :update_competitions do
 end
 
 task :update_competitions => :update_env do
+  #require 'profile'
   number = ENV["number"].to_i
   #force = (ENV['force'].present? && ENV['force'].downcase == "false") ? false : true
-  force = (ENV['force'].try(:downcase) == 'true') ? true : false
+  #force = (ENV['force'].try(:downcase) == 'true') ? true : false
+  force = ENV['force'].to_i.nonzero?
   updater = Fisk8Viewer::Updater.new(accept_categories: ENV['accept_categories'], force: force)
   items = updater.load_competition_list(Padrino.root("config", "competitions.yaml"))
   items = items.reverse.first(number) if number > 0
@@ -55,7 +57,9 @@ end
 
 
 task :update_env => :environment do
-  ActiveRecord::Base.logger = Logger.new('log/sql.log')
+  #ActiveRecord::Base.logger = Logger.new('log/sql.log')
+  #ActiveRecord::Base.logger = Logger.new('/dev/null')
+  #Padrino.logger = Logger.new('/dev/null')
 end
 
 task :test => :spec do

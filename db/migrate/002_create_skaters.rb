@@ -1,4 +1,4 @@
-class CreateSkaters < ActiveRecord::Migration
+class CreateSkaters < ActiveRecord::Migration[5.0]
   def change
     create_table :skaters do |t|
       t.string :name
@@ -18,7 +18,7 @@ class CreateSkaters < ActiveRecord::Migration
       t.string :club
       t.datetime :bio_updated_at
       
-      t.timestamps
+      #t.timestamps
     end
   end
 end

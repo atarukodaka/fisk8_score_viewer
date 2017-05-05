@@ -14,7 +14,7 @@ ScoreViewer::App.controllers :scores do
   get :list, map: "/scores/list/*", provides: [:html, :csv] do
     splat_to_params(params)
     #scores = filter(Score.order("starting_time DESC"), :scores)
-    scores = filter_by_keys(Score.order("starting_time DESC"), [:skater_name, :category, :segment, :nation, :competition_name])
+    scores = filter_by_keys(Score.order("starting_time DESC"), [:skater_name, :category, :segment, :nation, :competition_name])  # .includes(:skater)
     
     case content_type
     when :csv

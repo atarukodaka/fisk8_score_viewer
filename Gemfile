@@ -18,6 +18,10 @@ gem 'activerecord', '>= 3.1', :require => 'active_record'
 group :development, :test do
   gem 'pry-byebug'
   gem 'sqlite3'
+  #gem 'bullet'
+  #gem 'stackprof', git: "git://github.com/tmm1/stackprof.git", branch: "master"
+  #gem 'benchmark'
+  
 end
 
 group :production do   ## for heroku
