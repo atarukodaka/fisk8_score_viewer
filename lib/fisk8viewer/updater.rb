@@ -42,9 +42,22 @@ module Fisk8Viewer
     end
     def update_competitions(items)
       items.map do |item|
-        ActiveRecord::Base::transaction do
-          update_competition(item[:url], parser_type: item[:parser])
+        case ENV['RACK_ENV']
+        when "development"
+          require 'benchmark'
+          Benchmark.bm 10 do |r|
+            r.report "competition" do
+              transact_competition(item[:url], parser_type: item[:parser])
+            end
+          end
+        else
+          transact_competition(item[:url], parser_type: item[:parser])
         end
+      end
+    end
+    def transact_competition(url, parser_type: :isu_generic)
+      ActiveRecord::Base::transaction do
+        update_competition(url, parser_type: parser_type)
       end
     end
     def update_competition(url, parser_type: :isu_generic)
@@ -52,16 +65,16 @@ module Fisk8Viewer
       raise "no such parser: '#{parser_type}'" if parser_klass.nil?
       
       parser = parser_klass.new
-      start_time = Time.now
-      puts "#{start_time} ** update competition: #{url} with '#{parser_type}'"
-      logger.debug "** update competition: #{url} with '#{parser_type}'"
+      puts "=" * 100
+      puts "** update competition: #{url} with '#{parser_type}'"
+      #logger.debug "** Competition: '#{url}' with '#{parser_type}'"
 
       if (competitions = Competition.where(site_url: url)).present?
         if @force == true
-          logger.debug "   destroy existing competitions (%d)" % [competitions.count]
+          puts "   destroy existing competitions (%d)" % [competitions.count]
           competitions.map(&:destroy)
         else
-          logger.debug "   alread exists"
+          puts " !!  alread exists"
           return
         end
       end
@@ -73,15 +86,13 @@ module Fisk8Viewer
       ## for each categories
       summary.categories.each do |category|
         next unless @accept_categories.include?(category.to_sym)
-        puts "#{category}: #{Time.now - start_time}"
         result_url = summary.result_url(category)
-        logger.debug " = update category result [%s]" % [category]
+        puts " = [%s]" % [category]
         update_category_result(result_url, competition: competition, parser: parser)
 
         ## for segments
         summary.segments(category).each do |segment|
-          logger.debug "  - update scores on segment [#{category}/#{segment}]"
-          puts " #{segment}: #{Time.now - start_time}"
+          puts "  - [#{category}/#{segment}]"
 
           score_url = summary.score_url(category, segment)
           parser.parse_score(score_url).each do |score_hash|
@@ -91,9 +102,6 @@ module Fisk8Viewer
           end
         end
       end
-      elapse = Time.now - start_time
-      puts "elasp: #{elapse}"
-      competition
     end
     ################################################################
     def update_category_result(url, competition: , parser: )
@@ -107,7 +115,7 @@ module Fisk8Viewer
           skater = find_or_create_skater(result_hash[:isu_number], result_hash[:skater_name], category: result_hash[:category], nation: result_hash[:nation])
 
           cr = competition.category_results.create(result_hash.slice(*keys))
-          logger.debug ".#%<rank>2d: '%{skater_name}' (%{isu_number}) [%{nation}] %{short_ranking} / %{free_ranking}" % result_hash
+          puts "   %<rank>2d: '%{skater_name}' (%{isu_number}) [%{nation}] %{short_ranking} / %{free_ranking}" % result_hash
           skater.category_results << cr
           cr.update(skater: skater)
         end
@@ -119,7 +127,7 @@ module Fisk8Viewer
       skater = competition.category_results.find_by(category: category, skater_name: score_hash[:skater_name]).try(:skater) ||
         find_or_create_skater(nil, score_hash[:skater_name], category: category, nation: score_hash[:nation])
 
-      logger.debug "  ..%<rank>2d: '%{skater_name}' (%{nation}) %<tss>3.2f" % score_hash
+      puts "    %<rank>2d: '%{skater_name}' (%{nation}) %<tss>3.2f" % score_hash
       score_keys = [:skater_name, :rank, :starting_number, :nation,
               :starting_time, :result_pdf, :tss, :tes, :pcs, :deductions]
 
@@ -134,24 +142,26 @@ module Fisk8Viewer
       skater.scores << score
       
       ## technicals
-      tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
+      ActiveRecord::Base.transaction do
+        tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
         tech_summary = ""
-      score_hash[:technicals].each do |element|
-        score.technicals.create(element.slice(*tech_keys))
-        tech_summary += "/" + element[:element]
+        score_hash[:technicals].each do |element|
+          score.technicals.new(element.slice(*tech_keys))
+          tech_summary += "/" + element[:element]
+        end
+        score.technicals_summary = tech_summary
       end
-      score.update(technicals_summary: tech_summary)
-      
       
       ## components
-      comp_keys = [:component, :number, :factor, :judges, :value]
-      comp_summary = ""
-      score_hash[:components].each do |comp|
-        score.components.create(comp.slice(*comp_keys))
-        comp_summary += "/" + comp[:component]
+      ActiveRecord::Base.transaction do
+        comp_keys = [:component, :number, :factor, :judges, :value]
+        comp_summary = ""
+        score_hash[:components].each do |comp|
+          score.components.new(comp.slice(*comp_keys))
+          comp_summary += "/" + comp[:component]
+        end
+        score.components_summary = comp_summary
       end
-      score.update(components_summary: comp_summary)
-      score
     end
     ################################################################
     def update_skaters
@@ -164,7 +174,7 @@ module Fisk8Viewer
     end
 
     def update_isu_bio_details(skater=nil)
-      logger.debug("update skaters bio details")
+      puts("update skaters bio details")
 
       skaters = (skater.present?) ? [skater] : Skater.order(:category)
       
@@ -176,7 +186,7 @@ module Fisk8Viewer
         #next if skater.bio_updated_at.present?
         
         hash = parser.parse_isu_bio_details(skater.isu_number, skater.category)
-        logger.debug("  update skater bio: #{hash[:name]} (#{skater.isu_number})")        
+        puts("  update skater bio: #{hash[:name]} (#{skater.isu_number})")        
         keys = [:isu_number, :name, :nation, :category, :isu_bio,
                 :coach, :choreographer, :birthday, :hobbies, :height, :club]
         ActiveRecord::Base::transaction do
@@ -201,7 +211,7 @@ module Fisk8Viewer
         skater.name = name
         skater.nation = nation
         skater.category = seniorize(category)
-        logger.debug "%{name} (%{isu_number}) [%{nation}] <%{category}> created" % skater.attributes.symbolize_keys
+        puts " ! '%{name}' (%{isu_number}) [%{nation}] <%{category}> created" % skater.attributes.symbolize_keys
       end
     end
   end  ## class

@@ -20,7 +20,6 @@ group :development, :test do
   gem 'sqlite3'
   #gem 'bullet'
   #gem 'stackprof', git: "git://github.com/tmm1/stackprof.git", branch: "master"
-  #gem 'benchmark'
   
 end
 

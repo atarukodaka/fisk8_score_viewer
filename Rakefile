@@ -57,7 +57,7 @@ end
 
 
 task :update_env => :environment do
-  #ActiveRecord::Base.logger = Logger.new('log/sql.log')
+  ActiveRecord::Base.logger = Logger.new('log/sql.log')
   #ActiveRecord::Base.logger = Logger.new('/dev/null')
   #Padrino.logger = Logger.new('/dev/null')
 end
