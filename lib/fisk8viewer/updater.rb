@@ -14,14 +14,18 @@ module Fisk8Viewer
        :"JUNIOR MEN", :"JUNIOR LADIES", :"JUNIOR PAIRS", :"JUNIOR ICE DANCE",
       ]
     
-    def initialize(accept_categories: nil)
+    def initialize(accept_categories: nil, force: nil)
       @accept_categories =
         case accept_categories
         when String
           accept_categories.split(/ *, */).map(&:upcase).map(&:to_sym)
+        when Array
+          accept_categories.map(&:to_sym)
         else
           accept_categories
         end.presence || ACCEPT_CATEGORIES
+
+      @force = force
     end
     
     def load_competition_list(yaml_filename)
@@ -47,10 +51,15 @@ module Fisk8Viewer
       
       parser = parser_klass.new
       logger.debug "** update competition: #{url} with '#{parser_type}'"
-      
-      if Competition.find_by(site_url: url)
-        logger.debug "   alread exists"
-        return if ENV['RACK_ENV'] == "production"
+
+      if (competitions = Competition.where(site_url: url)).present?
+        if @force == true
+          logger.debug "   destroy existing competitions (%d)" % [competitions.count]
+          competitions.map(&:destroy)
+        else
+          logger.debug "   alread exists"
+          return
+        end
       end
       summary = Fisk8Viewer::CompetitionSummary.new(parser.parse_competition_summary(url))
       keys = [:name, :city, :country, :site_url, :start_date, :end_date,
@@ -83,14 +92,13 @@ module Fisk8Viewer
       return [] if url.blank?
 
       parser.parse_category_result(url).map do |result_hash|
-        keys = [:category, :rank, :skater_name, :nation, :points, :isu_number, :sp_ranking, :fs_ranking]
+        keys = [:category, :rank, :skater_name, :nation, :points, :isu_number, :short_ranking, :free_ranking]
         param = {name: result_hash[:skater_name]}.merge(result_hash.slice(*[:isu_number, :nation, :category]))
           
         skater = find_or_create_skater(result_hash[:isu_number], result_hash[:skater_name], category: result_hash[:category], nation: result_hash[:nation])
-        #result_hash[:skater_name] = skater.name
 
-        logger.debug ".#%<rank>2d: '%{skater_name}' (%{isu_number}) [%{nation}] %{sp_ranking} / %{fs_ranking}" % result_hash
         cr = competition.category_results.create(result_hash.slice(*keys))
+        logger.debug ".#%<rank>2d: '%{skater_name}' (%{isu_number}) [%{nation}] %{short_ranking} / %{free_ranking}" % result_hash
         skater.category_results << cr
         cr.update(skater: skater)
         cr
@@ -101,7 +109,6 @@ module Fisk8Viewer
       ## skater
       skater = competition.category_results.find_by(category: category, skater_name: score_hash[:skater_name]).try(:skater) ||
         find_or_create_skater(nil, score_hash[:skater_name], category: category, nation: score_hash[:nation])
-      #score_hash[:skater_name] = skater.name
 
       logger.debug "  ..%<rank>2d: '%{skater_name}' (%{nation}) %<tss>3.2f" % score_hash
       score_keys = [:skater_name, :rank, :starting_number, :nation,
@@ -133,8 +140,7 @@ module Fisk8Viewer
     ################################################################
     def update_skaters
       parser = Fisk8Viewer::ISU_Bio.new
-      records = parser.parse_isu_bio_summary(@accept_categories)
-      records.each do |hash|
+      parser.parse_isu_bio_summary(@accept_categories).each do |hash|
         find_or_create_skater(hash[:isu_number], hash[:name], category: hash[:category], nation: hash[:nation])
       end
     end
@@ -170,14 +176,12 @@ module Fisk8Viewer
     end
     def find_or_create_skater(isu_number, name, nation:, category:)
       find_skater_by_isu_number_name(isu_number, name) || Skater.create do |skater|
-        skater.isu_number = isu_number if isu_number.present?
+        skater.isu_number = isu_number
         skater.isu_bio = isu_bio_url(isu_number) if isu_number.present?
-        skater.name = name if name.present?
-        skater.nation = nation if nation.present?
-        skater.category = seniorize(category) if category.present?
-        #logger.debug(skater.to_s + " created")
+        skater.name = name
+        skater.nation = nation
+        skater.category = seniorize(category)
         logger.debug "%{name} (%{isu_number}) [%{nation}] <%{category}> created" % skater.attributes.symbolize_keys
-        #logger.debug(" '%s' (%s) [%s] in {%s} created" % [skater.name, skater.isu_number, skater.nation, skater.category])
       end
     end
   end  ## class

@@ -101,6 +101,9 @@ module Fisk8Viewer
           text = page.xpath("//p[1]").text
           text.sub(/ \- Entry/, '').upcase
         end
+        def parse_rank(row)
+          0
+        end
         def parse_skater_name(row)
           row.xpath("td[2]/a/text()").map(&:text).join(' / ').gsub(/\u00a0/, ' ').gsub(/  */, ' ')
         end

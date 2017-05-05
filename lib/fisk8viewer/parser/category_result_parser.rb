@@ -15,6 +15,9 @@ module Fisk8Viewer
         page.xpath("//table/tr/td")[2].text.upcase
       end
 
+      def parse_rank(row)
+        row.xpath("td[1]").text.to_i
+      end
       def parse_isu_number(row)
         href = row.xpath("td[2]/a/@href").text
         href =~ /([0-9]+)\.htm$/
@@ -40,16 +43,15 @@ module Fisk8Viewer
       end
       def parse_row(row)
         return {} if row.xpath("td").blank?
-        sp_ranking, fs_ranking = parse_rankings(row)
-
+        short_ranking, free_ranking = parse_rankings(row)
         {
-          rank: row.xpath("td[1]").text.to_i,
+          rank: parse_rank(row),
           skater_name: parse_skater_name(row),
           isu_number: parse_isu_number(row),
           nation: parse_nation(row),
           points: row.xpath("td[4]").text.to_f,
-          sp_ranking: sp_ranking.to_i,
-          fs_ranking: fs_ranking.to_i,
+          short_ranking: short_ranking.to_i,
+          free_ranking: free_ranking.to_i,
         }
       end
       

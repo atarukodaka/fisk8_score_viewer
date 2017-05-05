@@ -68,6 +68,7 @@ module ScoreViewer
         link_to(image_tag(icon_url), url, target: "_blank")
       end
       def link_to_skater(skater)
+        return "" if skater.nil?
         url = (skater.isu_number.blank?) ? url_for(:skaters, :name, name: skater.name) : url_for(:skaters, :isu_number, isu_number: skater.isu_number)
         link_to(skater.name, url)
       end

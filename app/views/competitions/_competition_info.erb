@@ -2,7 +2,7 @@
 <table class="table table-striped table-hover table-condensed">
   <tr>
     <th>Name</th>
-    <td><%= link_to(competition.name, url_for(:competitions, :id, competition.id)) %></td>
+    <td><%= link_to(competition.name, url_for(:competitions, :name, competition.short_name)) %></td>
   </tr>
   <tr>
     <th>Short Name</th>
@@ -14,7 +14,10 @@
   </tr>
   <tr>
     <th>ISU Site</th>
-    <td><%= link_to("ISU HP", competition.site_url, target: "_blank") %></td>
+    <td>
+      <%= link_to("ISU HP", competition.site_url, target: "_blank") %>
+      <span class="glyphicon glyphicon-link"></span>
+    </td>
   </tr>
   <tr>
     <th>Start Date</th>
@@ -46,12 +49,9 @@
         <%= link_to(seg.segment, url_for(:competitions, :id, id: competition.id, category: res.category, segment: seg.segment)) %>,  
       <% end %>      
     </td>
-    <% competition.category_results.where(category: res.category).where("rank > 0 and rank <= 3").order(:rank).select(:skater_name).each do |item| %>
-    <td>
-      <%= item.skater_name %>
-    </td>
+    <% 1.upto(3) do |i| %>
+    <td><%= link_to_skater(competition.category_results.where(category: res.category, rank: i).first.try(:skater)) %></td>
     <% end %>
-
   </tr>
   <% end %>
 </table>

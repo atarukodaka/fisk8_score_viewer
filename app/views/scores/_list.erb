@@ -7,13 +7,12 @@
 
 <table class="table table-striped table-hover table-condensed">
   <%= partial "table_headers", locals: {table_headers:
-      [:Score_ID, :Skater, :Nation, :Competition, :Category, :Segment, :Result_PDF, :Date, :Rank, :Starting, :TSS, :TES, :PCS, :Deductions]} %>
+      [:Score_ID, :Competition, :Category, :Segment, :Result_PDF, :Date,
+      :Rank, :Skater, :Nation, :Starting, :TSS, :TES, :PCS, :Deductions]} %>
 
   <% scores.each do |score| %>
   <tr>
     <td><%= link_to(score.id, url_for(:scores, :id, id: score.id)) %></td>
-    <td><%= link_to_skater(score.skater) %>
-    <td><%= score.nation %></td>
     <td><%= link_to(score.competition_name, url_for(:competitions, :id, id: score.competition_id)) %></td>
     <td><%= link_to(score.category, url_for(:competitions, :id, id: score.competition_id, category: score.category)) %></td>
 
@@ -21,6 +20,8 @@
     <td><%= link_to_result_pdf(score.result_pdf) %></td>
     <td><%= score.starting_time.try(:strftime, "%Y-%m-%d") %></td>
     <td><%= score.rank %></td>
+    <td><%= link_to_skater(score.skater) %>
+    <td><%= score.nation %></td>
     <td><%= score.starting_number %></td>
     <td><%= score.tss %></td>
     <td><%= score.tes %></td>

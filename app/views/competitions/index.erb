@@ -19,9 +19,9 @@
       [:ID, :Competition, :Short_Name, :ISU_Site, :City, :Country, :Type, :Season, :Start_date, :End_Date]} %>
   <% competitions.each do |competition| %>
   <tr>
-    <td><%= competition.id %></td>
-    <td><%= link_to(competition.name, url_for(:competitions, :id, id: competition.id)) %></td>
-    <td><%= competition.short_name %></td>
+    <td><%= link_to(competition.id, url_for(:competitions, :id, id: competition.id)) %></td>
+    <td><%= link_to(competition.name, url_for(:competitions, :name, name: competition.short_name)) %></td>
+    <td><%= competition.short_name  %></td>
     <td><%= link_to("ISU HP", competition.site_url, target: "_blank") %></td>
     <td><%= competition.city %></td>
     <td><%= competition.country %></td>

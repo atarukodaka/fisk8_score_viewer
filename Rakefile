@@ -24,9 +24,10 @@ task :update => :update_competitions do
 end
 
 task :update_competitions => :update_env do
-  number = (ENV["number"] || 0).to_i
-
-  updater = Fisk8Viewer::Updater.new(accept_categories: ENV['accept_categories'])
+  number = ENV["number"].to_i
+  #force = (ENV['force'].present? && ENV['force'].downcase == "false") ? false : true
+  force = (ENV['force'].try(:downcase) == 'true') ? true : false
+  updater = Fisk8Viewer::Updater.new(accept_categories: ENV['accept_categories'], force: force)
   items = updater.load_competition_list(Padrino.root("config", "competitions.yaml"))
   items = items.reverse.first(number) if number > 0
   updater.update_competitions(items)

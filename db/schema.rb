@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(version: 5) do
     t.integer "isu_number"
     t.string  "nation"
     t.float   "points"
-    t.integer "sp_ranking"
-    t.integer "fs_ranking"
+    t.integer "short_ranking"
+    t.integer "free_ranking"
     t.integer "competition_id"
     t.integer "skater_id"
   end
