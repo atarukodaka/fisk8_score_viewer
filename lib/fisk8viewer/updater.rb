@@ -70,7 +70,7 @@ module Fisk8Viewer
       #logger.debug "** Competition: '#{url}' with '#{parser_type}'"
 
       if (competitions = Competition.where(site_url: url)).present?
-        if @force == true
+        if @force
           puts "   destroy existing competitions (%d)" % [competitions.count]
           competitions.map(&:destroy)
         else
@@ -146,10 +146,10 @@ module Fisk8Viewer
         tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
         tech_summary = ""
         score_hash[:technicals].each do |element|
-          score.technicals.new(element.slice(*tech_keys))
+          score.technicals.create(element.slice(*tech_keys))
           tech_summary += "/" + element[:element]
         end
-        score.technicals_summary = tech_summary
+        score.update(technicals_summary: tech_summary)
       end
       
       ## components
@@ -157,10 +157,10 @@ module Fisk8Viewer
         comp_keys = [:component, :number, :factor, :judges, :value]
         comp_summary = ""
         score_hash[:components].each do |comp|
-          score.components.new(comp.slice(*comp_keys))
+          score.components.create(comp.slice(*comp_keys))
           comp_summary += "/" + comp[:component]
         end
-        score.components_summary = comp_summary
+        score.update(components_summary: comp_summary)
       end
     end
     ################################################################
