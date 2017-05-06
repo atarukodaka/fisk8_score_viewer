@@ -13,7 +13,7 @@ ScoreViewer::App.controllers :competitions do
   get :name, with: :name do
     if competition = Competition.find_by(name: params[:name]) ||
         Competition.find_by(short_name: params[:name])
-      render :"competitions/show", locals: {competition: competition, scores: competition.scores}
+      render :"competitions/show", locals: {competition: competition, scores: competition.scores.includes(:skater)}
     else
       render :record_not_found, locals: {message: "no such name: #{params[:name]} in Competition"}
     end
@@ -23,7 +23,7 @@ ScoreViewer::App.controllers :competitions do
     if competition = Competition.find_by(id: params[:id])
       results = competition.category_results.where(category: params[:category]).order(:rank)
 
-      render :"competitions/show_category_result", locals: {competition: competition, results: results}
+      render :"competitions/show_category_result", locals: {competition: competition}
     else
       render :record_not_found
     end
@@ -31,7 +31,7 @@ ScoreViewer::App.controllers :competitions do
 
   get :id, with: [:id, :category, :segment] do
     if competition = Competition.find(params[:id])
-      scores = competition.scores.where(category: params[:category], segment: params[:segment])
+      scores = competition.scores.where(category: params[:category], segment: params[:segment]).includes(:skater)
       render :"competitions/show_segment_result", locals: {competition: competition, scores: scores}
     else
       render :record_not_found

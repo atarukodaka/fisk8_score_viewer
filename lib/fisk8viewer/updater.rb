@@ -85,7 +85,7 @@ module Fisk8Viewer
                 :competition_type, :short_name, :season,]
         
         competition = Competition.create(summary.slice(*keys))
-
+          
         ## for each categories
         summary.categories.each do |category|
           next unless @accept_categories.include?(category.to_sym)
@@ -94,7 +94,8 @@ module Fisk8Viewer
           update_category_result(result_url, competition: competition, parser: parser)
 
           ## for segments
-          summary.segments(category).each do |segment|
+          summary.segme
+          nts(category).each do |segment|
             puts "  - [#{category}/#{segment}]"
 
             score_url = summary.score_url(category, segment)
@@ -147,23 +148,23 @@ module Fisk8Viewer
       ## technicals
       ActiveRecord::Base.transaction do
         tech_keys = [:number, :element, :info, :base_value, :credit, :goe, :judges, :value]
-        tech_summary = ""
+        tech_summary = []
         score_hash[:technicals].each do |element|
           score.technicals.create(element.slice(*tech_keys))
-          tech_summary += "/" + element[:element]
+          tech_summary << element[:element]
         end
-        score.update(technicals_summary: tech_summary)
+        score.update(technicals_summary: tech_summary.join('/'))
       end
       
       ## components
       ActiveRecord::Base.transaction do
         comp_keys = [:component, :number, :factor, :judges, :value]
-        comp_summary = ""
+        comp_summary = []
         score_hash[:components].each do |comp|
           score.components.create(comp.slice(*comp_keys))
-          comp_summary += "/" + comp[:component]
+          comp_summary << comp[:value]
         end
-        score.update(components_summary: comp_summary)
+        score.update(components_summary: comp_summary.join('/'))
       end
     end
     ################################################################

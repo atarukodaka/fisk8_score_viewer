@@ -34,27 +34,31 @@
 <table class="table table-striped table-hover table-condensed">
   <tr>
     <th>Category</th>
-    <th>Segment</th>
+    <th>Segments</th>
     <th>1st</th>
     <th>2nd</th>
     <th>3rd</th>
   </tr>
-  <% competition.category_results.select(:category).distinct.each do |res| %>
+
+  <% segments_for_category = Hash.new { |h,k| h[k] = [] } %>
+  <% competition.scores.pluck(:category, :segment).uniq.each {|cat, seg| segments_for_category[cat] << seg} %>
+
+  <% ranks = Hash.new { |h,k| h[k] = {} } %>
+  <% competition.category_results.where("rank >= 1 and rank <= 3").each {|res| ranks[res.category][res.rank] = res.skater} %>
+
+  <% competition.category_results.pluck(:category).uniq.each do |category| %>
   <tr>
-    <td>
-      <%= link_to(res.category, url_for(:competitions, :id, id: competition.id, category: res.category)) %>
-    </td>
-    <td>
-      <% competition.scores.where(category: res.category).order(:starting_time).select(:segment).distinct.each do |seg| %>
-        <%= link_to(seg.segment, url_for(:competitions, :id, id: competition.id, category: res.category, segment: seg.segment)) %>,  
-      <% end %>      
-    </td>
-    <% competition.category_results.where(category: res.category).where("rank >= 1 and rank <= ?", 3).each_with_index do |res, i| %>
-    <td>
-      <%= res.skater_name %>
-    </td>
+    <td><%= link_to(category, url_for(:competitions, :id, id: competition.id, category: category)) %></td>
+    <% size = segments_for_category.size %>
+    <td><% segments_for_category[category].each_with_index do |segment, i| %>
+      <%= link_to(segment, url_for(:competitions, :id, id: competition.id, category: category, segment: segment)) %>, 
+      <% end %>
+	  
+    <% 1.upto(3) do |i|  %>
+    <td><%= link_to_skater(ranks[category][i]) %></td>
     <% end %>
   </tr>
   <% end %>
+
 </table>
 
