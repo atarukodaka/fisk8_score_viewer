@@ -44,7 +44,7 @@
   <% competition.scores.pluck(:category, :segment).uniq.each {|cat, seg| segments_for_category[cat] << seg} %>
 
   <% ranks = Hash.new { |h,k| h[k] = {} } %>
-  <% competition.category_results.where("rank >= 1 and rank <= 3").each {|res| ranks[res.category][res.rank] = res.skater} %>
+  <% competition.category_results.includes(:skater).where("rank >= 1 and rank <= 3").each {|res| ranks[res.category][res.rank] = res.skater} %>
 
   <% competition.category_results.pluck(:category).uniq.each do |category| %>
   <tr>
